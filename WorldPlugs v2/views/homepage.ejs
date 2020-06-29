@@ -1,0 +1,17 @@
+
+<script>
+    var categories = '<%- categories %>'
+</script>
+
+
+<% categories.forEach(function(category) { %>
+    <div class="card" style="margin: 10px 0px 10px 0px" onclick="products('<%= category.CategoryKey %>')")>
+        <div class="card-header">
+          <h1><%= category.CategoryKey %></h1>
+          <img src="<%= category.Image %>"></img>
+          <%= category.Description %>
+      </div>
+    </div>
+
+<% }); %>
+
