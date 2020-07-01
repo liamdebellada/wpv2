@@ -1,80 +1,57 @@
-// App Modules
+// Index Modules
 const express= require('express');
 const router = express.Router();
-const app = express();
+const mongoose = require('mongoose');
 
-const mongoose = require('mongoose')
 
-// Models
+
+// Export Models
 const category  = require('../models/categories');
 const products  = require('../models/products');
 const items  = require('../models/items');
 const { db } = require('../models/categories');
 
 
+
+// Export Functions
+const functions = require('../exports/functions');
+
+
+
 // Pages
+
 router.get('/', (req, res) => {
-    categories = []
 
-    category.find({
-        
-    }).then(categories => {
-        res.render('homepage.ejs', {
-            categories: categories
-        })
+    // Call searchQuery Function
+    functions.searchQuery(res, category, '', '', 'homepage.ejs');
 
-    })
-    .catch(categories => {
-        console.log("")
-    })
-})
-
-router.get('/product', function (req, res) {
-    res.render('products.ejs')
-})
-
-router.get('/item', function (req, res) {
-    res.render('items.ejs')
 })
 
 
-router.post('/getproducts', function (req, res) {
-    const categoryKey = req.body.categoryKey
+router.get('/products/:product', function (req, res) {
     
-    req.app.io.to(req.body.socketid).emit('messages', categoryKey);
+    // Incl data sanitization here
+    var product = req.params.product.toString();
+    
+    // Call searchQuery Function
+    functions.searchQuery(res, products, 'CategoryKey', product, 'products.ejs');
+
 
 })
 
-router.post('/updateProducts', function(req, res) {
-    categoryKey = req.body.data.split("?")[1]
-    requestedProduct = []
 
-    products.find({
-        CategoryKey: categoryKey
-    }).then(requestedProduct => {
-        req.app.io.to(req.body.socketid).emit('messages', requestedProduct);
-    })
-    .catch(requestedProduct => {
-        console.log("error")
-    })
+router.get('/products/:product/items/:items', function (req, res) {
+
+    // Incl data sanitization here
+    var item = req.params.items.toString();
+    var fallbackRedirect = '/products/' + req.params.product.toString();
+
+    // Call searchQuery Function
+    functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
 
 })
 
-router.post('/getitems', function (req, res) {
-    itemKey = req.body.itemKey.split("?")[1]
-    console.log(req.body.socketid)
-    requestedItems = []
-    items.find({
-        ProductKey: itemKey
-    }).then(requestedItems => {
-        console.log(requestedItems)
-        req.app.io.to(req.body.socketid).emit('messages', requestedItems);
-    })
-    .catch(requestedItems => {
-        console.log("error")
-    })
 
-})
 
 
 // Export back to app.js

@@ -1,59 +1,10 @@
-<script>
-    var socket = io('http://fbbsvr.ddns.net:80', { transport : ['websocket'] });
-    socket.on('connect', function(data) {
-        fetch('/getitems', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                itemKey: window.location.href,
-                socketid: socket.id
-            })
-        })
-    })
-
-    socket.on('messages', function(data) {
-        console.log(data)
-
-        for (item in data) {
-            var title = data[item].Title
-            var description = data[item].Description
-            var price = data[item].Price
-
-
-            var container = document.createElement("div")
-
-            container.className = "container"
-
-            document.body.appendChild(container)
-
-            var parent = document.createElement("div")
-            parent.className = "card"
-            parent.style.cssText = "margin: 10px 0px 10px 0px"
-            var child = document.createElement("div")
-
-            container.appendChild(parent)
-            
-            parent.appendChild(child)
-            
-            child.className = "card-header"
-            var titleElem = document.createElement("h1")
-            titleElem.innerText = title
-            child.appendChild(titleElem)
-
-            var descriptionElem = document.createElement("p")
-            descriptionElem.innerText = description
-            child.appendChild(descriptionElem)
-            
-            var priceElem = document.createElement("p")
-            priceElem.innerText = "£" + price
-            child.appendChild(priceElem)
-
-            
-
-            
-        }
-    })
-</script>
+<% results.forEach(function(result) { %>
+    <div class="card" style="margin: 10px 0px 10px 0px" href="/products?selection=<%= result.ProductKey %>">
+        <div class="card-header">
+          <h1><%= result.Title %></h1>
+          <img src="<%= result.Image %>"></img>
+          <%= result.Description %>
+          <%= result.Price %>
+      </div>
+    </div>
+<% }); %>

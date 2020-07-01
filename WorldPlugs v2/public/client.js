@@ -4,25 +4,5 @@ socket.on('connect', function(data) {
 });
 
 socket.on('messages', function(data) {
-    var redirect_location = "/product?" + data;
-    window.location.href = redirect_location
+    //var redirect_location = "/product?" + data
 });
-
-function products(categoryKey) {
-    fetch('/getproducts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            categoryKey: categoryKey,
-            socketid: socket.id
-        })
-    })
-}
-
-function items(itemKey) {
-    var redirect_location = "/item?" + itemKey;
-    window.location.href = redirect_location
-}
