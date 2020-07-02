@@ -1,0 +1,18 @@
+
+
+<script src="/addCart.js"></script>
+
+
+<% results.forEach(function(result) { %>
+<div class="card" style="margin: 10px 0px 10px 0px" href="/products?selection=<%= result.ProductKey %>">
+  <div class="card-header">
+    <h1><%= result.Title %></h1>
+    <img src="<%= result.Image %>"></img>
+    <p><%= result.Description %></p>
+    <text><%= result.Price %></text>
+    <input type="number" id=<%= result._id%>></input>
+    <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>
+  </div>
+</div>
+<% }); %>
+

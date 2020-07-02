@@ -1,0 +1,9 @@
+<% results.forEach(function(result) { %>
+    <div class="card" style="margin: 10px 0px 10px 0px" href="/products?selection=<%= result.CategoryKey %>">
+        <div class="card-header">
+          <h1><%= result.CategoryKey %></h1>
+          <img src="<%= result.Image %>"></img>
+          <p><%= result.Description %></p>
+      </div>
+    </div>
+<% }); %>
