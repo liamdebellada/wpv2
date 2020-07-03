@@ -29,6 +29,21 @@ var functions = {
 
     },
 
+    checkID: async function someFunc(session, cartItemId) {
+        try {
+            if (session.cart.id == cartItemId) {
+                console.log("exists")
+                return true
+            } else if (session.cart.id === undefined) {
+                console.log("doesnt exist")
+                return false
+            }
+        } catch {
+            return false
+        }
+
+    },
+
     checkItem : function(cartItem, items) {
         return items.findOne({
             _id: cartItem
@@ -37,10 +52,6 @@ var functions = {
         }).catch(errorCatch => {
             res.redirect("/")
         })
-    },
-
-    checkId : function(cartitems, session) {
-        if (cartitems)
     },
 
     getPrice : function(result, quantity) {

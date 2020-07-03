@@ -14,25 +14,36 @@ router.post('/updateCart', (req, res) => {
     var cartItemId = req.body.items
     var quantity = req.body.quantity
 
-    var checkingID = functions.checkId(cartItemId, req.session)
-
-    var check = functions.checkItem(cartItemId, items)
-    check.then(function (result) {
-        var calculatePrice = functions.getPrice(result, quantity)
-        if (calculatePrice !== undefined) {
-            result.Price = calculatePrice
-
-            var item = {
-                "id": result._id,
-                "quantity": quantity
-            }
 
 
-            req.session.cart = item
-            res.send(result)
+    var checkId = functions.checkID(req.session, cartItemId) // Check if item exists in cart already
+
+
+
+    checkId.then(function (result) {
+        if (!result) {
+            var check = functions.checkItem(cartItemId, items)
+            check.then(function (result) {
+                var calculatePrice = functions.getPrice(result, quantity)
+                if (calculatePrice !== undefined) {
+                    result.Price = calculatePrice
+                    var item = {
+                        "id": result._id,
+                        "quantity": quantity
+                    }
+
+                    req.session.cart = item
+                    res.send(result)
+                }
+
+            })
+        } else {
+            // Socket Error
+            res.send("error").status(200)
         }
-
     })
+
+
 
 })
 
