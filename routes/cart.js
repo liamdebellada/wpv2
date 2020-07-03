@@ -14,25 +14,31 @@ router.post('/updateCart', (req, res) => {
     var cartItemId = req.body.items
     var quantity = req.body.quantity
 
-
-
     var checkId = functions.checkID(req.session, cartItemId) // Check if item exists in cart already
 
-
+    if (req.session.cart == undefined) {
+        req.session.cart = []
+    }
 
     checkId.then(function (result) {
-        if (!result) {
+        if (!result) { //if the value doesnt exist yet
             var check = functions.checkItem(cartItemId, items)
             check.then(function (result) {
                 var calculatePrice = functions.getPrice(result, quantity)
-                if (calculatePrice !== undefined) {
+                if (calculatePrice !== undefined) { //checks if the price is above 1
                     result.Price = calculatePrice
+
                     var item = {
                         "id": result._id,
                         "quantity": quantity
                     }
 
-                    req.session.cart = item
+                    if (req.session.cart.length > 0) {
+                        console.log("adding multiple items")
+                        req.session.cart.push(item)
+                    } else {
+                        req.session.cart = [item]
+                    }
                     res.send(result)
                 }
 

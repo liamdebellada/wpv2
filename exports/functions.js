@@ -31,7 +31,7 @@ var functions = {
 
     checkID: async function someFunc(session, cartItemId) {
         try {
-            if (session.cart.id == cartItemId) {
+            if (session.cart.some(e => e.id === cartItemId)) {
                 console.log("exists")
                 return true
             } else if (session.cart.id === undefined) {
