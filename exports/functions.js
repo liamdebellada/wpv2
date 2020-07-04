@@ -76,21 +76,21 @@ var functions = {
 
         var arr = []
         for (item in sessionBasket) {
-            var obj = sessionBasket[item].id
+            let obj = sessionBasket[item]
             items.find(
-                { _id: obj },
+                { _id: obj.id },
                 function(err, result) {
-                  if (err) {
-                    res.send(err);
-                  } else {
-                    arr.push(result)
-                    console.log(arr.length, sessionBasket.length)
-                    if (arr.length == sessionBasket.length) {
-                        return callback(arr)
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        result.push(obj.quantity)
+                        arr.push(result)
+                        if (arr.length == sessionBasket.length) {
+                            return callback(arr)
+                        }
                     }
-                  }
                 }
-              );
+            );
 
         }
     }
