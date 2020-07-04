@@ -71,20 +71,28 @@ var functions = {
 
     //Uses existing session basket returning usable data to the client
 
-    getBasket: async function (sessionBasket, items) {
+    
+    getBasket: function (sessionBasket, items, callback) {
 
-        // Session basket contains all basket IDs as well as the associated quantities for it
+        var arr = []
+        for (item in sessionBasket) {
+            var obj = sessionBasket[item].id
+            items.find(
+                { _id: obj },
+                function(err, result) {
+                  if (err) {
+                    res.send(err);
+                  } else {
+                    arr.push(result)
+                    console.log(arr.length, sessionBasket.length)
+                    if (arr.length == sessionBasket.length) {
+                        return callback(arr)
+                    }
+                  }
+                }
+              );
 
-
-
-        // for (item in sessionBasket) {
-        //     var obj = sessionBasket[item]
-        //     return items.find( {_id: obj.id } ).then(result => {
-        //         return result
-        //     }).catch(error => {
-        //         console.log(error)
-        //     })
-        // }
+        }
     }
 
 

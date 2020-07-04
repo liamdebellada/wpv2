@@ -38,14 +38,14 @@ router.post('/updateCart', (req, res) => {
                     } else {
                         req.session.cart = [item]
                     }
-                    var getBasket = functions.getBasket(req.session.cart, items) 
-                    getBasket.then(function (result) {
-                        console.log("returnesdafasd")
-                    })
+                    var getBasket = functions.getBasket(req.session.cart, items, function(result) {
+                        console.log(result)
+                        res.send(result)
+                    }) 
 
 
 
-                    res.send(req.session.cart)
+                    //res.send(req.session.cart)
                 }
 
             })
@@ -58,7 +58,11 @@ router.post('/updateCart', (req, res) => {
 })
 
 router.post('/getCart', (req, res) => {
-    res.send(req.session.cart)
+    //res.send(req.session.cart)
+    var getBasket = functions.getBasket(req.session.cart, items, function(result) {
+        console.log(result)
+        res.send(result)
+    }) 
 })
 
 
