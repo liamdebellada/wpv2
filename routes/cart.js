@@ -34,25 +34,32 @@ router.post('/updateCart', (req, res) => {
                     }
 
                     if (req.session.cart.length > 0) {
-                        console.log("adding multiple items")
                         req.session.cart.push(item)
                     } else {
                         req.session.cart = [item]
                     }
-                    res.send(result)
+                    var getBasket = functions.getBasket(req.session.cart, items) 
+                    getBasket.then(function (result) {
+                        console.log("returnesdafasd")
+                    })
+
+
+
+                    res.send(req.session.cart)
                 }
 
             })
         } else {
             // Socket Error
-            res.send("error").status(200)
+            res.send("Item already in basket")
         }
     })
 
-
-
 })
 
+router.post('/getCart', (req, res) => {
+    res.send(req.session.cart)
+})
 
 
 // Export back to app.js

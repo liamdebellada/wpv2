@@ -1,4 +1,4 @@
-window.onload = function() {
+window.addEventListener("load", function(){
     $("button.addToCart").click(function () {
         x = $(this)[0].attributes[1].textContent
         quantity = document.getElementById(x).value
@@ -13,4 +13,4 @@ window.onload = function() {
             console.log(data)
         });
       });
-}
+  });

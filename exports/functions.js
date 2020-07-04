@@ -1,41 +1,42 @@
 const e = require("express")
+const session = require("express-session")
 
 var functions = {
 
     // Search Database With Arguments
 
-    searchQuery  : function(res, modelName, dbKey, userQuery, pageRender, fallbackRedirect='/', fallbackError="There was an issue display the page. You have been redirected.",) {
+    searchQuery: function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.") {
 
         query = {}
         if (dbKey !== '') {
             query[dbKey] = userQuery
         }
         modelName.find(
-            query
-        ).then(result => {
-            if (result.length > 0) {
-                res.render(pageRender, {
-                    results: result
-                })
-            } else {
+                query
+            ).then(result => {
+                if (result.length > 0) {
+                    res.render(pageRender, {
+                        results: result
+                    })
+                } else {
+                    // Liam include socket.io response here
+                    res.redirect(fallbackRedirect)
+                }
+            })
+            .catch(categories => {
                 // Liam include socket.io response here
                 res.redirect(fallbackRedirect)
-            }
-        })
-        .catch(categories => {
-            // Liam include socket.io response here
-            res.redirect(fallbackRedirect)
-        })
+            })
 
     },
+
+    //check if the session cart item id is equal to the request id
 
     checkID: async function someFunc(session, cartItemId) {
         try {
             if (session.cart.some(e => e.id === cartItemId)) {
-                console.log("exists")
                 return true
             } else if (session.cart.id === undefined) {
-                console.log("doesnt exist")
                 return false
             }
         } catch {
@@ -44,7 +45,9 @@ var functions = {
 
     },
 
-    checkItem : function(cartItem, items) {
+    //checks if the request item exists in the items table
+
+    checkItem: function (cartItem, items) {
         return items.findOne({
             _id: cartItem
         }).then(result => {
@@ -54,14 +57,34 @@ var functions = {
         })
     },
 
-    getPrice : function(result, quantity) {
-        if (quantity > 1) {
+    //calculates the total based on quantity
+
+    getPrice: function (result, quantity) {
+        if (quantity > 0) {
             var price = parseInt(result.Price)
-            return(price * quantity).toString()
+            return (price * quantity).toString()
         } else {
             //error here
             const errMsg = "Invalid order"
         }
+    },
+
+    //Uses existing session basket returning usable data to the client
+
+    getBasket: async function (sessionBasket, items) {
+
+        // Session basket contains all basket IDs as well as the associated quantities for it
+
+
+
+        // for (item in sessionBasket) {
+        //     var obj = sessionBasket[item]
+        //     return items.find( {_id: obj.id } ).then(result => {
+        //         return result
+        //     }).catch(error => {
+        //         console.log(error)
+        //     })
+        // }
     }
 
 
