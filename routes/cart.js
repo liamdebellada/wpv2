@@ -39,7 +39,6 @@ router.post('/updateCart', (req, res) => {
                         req.session.cart = [item]
                     }
                     var getBasket = functions.getBasket(req.session.cart, items, function(result) {
-                        console.log(result)
                         res.send(result)
                     }) 
 
@@ -57,10 +56,20 @@ router.post('/updateCart', (req, res) => {
 
 })
 
+router.post('/removeCart', function(req, res) {
+    var deletionId = req.body.id
+    var userCart = req.session.cart
+    var index = userCart.findIndex(x => x.id ===deletionId)
+    userCart.splice(index, 1)
+    req.session.cart = userCart
+    req.session.save()
+    res.send('/cart')
+    //refresh here? or do something else to update the users page
+})
+
 router.post('/getCart', (req, res) => {
     //res.send(req.session.cart)
     var getBasket = functions.getBasket(req.session.cart, items, function(result) {
-        console.log(result)
         res.send(result)
     }) 
 })

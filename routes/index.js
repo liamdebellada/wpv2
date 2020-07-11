@@ -57,6 +57,14 @@ router.get('/products/:product/items/:items',  function (req, res) {
 
 })
 
+router.get('/cart', function(req, res) {
+    functions.getBasket(req.session.cart, items, function(result) { //when basket is empty
+        res.render('basket.ejs', {
+            items: result
+        })
+    }) 
+})
+
 
 // Export back to app.js
 module.exports = router;
