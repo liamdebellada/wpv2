@@ -20,5 +20,5 @@ function removeItem(item) {
     }).done(data => {
         window.location.href=data
     });
-    //location.reload() //reload to update page. Could use Ajax, however it wouldnt work with ejs since we render the page statically.
+    //reload to update page. Could use Ajax, however it wouldnt work with ejs since we render the page statically.
 }

@@ -71,7 +71,6 @@ var functions = {
 
     //Uses existing session basket returning usable data to the client
 
-    
     getBasket: function (sessionBasket, items, callback) {
 
         var arr = []
@@ -86,7 +85,7 @@ var functions = {
                         result.push(obj.quantity)
                         arr.push(result)
                         if (arr.length == sessionBasket.length) {
-                            return callback(arr)
+                            return callback(arr) //callback function is inside the function caller
                         }
                     }
                 }

@@ -58,11 +58,18 @@ router.get('/products/:product/items/:items',  function (req, res) {
 })
 
 router.get('/cart', function(req, res) {
-    functions.getBasket(req.session.cart, items, function(result) { //when basket is empty
-        res.render('basket.ejs', {
-            items: result
-        })
-    }) 
+    if (req.session.cart === undefined) {
+        res.send("<h1>no items in the basket</h1>") //error page needs to be used
+    } else {
+        if (req.session.cart.length < 1) {
+            res.send("Your cart is empty") //some form of nice looking error page
+        }
+        functions.getBasket(req.session.cart, items, function(result) { //when basket is empty it loads endlessly???
+            res.render('basket.ejs', {
+                items: result
+            })
+        }) 
+    }
 })
 
 
