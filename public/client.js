@@ -22,3 +22,14 @@ function removeItem(item) {
     });
     //reload to update page. Could use Ajax, however it wouldnt work with ejs since we render the page statically.
 }
+
+function updateQuantity(item) {
+    $.ajax({
+        type: "POST",
+        url: "/updateQuantity",
+        data: { id: item.id, quantity: item.value}
+    }).done(data => {
+        console.log(data)
+        window.location.href=data
+    });
+}

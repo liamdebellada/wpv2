@@ -9,6 +9,7 @@
     <h1><%= result.Title %></h1>
     <img src="<%= result.Image %>"></img>
     <p><%= result.Description %></p>
+    <text><%= result._doc.Stock %></text>
     <text><%= result.Price %></text>
     <input type="number" id=<%= result._id%>></input>
     <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>

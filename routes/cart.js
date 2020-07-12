@@ -67,6 +67,15 @@ router.post('/removeCart', function(req, res) {
     //refresh here? or do something else to update the users page
 })
 
+router.post('/updateQuantity', function(req, res) { 
+    var index = req.session.cart.findIndex(x => x.id ===req.body.id)
+    var obj = { id: req.body.id, quantity: req.body.quantity}
+    req.session.cart[index] = obj
+    console.log("entire cart", req.session.cart)
+
+    req.session.save()
+})
+
 router.post('/getCart', (req, res) => {
     //res.send(req.session.cart)
     var getBasket = functions.getBasket(req.session.cart, items, function(result) {

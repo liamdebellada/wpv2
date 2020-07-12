@@ -92,8 +92,11 @@ var functions = {
             );
 
         }
-    }
+    },
 
+    errorHandler: function(res, message) {
+        res.render("error.ejs", {msg : message})
+    }
 
 }
 

@@ -10,9 +10,7 @@ const mongoose = require('mongoose');
 const category = require('../models/categories');
 const products = require('../models/products');
 const items = require('../models/items');
-const {
-    db
-} = require('../models/categories');
+const { db } = require('../models/categories');
 
 
 // Export Functions
@@ -22,8 +20,10 @@ const functions = require('../exports/functions');
 
 
 
-
-
+//style testing page
+router.get('/style', function(req, res) {
+    res.render('testing.ejs')
+})
 
 
 // Pages
@@ -48,7 +48,6 @@ router.get('/products/:product', function (req, res) {
 
 
 router.get('/products/:product/items/:items',  function (req, res) {
-    console.log("Connected user session id:", req.session.id)
     var item = req.params.items.toString();
     var fallbackRedirect = '/products/' + req.params.product.toString();
 
@@ -59,10 +58,10 @@ router.get('/products/:product/items/:items',  function (req, res) {
 
 router.get('/cart', function(req, res) {
     if (req.session.cart === undefined) {
-        res.send("<h1>no items in the basket</h1>") //error page needs to be used
+        functions.errorHandler(res, "Please visit the store before viewing the basket")
     } else {
         if (req.session.cart.length < 1) {
-            res.send("Your cart is empty") //some form of nice looking error page
+            functions.errorHandler(res, "Your basket is empty")
         }
         functions.getBasket(req.session.cart, items, function(result) { //when basket is empty it loads endlessly???
             res.render('basket.ejs', {

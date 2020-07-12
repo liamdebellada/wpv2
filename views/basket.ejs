@@ -2,7 +2,7 @@
   <div class="card" style="margin: 10px 0px 10px 0px">
     <div class="card-header">
       <h1><%= item[0].Title%></h1>
-      <input type="number" value="<%= item[1]%>">
+      <input id=<%= item[0]._id%> type="number" value="<%= item[1]%>" onchange="updateQuantity(this)">
       <a id=<%= item[0]._id%> onclick="removeItem(this)">Remove</a>
     </div>
   </div>
