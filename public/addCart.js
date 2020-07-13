@@ -10,7 +10,12 @@ window.addEventListener("load", function(){
                 quantity: quantity
             }
         }).done(data => {
-            console.log(data)
+            if (typeof(data) != "object") {
+                console.log("item already in basket")
+                document.getElementById("alertMsg").style.display = "block";
+            } else {
+                displayBasketContent(data)
+            }
         });
       });
   });

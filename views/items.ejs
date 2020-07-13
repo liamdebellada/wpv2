@@ -11,7 +11,7 @@
     <p><%= result.Description %></p>
     <text><%= result._doc.Stock %></text>
     <text><%= result.Price %></text>
-    <input type="number" id=<%= result._id%>></input>
+    <input type="number" pattern="[0-9]*" value=1 min="1" max=<%= result._doc.Stock %> id=<%= result._id%>></input>
     <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>
   </div>
 </div>

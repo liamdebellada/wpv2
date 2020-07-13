@@ -63,24 +63,38 @@ router.post('/removeCart', function(req, res) {
     userCart.splice(index, 1)
     req.session.cart = userCart
     req.session.save()
-    res.send('/cart')
-    //refresh here? or do something else to update the users page
+    if (req.session.cart === undefined) {
+        res.send("e")
+    } else {
+        if (req.session.cart.length < 1) {
+            //functions.errorHandler(res, "Your basket is empty")
+            res.send("e")
+        }
+        functions.getBasket(req.session.cart, items, function(result) { //when basket is empty it loads endlessly???
+            res.send(result)
+        }) 
+    }
 })
 
 router.post('/updateQuantity', function(req, res) { 
     var index = req.session.cart.findIndex(x => x.id ===req.body.id)
     var obj = { id: req.body.id, quantity: req.body.quantity}
     req.session.cart[index] = obj
-    console.log("entire cart", req.session.cart)
 
     req.session.save()
 })
 
 router.post('/getCart', (req, res) => {
-    //res.send(req.session.cart)
-    var getBasket = functions.getBasket(req.session.cart, items, function(result) {
-        res.send(result)
-    }) 
+    if (req.session.cart === undefined) {
+        res.send("e")
+    } else {
+        if (req.session.cart.length < 1) {
+            res.send("e")
+        }
+        functions.getBasket(req.session.cart, items, function(result) {
+            res.send(result)
+        }) 
+    }
 })
 
 

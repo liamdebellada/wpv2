@@ -3,153 +3,291 @@
     <ul class="navbar-nav abs-center-x">
         <li class="nav-item">
             <div class="hideme">
-            <img src="wplogo.svg" style="width:80px;" alt="logo">
-            <text class="title">WorldPlugs</text>         
+                <img src="http://fbbsvr.ddns.net/wplogo.svg" style="width:80px;" alt="logo">
+                <text class="title">WorldPlugs</text>
             </div>
         </li>
     </ul>
-    <div class="navbar-collapse collapse" id="navbar8">
+    <div class="keepIcons" id="navbar8">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <img src="searchbar.svg" style="width:23px" alt="Search">
+            <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
+                <img src="http://fbbsvr.ddns.net/searchbar.svg" style="width:23px" alt="Search">
             </li>
-            <li class="nav-item">
-                <img src="basket.svg" style="width:25px; margin-left: 15px" alt="Basket">
+            <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
+                <div class="basketContainer">
+                    <img src="http://fbbsvr.ddns.net/basket.svg" style="width:25px; margin-left: 15px" alt="Basket">
+                    <span class="basketQuantity" id="basketQuantity"></span>
+                </div>
             </li>
         </ul>
     </div>
 </nav>
 <div class="secondaryNav" id="secondaryNav">
     <div class="topnav">
-        <div class="topnav-centered">
-            <a class="active" href="#home">Home</a>
-            <a href="#news">News</a>
-            <a href="#contact">Contact</a>
-        </div>
+        <ul class="abs-center-x" style="white-space: nowrap; padding: 0;">
+            <a href="/">
+                <li class="active navItems" id="navItems" style="display: inline; line-height: 30px;">Home</li>
+            </a>
+            <li class="active navItems" style="display: inline;" href="#home">Store</li>
+            <li class="active navItems" style="display: inline;" href="#home">Support</li>
+        </ul>
         <div class="topnav-right" style="margin: 15px;">
-            <img id="search-button-secondaryNav" src="searchbar.svg" style="width:23px" alt="Search">
-            <img id="basket-button-secondaryNav" src="basket.svg" style="width:25px; margin-left: 15px" alt="Basket">
+            <img id="search-button-secondaryNav" src="http://fbbsvr.ddns.net/searchbar.svg"
+                style="width:23px; display: none; " alt="Search">
+            <a data-toggle="modal" data-target="#exampleModal">
+                <img id="basket-button-secondaryNav" src="http://fbbsvr.ddns.net/basket.svg"
+                    style="width:25px; margin-left: 15px; display: none;" alt="Basket">
+                <span class="basketQuantity-secondaryNav" id="basketQuantity" style="display: none;"></span>
+            </a>
         </div>
-      </div>
+    </div>
+</div>
+
+<div class="modal right fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">Your Basket</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Checkout</button>
+            </div>
+
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+</div>
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;" id="alertMsg">
+    Item is already in your basket.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 
-
-<div style="width: 100px;">
-    <p>
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        ajdflkjad;lkfja;lksdfjal;djflkajsdflkajdflkajdflkj alkdsjflkajd sflk jasd
-        fasdkfj; aklsdjf;la kjdsfa
-        adksfj al;skdjflka jsdfkaj dskfjalk;d fjalkdjf
-        
-    </p>
-    
-</div>
 <style>
+    #navbar {
+        transition: top 0.3s;
+    }
 
-#navbar {
-    transition: top 0.3s;
+    .btn {
+        border-radius: 0;
+        background-image: radial-gradient(circle farthest-corner at 2.9% 7.7%, #362a6d 0%, #b4009c);
+        background-repeat: no-repeat;
+        border: 0;
+    }
+
+    .abs-center-x {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+
+    .navbar-nav {
+        flex-direction: row;
+    }
+
+    .title {
+        color: white;
+    }
+
+    .hideme {
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    .secondaryNav {
+        text-align: center;
+        position: -webkit-sticky;
+        /* Safari */
+        position: sticky;
+        transition: top 0.3s;
+        background-color: #262c47;
+        z-index: 1;
+    }
+
+    .keepIcons {
+        display: flex;
+        flex-basis: auto;
+        flex-grow: 1;
+    }
+
+    .topnav {
+        z-index: 1;
+        text-align: center;
+        background-color: #1e2338;
+        overflow: hidden;
+    }
+
+    .topnav-right {
+        float: right;
+    }
+
+    .topnav-centered a {
+        float: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .basketContainer {
+  position: relative;
+  text-align: center;
+  color: white;
 }
 
-.abs-center-x {
+.basketQuantity {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 2px;
+    right: 8px;
+    cursor: default;
 }
 
-.title {
-    color: white;
-}
+    input[type="number"] {
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
 
-.hideme {
-    white-space: nowrap;
-    display: inline-block;
-}
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
 
-.secondaryNav {
-    text-align: center;
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
-    transition: top 0.3s;
-    background-color: #262c47;
-}
+    .itemQuantity {
+        color: white;
+        width: 45px;
+        padding: auto;
+        -webkit-appearance: none;
+        border-style: none;
+        background-color: transparent;
+        outline: none;
+        border-bottom: 1px solid white;
+        border-radius: 1px;
+        transition: border-bottom 0.3s;
+    }
 
-.topnav {
-    text-align: center;
-    background-color: #333;
-    overflow: hidden;
-}
+    .itemQuantity:hover>.itemQuantity {
+        border-bottom: 1px solid;
 
-.topnav-right {
-  float: right;
-}
-
-.topnav-centered a {
-  float: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+    }
 
 
-#sublist {
-    position: absolute;
-    display: inline-block;
-}
+    #sublist {
+        position: absolute;
+        display: inline-block;
+    }
+
+
+    .navItems {
+        color: white;
+        padding-left: 10px;
+    }
+
+    .modal-header {
+        background-color: #1e2338 !important;
+        border: none;
+        color: white;
+        border-radius: 0;
+    }
+
+    .modal-body {
+        background-color: #1e1c29 !important;
+        color: white
+    }
+
+
+    .modal-footer {
+        background-color: #1e1c29;
+        border: none;
+        border-radius: 0;
+    }
+
+    .modal.right .modal-dialog {
+        position: fixed;
+        margin: auto;
+        width: 320px;
+        height: 100%;
+        -webkit-transform: translate3d(0%, 0, 0);
+        -ms-transform: translate3d(0%, 0, 0);
+        -o-transform: translate3d(0%, 0, 0);
+        transform: translate3d(0%, 0, 0);
+    }
+
+    .modal.right .modal-content {
+        height: 100%;
+        overflow-y: auto;
+        background-color: #fff;
+    }
+
+    .modal.right .modal-body {
+        padding: 15px 15px 80px;
+    }
+
+    /*Right*/
+    .modal.right.fade .modal-dialog {
+        right: -320px;
+        -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+        -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+        -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+        transition: opacity 0.3s linear, right 0.3s ease-out;
+    }
+
+    .modal.right.fade.show .modal-dialog {
+        right: 0;
+    }
+
+    /* ----- MODAL STYLE ----- */
+    .modal-content {
+        border-radius: 0;
+        border: none;
+    }
+
+    .modal-header {
+        border-bottom-color: #EEEEEE;
+        background-color: #FAFAFA;
+    }
+
+    .button {
+        background-color: transparent;
+        border:0;
+        padding: 0;
+            color: #ea6464;
+            font-family: arial;
+            font-size: 23px;
+            font-weight: 200;
+        vertical-align: middle;
+    }
 </style>
 
 <script>
     var prevScrollpos = window.pageYOffset;
-    window.onscroll = function() {
-    var currentScrollPos = window.pageYOffset;
-    if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
-        document.getElementById("navbar").style.top = "-75px"; //up
-        document.getElementById("secondaryNav").style.top = "0";
-        $( "#search-button-secondaryNav" ).show();
-        $( "#basket-button-secondaryNav" ).show();
-    } else {
-        document.getElementById("navbar").style.top = "0"; //down
-        document.getElementById("secondaryNav").style.top = "70px";
-        $( "#search-button-secondaryNav" ).hide();
-        $( "#basket-button-secondaryNav" ).hide();
-    }
-    prevScrollpos = currentScrollPos;
+    window.onscroll = function () {
+        var currentScrollPos = window.pageYOffset;
+        if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+            document.getElementById("navbar").style.top = "-75px"; //up
+            document.getElementById("secondaryNav").style.top = "0";
+            document.getElementById("navItems").style.lineHeight = "58px";
+            $("#search-button-secondaryNav").show();
+            $("#basket-button-secondaryNav").show();
+        } else {
+            document.getElementById("navbar").style.top = "0"; //down
+            document.getElementById("secondaryNav").style.top = "70px";
+            document.getElementById("navItems").style.lineHeight = "30px";
+            $("#search-button-secondaryNav").hide();
+            $("#basket-button-secondaryNav").hide();
+        }
+        prevScrollpos = currentScrollPos;
     }
 </script>
