@@ -4,9 +4,9 @@
 
 
 <% results.forEach(function(result) { %>
-<div class="card" style="margin: 10px 0px 10px 0px" href="/products?selection=<%= result.ProductKey %>">
+<div class="card itemCard" href="/products?selection=<%= result.ProductKey %>">
   <div class="card-header">
-    <h1><%= result.Title %></h1>
+    <h1 style="color: white;"><%= result.Title %></h1>
     <img src="<%= result.Image %>"></img>
     <p><%= result.Description %></p>
     <text><%= result._doc.Stock %></text>

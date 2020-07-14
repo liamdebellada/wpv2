@@ -3,7 +3,7 @@
     <div class="card-header">
       <h1><%= item[0].Title%></h1>
       <input id=<%= item[0]._id%> type="number" value="<%= item[1]%>" onchange="updateQuantity(this)">
-      <a id=<%= item[0]._id%> onclick="removeItem(this)">Remove</a>
+      <a id=<%= item[0]._id%> onclick="removeItemCart(this)">Remove</a>
     </div>
   </div>
 <% }); %>

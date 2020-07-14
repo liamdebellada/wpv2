@@ -43,7 +43,17 @@ window.addEventListener("load", function () {
     });
 });
 
-
+function removeItemCart(item) {
+    $.ajax({
+        type: "POST",
+        url: "/removeCart",
+        data: {
+            id: item.id
+        }
+    }).done(data => {
+        window.location.href = "/cart"
+    });
+}
 
 function removeItem(item) {
     //console.log(item.id) //id for specific item to be removed
