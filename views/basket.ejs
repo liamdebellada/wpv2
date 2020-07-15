@@ -1,10 +1,13 @@
 <% items.forEach(function(item) { %>
-  <div class="card" style="margin: 10px 0px 10px 0px">
+  <div class="card itemCard" style="margin: 10px 0px 10px 0px">
     <div class="card-header">
-      <h1><%= item[0].Title%></h1>
+      <h1 style="color: white;"><%= item[0].Title%></h1>
       <input id=<%= item[0]._id%> type="number" value="<%= item[1]%>" onchange="updateQuantity(this)">
-      <a id=<%= item[0]._id%> onclick="removeItemCart(this)">Remove</a>
+      <a id=<%= item[0]._id%> onclick="removeItemCart(this)" style="color: red;">Remove</a>
     </div>
   </div>
 <% }); %>
+<div class="itemCard">
+  <text style="color: white;">Total: £<%= total %></text>
+</div>
 

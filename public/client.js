@@ -1,5 +1,6 @@
 function displayBasketContent(basketContent) {
     var basket = document.getElementById("modalBody")
+    var total = 0;
     if (basketContent == "e") {
         basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
         console.log("your session basket is empty")
@@ -11,7 +12,7 @@ function displayBasketContent(basketContent) {
             var item = row[0]
             var quantity = row[1]
             var basketRow = document.createElement("DIV")
-    
+            total = total + parseInt(item.Price)
             var rowContent = `
             <div>
             <text>${item.Title}</text>
@@ -28,6 +29,8 @@ function displayBasketContent(basketContent) {
     
             basket.append(basketRow)
         });
+        var totalText = document.createElement("text").innerText = "Total: £" + total
+        basket.append(totalText)
     }
     
 }

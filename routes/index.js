@@ -63,9 +63,15 @@ router.get('/cart', function(req, res) {
         if (req.session.cart.length < 1) {
             functions.errorHandler(res, "Your basket is empty")
         }
-        functions.getBasket(req.session.cart, items, function(result) { //when basket is empty it loads endlessly???
+        functions.getBasket(req.session.cart, items, function(result) {
+            var total = 0;
+            result.forEach(function(row) {
+                var item = row[0]
+                total = total + parseInt(item.Price)
+            })
             res.render('basket.ejs', {
-                items: result
+                items: result,
+                total: total
             })
         }) 
     }
