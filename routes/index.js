@@ -64,11 +64,7 @@ router.get('/cart', function(req, res) {
             functions.errorHandler(res, "Your basket is empty")
         }
         functions.getBasket(req.session.cart, items, function(result) {
-            var total = 0;
-            result.forEach(function(row) {
-                var item = row[0]
-                total = total + parseInt(item.Price)
-            })
+            var total = functions.getTotal(result)
             res.render('basket.ejs', {
                 items: result,
                 total: total

@@ -96,6 +96,15 @@ var functions = {
 
     errorHandler: function(res, message) {
         res.render("error.ejs", {msg : message})
+    },
+
+    getTotal : function(result) {
+        var total = 0;
+        result.forEach(function(row) {
+            var item = row[0]
+            total = total + parseFloat(item.Price)
+        })
+        return total.toFixed(2);
     }
 
 }

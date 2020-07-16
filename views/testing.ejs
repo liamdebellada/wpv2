@@ -3,20 +3,20 @@
     <ul class="navbar-nav abs-center-x">
         <li class="nav-item">
             <div class="hideme">
-                <img src="http://fbbsvr.ddns.net/wplogo.svg" style="width:80px;" alt="logo">
-                <text class="title">WorldPlugs</text>
+                <a href="/"> <img src="http://fbbsvr.ddns.net/wplogo.svg" style="width:80px;" alt="logo"></a>
+                <text class="title" style="font-weight: 500;">WorldPlugs</text>
             </div>
         </li>
     </ul>
     <div class="keepIcons" id="navbar8">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
-                <img src="http://fbbsvr.ddns.net/searchbar.svg" style="width:23px" alt="Search">
+                <img src="http://fbbsvr.ddns.net/searchbar.svg" style="width: 23px;"alt="Search">
             </li>
             <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
                 <div class="basketContainer">
-                    <img src="http://fbbsvr.ddns.net/basket.svg" style="width:25px; margin-left: 15px" alt="Basket">
-                    <span class="basketQuantity" id="basketQuantity"></span>
+                    <img class="fitsmall" src="http://fbbsvr.ddns.net/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
+                    <span class="basketQuantity"></span>
                 </div>
             </li>
         </ul>
@@ -31,18 +31,21 @@
             <a href="/">
                 <li class="active navItems" style="display: inline;" href="/">Store</li>
             </a>
-            <a href="/">
-                <li class="active navItems" style="display: inline;" href="#home">Support</li>
+            <a href="/cart">
+                <li class="active navItems" style="display: inline;" href="#home">Basket</li>
             </a>
         </ul>
         <div class="topnav-right" style="margin: 15px;">
-            <img id="search-button-secondaryNav" src="http://fbbsvr.ddns.net/searchbar.svg"
-                style="width:23px; display: none; " alt="Search">
-            <a data-toggle="modal" data-target="#exampleModal">
-                <img id="basket-button-secondaryNav" src="http://fbbsvr.ddns.net/basket.svg"
-                    style="width:25px; margin-left: 15px; display: none;" alt="Basket">
-                <span class="basketQuantity-secondaryNav" id="basketQuantity" style="display: none;"></span>
-            </a>
+            <div class="basketContainer-secondaryNav">
+                <img id="search-button-secondaryNav" src="http://fbbsvr.ddns.net/searchbar.svg"
+                    style="width:23px; display: none; " alt="Search">
+
+                <a data-toggle="modal" data-target="#exampleModal">
+                    <img class="fitsmall" id="basket-button-secondaryNav" src="http://fbbsvr.ddns.net/basket.svg"
+                        style="width:25px; margin-left: 15px; display: none;" alt="Basket">
+                    <span id="basketQuantity-secondaryNav" style="display: none;" class="basketQuantity"></span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -62,8 +65,12 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Checkout</button>
+                <button type="button" class="btn view-basket" data-dismiss="modal"
+                    onclick="window.location.href='/cart'">View Basket</button>
+                    <button type="button" class="btn checkoutBtn" onclick="executePayment()" data-dismiss="modal">Checkout <text style="font-size: 10px;"><b>1</b> click</text></button>
             </div>
+                
+
 
         </div><!-- modal-content -->
     </div><!-- modal-dialog -->
@@ -80,23 +87,90 @@
 
 
 <style>
+    .iconSize {
+        width: 23px;
+    }
+
+    .modal-footer {
+        justify-content: space-between; 
+    }
+
+
+    .titleText {
+        margin: auto;
+        color: white;
+    }
+
+    .removeBtn:hover {
+        background-color: #ea6464 !important;
+        color: white !important;
+    }
+
+    .checkoutBtn:hover {
+        background-color: #4BB543 !important;
+        color: white !important;
+    }
+
     #navbar {
         transition: top 0.3s;
     }
 
     .itemCard {
         margin: 20px;
-        background-color: #1e1c29; 
-        border-radius: 0; 
-        box-shadow: 4px 4px 17px -5px rgba(0,0,0,0.75);
+        background-color: #1e1c29;
+        border-radius: 0;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    }
+
+    .viewProducts {
+        border-radius: 0;
+        border-color: white;
+        position: relative;
+        color: white;
+        line-height: 50px;
+        width: 200px;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        background: transparent;
+        transition: all 1s ease-in-out;
+        
     }
 
     .btn {
-        border-radius: 0;
-        background-image: radial-gradient(circle farthest-corner at 2.9% 7.7%, #362a6d 0%, #b4009c);
-        background-repeat: no-repeat;
-        border: 0;
+        color: white;
+        background: transparent;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        border-radius: 0px;
     }
+
+    .btn:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        
+    }
+
+
+    .view-basket {
+        background-color: white;
+        color: black;
+        border: none;
+    }
+
+
+
+    .viewProducts:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        border: none;
+    }
+
 
     .abs-center-x {
         position: absolute;
@@ -154,17 +228,18 @@
     }
 
     .basketContainer {
-  position: relative;
-  text-align: center;
-  color: white;
-}
+        position: relative;
+        text-align: center;
+        color: white;
+    }
 
-.basketQuantity {
-    position: absolute;
-    top: 2px;
-    right: 8px;
-    cursor: default;
-}
+    .basketQuantity {
+        color: white;
+        position: relative;
+        top: 2px;
+        right: 19.5px;
+        cursor: default;
+    }
 
     input[type="number"] {
         -webkit-appearance: textfield;
@@ -185,13 +260,13 @@
         border-style: none;
         background-color: transparent;
         outline: none;
-        border-bottom: 1px solid white;
+        border-bottom: 1px solid grey;
         border-radius: 1px;
-        transition: border-bottom 0.3s;
+        transition: all 0.3s;
     }
 
-    .itemQuantity:hover>.itemQuantity {
-        border-bottom: 1px solid;
+    .itemQuantity:focus, .itemQuantity:hover {
+        border-bottom: 1px solid white;
 
     }
 
@@ -273,14 +348,119 @@
 
     .button {
         background-color: transparent;
-        border:0;
+        border: 0;
         padding: 0;
-            color: #ea6464;
-            font-family: arial;
-            font-size: 23px;
-            font-weight: 200;
+        color: #ea6464;
+        font-family: arial;
+        font-size: 23px;
+        font-weight: 200;
         vertical-align: middle;
     }
+
+    .content-box-span {
+  height: auto;
+  width: 65%;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  padding: 10px;
+  background-color: #1e1c29;
+  box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+}
+
+.card {
+  background: none;
+  border: none;
+}
+
+.paymentSec {
+  margin: auto; 
+  width: 65%;
+}
+
+.inlineInp {
+    float: left;
+    display: inline;
+}
+
+.resultDivider {
+    max-width: 50%;
+}
+
+@media(min-width:1200px) {
+  .product-content-image {
+    float: left;
+  }
+
+  .cardText {
+    text-align: left
+  }
+
+  .itemQuantity {
+    float: left;
+  }
+}
+
+@media(min-width:992px) and (max-width:1199px) {
+  .cardText {
+    text-align: center
+  }
+  .inlineInp {
+    float: unset;
+  }
+
+  .content-box-span {
+    width: 80%;
+  }
+  .paymentSec {
+    width: 80%;
+  }
+  .resultDivider {
+    max-width: 80%;
+  }
+  .accountText{
+    text-align: center;
+}
+}
+
+@media(max-width:992px) {
+  .content-box-span {
+    width: 90%;
+  }
+  .paymentSec {
+    width: 90%;
+  }
+  .inlineInp {
+    float: unset;
+  }
+  .resultDivider {
+    max-width: 90%;
+  }
+  .accountText{
+    text-align: center;
+}
+}
+
+@media(max-width: 320px) {
+    .fitsmall {
+        margin-left: 0 !important;
+    }
+}
+
+#itemHeader {
+  color: white;
+  text-transform: capitalize;
+}
+
+.homeCard {
+    background-color: #1e1c29 !important;
+}
+
+.checkout-basket:hover {
+    background-color: #03fc8c !important
+}
+
+
 </style>
 
 <script>
@@ -291,14 +471,13 @@
             document.getElementById("navbar").style.top = "-75px"; //up
             document.getElementById("secondaryNav").style.top = "0";
             document.getElementById("navItems").style.lineHeight = "58px";
-            $("#search-button-secondaryNav").show();
-            $("#basket-button-secondaryNav").show();
+            $("#search-button-secondaryNav, #basket-button-secondaryNav, #basketQuantity-secondaryNav").show();
+            
         } else {
             document.getElementById("navbar").style.top = "0"; //down
             document.getElementById("secondaryNav").style.top = "70px";
             document.getElementById("navItems").style.lineHeight = "30px";
-            $("#search-button-secondaryNav").hide();
-            $("#basket-button-secondaryNav").hide();
+            $("#search-button-secondaryNav, #basket-button-secondaryNav, #basketQuantity-secondaryNav").hide();
         }
         prevScrollpos = currentScrollPos;
     }

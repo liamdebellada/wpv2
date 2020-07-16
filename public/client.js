@@ -4,15 +4,20 @@ function displayBasketContent(basketContent) {
     if (basketContent == "e") {
         basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
         console.log("your session basket is empty")
-        document.getElementById("basketQuantity").innerText = ""
+        // document.getElementById("basketQuantity").innerText = ""
+        $(".basketQuantity").text("")
+        $(".checkoutBtn").hide()
+        
     } else {
         basket.innerHTML = ""
-        document.getElementById("basketQuantity").innerText = basketContent.length
+        // document.getElementById("basketQuantity").innerText = basketContent.length
+        $(".basketQuantity").text(basketContent.length)
+        $(".checkoutBtn").show()
         basketContent.forEach(function (row) {
             var item = row[0]
             var quantity = row[1]
             var basketRow = document.createElement("DIV")
-            total = total + parseInt(item.Price)
+            total = total + parseFloat(item.Price)
             var rowContent = `
             <div>
             <text>${item.Title}</text>
@@ -29,12 +34,24 @@ function displayBasketContent(basketContent) {
     
             basket.append(basketRow)
         });
-        var totalText = document.createElement("text").innerText = "Total: £" + total
+        var totalText = document.createElement("text").innerText = "Total: £" + total.toFixed(2)
         basket.append(totalText)
     }
     
 }
 
+function confirmPayment() {
+    $.ajax({
+        type: "POST",
+        url: "/confirmPayment",
+        data: {
+            paymentId: client_paymentId,
+            payerId: client_payerId 
+        }
+    }).done(data => {
+        window.location.href = data
+    });
+}
 
 window.addEventListener("load", function () {
     $.ajax({
@@ -69,13 +86,14 @@ function removeItem(item) {
         }
     }).done(data => {
         displayBasketContent(data)
-        //window.location.href = "/cart"
+        if (window.location.href.includes("/cart")) {
+            window.location.href = "/cart"
+        }
     });
     //reload to update page. Could use Ajax, however it wouldnt work with ejs since we render the page statically.
 }
 
 function updateQuantity(item) {
-
     try {
         value = parseInt(item.value)
     } catch {
@@ -100,6 +118,15 @@ function updateQuantity(item) {
         }
     }).done(data => {
         console.log(data)
-        //window.location.href = data
+    });
+}
+
+function executePayment() {
+    $.ajax({
+        type: "POST",
+        url: "/executePayment",
+        data: {}
+    }).done(data => {
+        window.location.href = data //redirect to confirm payment
     });
 }

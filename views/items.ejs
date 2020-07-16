@@ -3,17 +3,42 @@
 <script src="/addCart.js"></script>
 
 
-<% results.forEach(function(result) { %>
-<div class="card itemCard" href="/products?selection=<%= result.ProductKey %>">
-  <div class="card-header">
-    <h1 style="color: white;"><%= result.Title %></h1>
-    <img src="<%= result.Image %>"></img>
-    <p><%= result.Description %></p>
-    <text><%= result._doc.Stock %></text>
-    <text><%= result.Price %></text>
-    <input type="number" pattern="[0-9]*" value=1 min="1" max=<%= result._doc.Stock %> id=<%= result._id%>></input>
-    <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>
+<div class="content-box-span">
+  <div class="content-box">
+
+    <h1 id="itemHeader"><%= results[0].ProductKey %> Accounts</h1>
+
+    <% results.forEach(function(result) { %>
+
+
+    <div class="card product-content" style="border: none;">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card-body" style="color: white; margin-bottom: 30px;">
+            <div style="">
+              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result._doc.Image%>"></h1>
+            </div>  
+              <p class="cardText"><%= result.Description %></p>
+              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result._doc.Stock %> id=<%= result._id%>></input>
+          </div>
+        </div>
+        <div class="col-md-4 align-self-center">
+          <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>
+        </div>
+      </div>
+    </div>
+
+
+    
+
+
+    <%})%>
+
   </div>
 </div>
-<% }); %>
 
+
+<script>
+    $(".content-box-span-hr").last().remove()
+  
+</script>

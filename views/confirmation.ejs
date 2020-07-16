@@ -1,0 +1,37 @@
+<script>
+    var client_paymentId = '<%= paymentId %>'
+    var client_payerId = '<%= payerId %>'
+</script>
+
+
+<div class="content-box-span confirmation-box-span">
+    <div class="content-box confirmation-box" style="text-align: center;">
+      <% items.forEach(function(result) { %>
+        <div style="margin: 10px;">
+            <div class="resultDivider" style="border: none; color: white; margin: auto;">
+                <h1 class="cardText accountText" style="font-size: 2em;"><%= result[0].Title %></h1>
+                <p class="cardText accountText">Quantity: <%=result[1]%></p>
+            </div>
+        </div>
+        <hr style="width: 100%; height: 1px; background-color:#ffffff17; border: 1px;" />
+      <%})%>
+      <button class="btn" onclick="confirmPayment()">Confirm</button>
+  
+    </div>
+</div>
+
+
+<style>
+
+@media(min-width:992px) {
+    .confirmation-box-span {
+        max-width: 80% !important
+    }
+}
+
+    
+    
+</style>
+
+
+  

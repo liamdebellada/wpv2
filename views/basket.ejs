@@ -1,13 +1,49 @@
-<% items.forEach(function(item) { %>
-  <div class="card itemCard" style="margin: 10px 0px 10px 0px">
-    <div class="card-header">
-      <h1 style="color: white;"><%= item[0].Title%></h1>
-      <input id=<%= item[0]._id%> type="number" value="<%= item[1]%>" onchange="updateQuantity(this)">
-      <a id=<%= item[0]._id%> onclick="removeItemCart(this)" style="color: red;">Remove</a>
+<div class="content-box-span">
+  <div class="content-box">
+
+    <% items.forEach(function(item) { %>
+
+
+    <div class="card product-content" style="border: none;">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card-body" style="color: white; margin-bottom: 30px;">
+            <div>
+              <h1 class="cardText" style="font-size: 2em;"><%= item[0].Title%></h1>
+            </div>
+            <div class="inlineInp">£<%= item[0].Price %></div>
+            <div class="inlineInp" style="margin-top: -3px; margin-left: 5px;">
+              <input type="number" pattern="[0-9]*" class="itemQuantity" value="<%= item[1]%>" min="1" max="<%= item[0]._doc.Stock%>" onchange="updateQuantity(this)" id="<%= item[0]._id%>"></input>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 align-self-center">
+          <button class="btn removeBtn" id=<%= item[0]._id%> onclick="removeItemCart(this)">Remove</button>
+        </div>
+      </div>
     </div>
+
+
+    
+
+
+    <%})%>
+
   </div>
-<% }); %>
-<div class="itemCard">
-  <text style="color: white;">Total: £<%= total %></text>
 </div>
 
+<div class="itemCard paymentSec">
+  <div style="margin: 20px;">
+    <table style="width: 100%;">
+      <tbody>
+          <td class="align-middle" style="color: white; text-align: left;">Total: £<%= total %></td>
+          <td style="text-align: right;"><button class="btn checkoutBtn" onclick="executePayment()" style="margin: 10px;">Checkout</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<style>
+</style>
