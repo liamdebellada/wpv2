@@ -17,28 +17,25 @@
           <div class="card-body" style="color: white; margin-bottom: 30px;">
             <div style="">
               <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result._doc.Image%>"></h1>
-            </div>  
-              <p class="cardText"><%= result.Description %></p>
+            </div>
+              <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
+              
               <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result._doc.Stock %> id=<%= result._id%>></input>
           </div>
         </div>
         <div class="col-md-4 align-self-center">
-          <button class="addToCart btn btn-dark" data-item=<%= result._id %>>Add me to cart</button>
+          <button class="addToCart btn btn-dark <%= result.Stock %>" data-item=<%= result._id %>>Add me to cart</button>
         </div>
       </div>
     </div>
 
-
     
+    <% if(results[results.length -1] !== result) { %>
+    <hr class="horizontalSep"/>
+    <% } %>
 
 
     <%})%>
 
   </div>
 </div>
-
-
-<script>
-    $(".content-box-span-hr").last().remove()
-  
-</script>

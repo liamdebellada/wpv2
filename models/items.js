@@ -20,7 +20,11 @@ const itemSchema = new mongoose.Schema({
     Price: {
         type: String,
         required: true
-    }
+    },
+    Stock: {
+        type: String,
+        required: true
+    },
 });
 
 const item = mongoose.model('items', itemSchema);

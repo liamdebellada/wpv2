@@ -102,9 +102,68 @@ var functions = {
         var total = 0;
         result.forEach(function(row) {
             var item = row[0]
-            total = total + parseFloat(item.Price)
+            var quantity = row[1]
+            total = total + parseFloat(item.Price) * parseInt(quantity)
         })
         return total.toFixed(2);
+    },
+
+    updateStock : function(data, items) {
+        data.forEach(function(row) {
+            var id = row[0]._id
+            var quantity = row[1]
+            items.findOne(
+                { _id : id},
+                function(error, result) {
+                    if (error) {
+                        console.error(error)
+                    } else {
+                        var currentStock = result.Stock
+                        if (currentStock < quantity) {
+                            //refund here
+                        } else {
+                            var calculatedStock = currentStock - quantity
+                            items.updateOne(
+                                { _id : id},
+                                { $set: { Stock : calculatedStock } },
+                                function (error) {
+                                    if (error) {
+                                        console.log("error")
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            )
+        })
+    },
+
+    checkStock: function(session, items, callback) {
+        var all = []
+        var conflicts = []
+        for (item in session) {
+            var id = session[item].id
+            var quantity = session[item].quantity
+            items.findOne( 
+                { _id : id},
+                function(error, result) {
+                    if (error) {
+                        console.error(error)
+                    } else {
+                        if (result.Stock < quantity) {
+                            all.push(true)
+                            conflicts.push(item)
+                        } else {
+                            all.push(false)
+                        }
+                        if (session.length == all.length) {
+                            return callback(all, conflicts)
+                        }
+                    }
+                }
+            )
+        }
     }
 
 }

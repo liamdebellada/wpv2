@@ -82,6 +82,9 @@ router.post('/updateQuantity', function(req, res) {
     req.session.cart[index] = obj
 
     req.session.save()
+    functions.getBasket(req.session.cart, items, function(result) {
+        res.send(result)
+    }) 
 })
 
 router.post('/getCart', (req, res) => {

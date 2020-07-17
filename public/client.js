@@ -17,7 +17,7 @@ function displayBasketContent(basketContent) {
             var item = row[0]
             var quantity = row[1]
             var basketRow = document.createElement("DIV")
-            total = total + parseFloat(item.Price)
+            total = total + parseFloat(item.Price) * parseInt(quantity)
             var rowContent = `
             <div>
             <text>${item.Title}</text>
@@ -61,6 +61,20 @@ window.addEventListener("load", function () {
     }).done(data => {
         displayBasketContent(data)
     });
+    var stock = document.getElementsByClassName("itemStock")
+    for (item in stock) {
+        if (stock[item].innerText == "0") {
+            stock[item].style.color = "#ea6464"
+            stock[item].innerText = "Out of stock"
+        }
+    }
+
+    var buttons = document.getElementsByClassName("0")
+    for (item in buttons) {
+        //buttons[item].disabled = true;
+        buttons[item].style.backgroundColor = "#ea6464"
+        buttons[item].innerText = "Unavaliable"
+    }
 });
 
 function removeItemCart(item) {
@@ -117,7 +131,7 @@ function updateQuantity(item) {
             quantity: item.value
         }
     }).done(data => {
-        console.log(data)
+        displayBasketContent(data)
     });
 }
 

@@ -2,55 +2,70 @@
 const express= require('express');
 const router = express.Router();
 var paypal = require('paypal-rest-sdk');
+
+//exports
 const paymentDataConst = require('../exports/payment-data');
 var functions = require('../exports/functions')
+var emailSend = require('../exports/email')
 
+//mongo models
 const items = require('../models/items');
+const { all } = require('./cart');
 
+//paypal config (located in .env)
 paypal.configure({
     'mode': process.env.MODE, 
     'client_id': process.env.CLIENT_ID,
     'client_secret': process.env.CLIENT_SECRET
 });
 
+
 router.post('/executePayment', function (req, res) {
-    var paymentData = paymentDataConst
-    functions.getBasket(req.session.cart, items, function(result) {
-        paymentData.transactions[0].item_list.items = []
-        var total = functions.getTotal(result)
-        for (item in result) {
-
-            var itemData = result[item][0] //Indivudal Item Data
-            var quantity = result[item][1] //Indivudal Item Quantity
-
-            var itemObject =  {
-                "name" : itemData.Title,
-                "sku" : "1",
-                "price" : itemData.Price,
-                "currency" : "GBP",
-                
-                "quantity" : quantity
+    var check = functions.checkStock(req.session.cart, items, function(result, conflicts) {
+        if (result.includes(true)) {
+            //error
+            for (i in conflicts) {
+                req.session.cart.splice(conflicts[i])
             }
-
-
-            paymentData.transactions[0].item_list.items.push(itemObject)
-        }
-
-        paymentData.transactions[0].amount.total = total.toString()
-
-
-
-        paypal.payment.create(paymentData, function (error, payment) {
-            if (error) {
-                console.log(error);
-            } else {
-                req.session.total = total.toString()
-                res.send(payment.links[1].href);
-            }
-        });
-
+            res.send('/error').end()
+        } else {
+            var paymentData = paymentDataConst
+            functions.getBasket(req.session.cart, items, function(result) {
+                req.session.order = result //use this to pass to email template
+                paymentData.transactions[0].item_list.items = []
+                var total = functions.getTotal(result)
+                for (item in result) {
         
+                    var itemData = result[item][0] //Indivudal Item Data
+                    var quantity = result[item][1] //Indivudal Item Quantity
+        
+                    var itemObject =  {
+                        "name" : itemData.Title,
+                        "sku" : "1",
+                        "price" : itemData.Price,
+                        "currency" : "GBP",
+                        "quantity" : quantity
+                    }
+        
+                    paymentData.transactions[0].item_list.items.push(itemObject)
+                }
+                paymentData.transactions[0].amount.total = total.toString()
+        
+        
+                paypal.payment.create(paymentData, function (error, payment) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        req.session.total = total.toString()
+                        res.send(payment.links[1].href);
+                    }
+                });
+                
+                
+            })
+        }
     })
+    
 })
 
 router.get('/checkout', function (req, res, next) {
@@ -71,18 +86,15 @@ router.get('/checkout', function (req, res, next) {
     else if (paymentId == "" || payerId == "") {
         res.send("error")
     } else {
-        functions.getBasket(req.session.cart, items, function(result) {
-            res.render('confirmation.ejs', {
-                items: result,
-                paymentId: paymentId,
-                payerId: payerId
-            })
+        res.render('confirmation.ejs', {
+            items: req.session.order,
+            paymentId: paymentId,
+            payerId: payerId
         })
     }
 })
 
 router.post('/confirmPayment', function (req, res, next) {
-
 
     try {
         var paymentId = req.body.paymentId
@@ -97,9 +109,6 @@ router.post('/confirmPayment', function (req, res, next) {
     }
     
 
-    
-    
-
     const execute_payment_json = {
         "payer_id": payerId,
         "transactions": [{
@@ -110,6 +119,8 @@ router.post('/confirmPayment', function (req, res, next) {
         }]
     }
 
+    
+
 
     paypal.payment.execute(paymentId, execute_payment_json, function(error, payment){
         if(error){
@@ -118,6 +129,11 @@ router.post('/confirmPayment', function (req, res, next) {
             if (payment.state == 'approved'){
                 req.session.total = "empty"
                 res.send('/').status(202).end()
+
+                //payment.payer.payer_info.email
+                emailSend.sendMail("liam.debell@ada.ac.uk", req.session.order)
+                //decrease stock of items here or something to that effect!
+                functions.updateStock(req.session.order, items)
             } else {
                 res.send('/').status(400).end();
             }
