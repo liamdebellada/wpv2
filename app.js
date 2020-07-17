@@ -19,7 +19,6 @@ store.on('error', function(error) {
     console.log(error);
 });
 
-
 // Use Express Framework
 const app = express();
 

@@ -4,12 +4,11 @@ const app = express()
 const router = express.Router();
 const mongoose = require('mongoose');
 
-
-
 // Export Models
 const category = require('../models/categories');
 const products = require('../models/products');
 const items = require('../models/items');
+const accounts = require('../models/accounts');
 const { db } = require('../models/categories');
 
 
@@ -17,8 +16,7 @@ const { db } = require('../models/categories');
 const functions = require('../exports/functions');
 
 
-
-
+//encryptData() to encrypt accounts table
 
 //style testing page
 router.get('/style', function(req, res) {

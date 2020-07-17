@@ -5,12 +5,12 @@
     <title></title>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>   
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>  
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <style type="text/css">
-    
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
         body,
         table,
         td,
@@ -74,14 +74,14 @@
 
 <body style="margin: 0 !important; padding: 0 !important; background-color: #eeeeee;" bgcolor="#eeeeee">
     <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Raleway', sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-        For what reason would it be advisable for me to think about business content? That might be little bit risky to have crew member like them.
+        Your WorldPlugs order has arrived!
     </div>
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
         <tr>
             <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
-                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0"  width="100%" style="max-width:600px;">
                     <tr>
-                        <td align="center" valign="top" style="font-size:0;" bgcolor="#2f3758">
+                        <td align="center" valign="top" style="font-size:0; padding: 10px 0px 10px " bgcolor="#2f3758">
                             <div style="display:inline-block; max-width:50%; min-width:100px; vertical-align:top; width:100%;">
                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
                                     <tr>
@@ -94,37 +94,47 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="center" style="padding: 35px 35px 20px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                        <td align="center" style="padding: 35px 35px 20px 35px; background-color: #1d2237;" bgcolor="#ffffff">
                             <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
                                 <tr>
                                     <td align="center" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 25px;"> <img src="http://fbbsvr.ddns.net/shopping-items.png" width="125" height="120" style="display: block; border: 0px;" /><br>
-                                        <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;"> Thank You For Your Order! </h2>
+                                        <h2 style="font-family: 'Raleway', sans-serif; font-size: 30px; font-weight: 300; line-height: 36px; color: #ffffff; margin: 0;"> Thank You For Your Order! </h2>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 10px;">
-                                        <p style="font-size: 16px; font-weight: 400; line-height: 24px; color: #777777;"> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium iste ipsa numquam odio dolores, nam. </p>
+                                        <p style="font-size: 16px; font-weight: 400; line-height: 24px; text-align: center; color: #f0f0f0;"> Enjoy your items </p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" style="padding-top: 20px;">
                                         <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <!-- ORDER CONFIRMATION -->
                                             <tr>
-                                                <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;"> Order Confirmation # </td>
-                                                <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;"> 2345678 </td>
+                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 10px; line-height: 24px; padding: 10px; border-top: 1px solid #eeeeee; border-left: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; color: #ffffff"> Order Confirmation # </td>
+                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 10px; line-height: 24px;  padding: 10px; border-top: 1px solid #eeeeee; border-right: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; color: #ffffff"> 2345678 </td>
+                                            </tr>
+                                            <!-- ITEM -->
+                                            <% items.forEach(function(item) { %>
+                                                <% for (account in item[2]) { %>
+                                            <tr>
+                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 500; line-height: 24px; padding: 15px 10px 5px 10px; border-bottom: 1px solid #eeeeee; color: #ffffff"><%=item[0].Title%></td> 
+                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px; border-bottom: 1px solid #eeeeee; color: #ffffff; text-align: right;"> £<%= parseFloat(item[0].Price).toFixed(2) %> </td>
                                             </tr>
                                             <tr>
-                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;"> Purchased Item (1) </td>
-                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;"> $100.00 </td>
+                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 2px 10px; color: #ffffff"> Email </td>
+                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px; color: #ffffff; text-align: right;"> <%= item[2][account].email %> </td>
                                             </tr>
                                             <tr>
-                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;"> Shipping + Handling </td>
-                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;"> $10.00 </td>
+                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px; color: #ffffff"> Password </td>
+                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px; color: #ffffff; text-align: right;"> <%= item[2][account].password %> </td>
                                             </tr>
                                             <tr>
-                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;"> Sales Tax </td>
-                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;"> $5.00 </td>
+                                                <td><br></td>
                                             </tr>
+                                            <!-- END OF ITEM -->
+                                                <%}%>
+                                            <%})%>
                                         </table>
                                     </td>
                                 </tr>
@@ -132,8 +142,8 @@
                                     <td align="left" style="padding-top: 20px;">
                                         <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                             <tr>
-                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;"> TOTAL </td>
-                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;"> $115.00 </td>
+                                                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 10px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; color: #ffffff"> Your Total </td>
+                                                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 10px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; color: #ffffff"> £0.00 </td>
                                             </tr>
                                         </table>
                                     </td>
@@ -142,19 +152,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="center" style="padding: 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                        <td align="center" style="padding: 35px; background-color: #1d2237;" bgcolor="#ffffff">
                             <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
                                 <tr>
-                                    <td align="center"> <img src="logo-footer.png" width="37" height="37" style="display: block; border: 0px;" /> </td>
+                                    <td align="center"> <img src="http://fbbsvr.ddns.net/wplogo-light.png" width="37" height="37" style="display: block; border: 0px;" /> </td>
                                 </tr>
                                 <tr>
                                     <td align="center" style="font-family: 'Raleway', sans-serif; font-size: 14px; font-weight: 400; line-height: 24px; padding: 5px 0 10px 0;">
-                                        <p style="font-size: 14px; font-weight: 800; line-height: 18px; color: #333333;"> 675 Parko Avenue<br> LA, CA 02232 </p>
+                                        <p style="font-size: 14px; font-weight: 500; line-height: 18px; color: #ffffff;"> WorldPlugs 2020 <br> See you soon! </p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" style="font-family: 'Raleway', sans-serif; font-size: 14px; font-weight: 400; line-height: 24px;">
-                                        <p style="font-size: 14px; font-weight: 400; line-height: 20px; color: #777777;"> If you didn't create an account using this email address, please ignore this email or <a href="#" target="_blank" style="color: #777777;">unsusbscribe</a>. </p>
+                                        <p style="font-size: 14px; font-weight: 400; line-height: 20px; color: #ffffff;"> If you need assistance or your accounts didn't work please visit our support page <a href="http://fbbsvr.ddns.net/support" style="color: #f0f0f0;">here</a>. </p>
                                     </td>
                                 </tr>
                             </table>

@@ -1,6 +1,6 @@
 const e = require("express")
 const session = require("express-session")
-
+var crypto = require('crypto');
 var functions = {
 
     // Search Database With Arguments
@@ -164,6 +164,13 @@ var functions = {
                 }
             )
         }
+    },
+
+    decrypt: function(data) {
+        var mykey = crypto.createDecipher('aes-128-cbc', process.env.KEY);
+        var mystr = mykey.update(data, 'hex', 'utf8')
+        mystr += mykey.final('utf8');
+        return mystr;
     }
 
 }

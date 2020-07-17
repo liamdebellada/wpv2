@@ -10,6 +10,7 @@ var emailSend = require('../exports/email')
 
 //mongo models
 const items = require('../models/items');
+const accounts = require('../models/accounts')
 const { all } = require('./cart');
 
 //paypal config (located in .env)
@@ -30,6 +31,12 @@ router.post('/executePayment', function (req, res) {
             res.send('/error').end()
         } else {
             var paymentData = paymentDataConst
+
+            //count
+            // == push items result.Stock
+
+
+
             functions.getBasket(req.session.cart, items, function(result) {
                 req.session.order = result //use this to pass to email template
                 paymentData.transactions[0].item_list.items = []
@@ -94,7 +101,7 @@ router.get('/checkout', function (req, res, next) {
     }
 })
 
-router.post('/confirmPayment', function (req, res, next) {
+router.post('/confirmPayment', async function (req, res, next) {
 
     try {
         var paymentId = req.body.paymentId
@@ -122,7 +129,7 @@ router.post('/confirmPayment', function (req, res, next) {
     
 
 
-    paypal.payment.execute(paymentId, execute_payment_json, function(error, payment){
+    paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
         if(error){
             console.error(JSON.stringify(error));
         } else {
@@ -130,10 +137,26 @@ router.post('/confirmPayment', function (req, res, next) {
                 req.session.total = "empty"
                 res.send('/').status(202).end()
 
-                //payment.payer.payer_info.email
+                for(let item in req.session.order) {
+                    req.session.order[item].push([])
+                    let itemData = req.session.order[item][0]
+                    let quantity = req.session.order[item][1]
+                    await accounts.find({ itemID: itemData._id, availability : "TRUE" }, function(error, data) {
+                        for (i in data) {
+                            if (i < quantity) {
+                                var email = functions.decrypt(data[i].email)
+                                var password = functions.decrypt(data[i].password)
+                                req.session.order[item][2].push({email : email, password: password})
+                                req.session.save()
+                                console.log("calling search function")
+                            }
+                        }
+
+                    })
+                    
+                }
+                //console.log(req.session.order[0][2])
                 emailSend.sendMail("liam.debell@ada.ac.uk", req.session.order)
-                //decrease stock of items here or something to that effect!
-                functions.updateStock(req.session.order, items)
             } else {
                 res.send('/').status(400).end();
             }
