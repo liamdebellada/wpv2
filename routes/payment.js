@@ -134,7 +134,6 @@ router.post('/confirmPayment', async function (req, res, next) {
             console.error(JSON.stringify(error));
         } else {
             if (payment.state == 'approved'){
-                req.session.total = "empty"
                 res.send('/').status(202).end()
 
                 for(let item in req.session.order) {
@@ -156,7 +155,8 @@ router.post('/confirmPayment', async function (req, res, next) {
                     
                 }
                 //console.log(req.session.order[0][2])
-                emailSend.sendMail("liam.debell@ada.ac.uk", req.session.order)
+                emailSend.sendMail("liam.debell@ada.ac.uk", req.session.order, req.session.total)
+                req.session.total = "empty"
             } else {
                 res.send('/').status(400).end();
             }
