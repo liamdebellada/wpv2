@@ -13,11 +13,11 @@ const accountScehma = new mongoose.Schema({
         type: String,
         required: true
     },
-    avaliability: {
+    availability: {
         type: String,
         required: true
-    }
+    }, 
 });
 
-const category = mongoose.model('accounts', accountScehma);
-module.exports = category;
+const accounts = mongoose.model('accounts', accountScehma);
+module.exports = accounts;

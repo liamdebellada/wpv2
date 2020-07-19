@@ -15,7 +15,7 @@ const { db } = require('../models/categories');
 // Export Functions
 const functions = require('../exports/functions');
 
-
+var crypto = require("crypto")
 //encryptData() to encrypt accounts table
 
 //style testing page

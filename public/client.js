@@ -40,7 +40,10 @@ function displayBasketContent(basketContent) {
     
 }
 
+
 function confirmPayment() {
+    $('.circle-loader').css("display", "inline-block")
+    $('#confirmation-button').toggle()
     $.ajax({
         type: "POST",
         url: "/confirmPayment",
@@ -49,7 +52,9 @@ function confirmPayment() {
             payerId: client_payerId 
         }
     }).done(data => {
-        window.location.href = data
+        //window.location.href = data
+        $('.circle-loader').toggleClass('load-complete');
+        $('.checkmark').toggle();
     });
 }
 
@@ -71,9 +76,10 @@ window.addEventListener("load", function () {
 
     var buttons = document.getElementsByClassName("0")
     for (item in buttons) {
-        //buttons[item].disabled = true;
-        buttons[item].style.backgroundColor = "#ea6464"
+        buttons[item].disabled = true;
+        //buttons[item].style.backgroundColor = "#ea6464"
         buttons[item].innerText = "Unavaliable"
+        buttons[item].cssText = "border-image-slice: 0;"
     }
 });
 

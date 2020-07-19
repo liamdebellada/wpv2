@@ -7,6 +7,7 @@ var paypal = require('paypal-rest-sdk');
 const paymentDataConst = require('../exports/payment-data');
 var functions = require('../exports/functions')
 var emailSend = require('../exports/email')
+var mongoose = require('mongoose'); 
 
 //mongo models
 const items = require('../models/items');
@@ -22,20 +23,16 @@ paypal.configure({
 
 
 router.post('/executePayment', function (req, res) {
-    var check = functions.checkStock(req.session.cart, items, function(result, conflicts) {
+    var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
         if (result.includes(true)) {
             //error
             for (i in conflicts) {
-                req.session.cart.splice(conflicts[i])
+                req.session.cart.splice(conflicts[i], 1)
             }
             res.send('/error').end()
+            //call function to draw error messages to the page
         } else {
             var paymentData = paymentDataConst
-
-            //count
-            // == push items result.Stock
-
-
 
             functions.getBasket(req.session.cart, items, function(result) {
                 req.session.order = result //use this to pass to email template
@@ -101,6 +98,8 @@ router.get('/checkout', function (req, res, next) {
     }
 })
 
+
+
 router.post('/confirmPayment', async function (req, res, next) {
 
     try {
@@ -108,11 +107,12 @@ router.post('/confirmPayment', async function (req, res, next) {
         var payerId = req.body.payerId
         var total = req.session.total
 
-        if (total == undefined || total == "empty") {
-            res.send('/cart').status(418).end()
-        }
+        // if (total == undefined || total == "empty") {
+        //     res.send('/cart').status(418).end()
+        // }
     } catch {
-        res.send('/cart').status(418).end()
+        // res.send('/cart').status(418).end()
+        console.log("error")
     }
     
 
@@ -135,27 +135,47 @@ router.post('/confirmPayment', async function (req, res, next) {
         } else {
             if (payment.state == 'approved'){
                 res.send('/').status(202).end()
-
+                var ids = []
                 for(let item in req.session.order) {
                     req.session.order[item].push([])
                     let itemData = req.session.order[item][0]
                     let quantity = req.session.order[item][1]
-                    await accounts.find({ itemID: itemData._id, availability : "TRUE" }, function(error, data) {
+                    await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
                         for (i in data) {
                             if (i < quantity) {
+                                ids.push(data[i]._id)
+
+
                                 var email = functions.decrypt(data[i].email)
                                 var password = functions.decrypt(data[i].password)
+                                //console.log(email, password)
+
                                 req.session.order[item][2].push({email : email, password: password})
+                                console.log(req.session.order)
                                 req.session.save()
-                                console.log("calling search function")
+
+                                
                             }
                         }
 
                     })
                     
                 }
-                //console.log(req.session.order[0][2])
-                emailSend.sendMail("liam.debell@ada.ac.uk", req.session.order, req.session.total)
+                console.log("calling email function")
+                for (id in ids) {
+                    accounts.updateOne(
+                        {_id : ids[id]},
+                        {availability : "false"},
+                        function(error, success) {
+                            if (error) {
+                                console.log(error)
+                            } else {
+                                console.log("calling")
+                                
+                            }
+                    })
+                }
+                emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total)
                 req.session.total = "empty"
             } else {
                 res.send('/').status(400).end();

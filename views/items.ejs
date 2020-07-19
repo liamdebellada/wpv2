@@ -16,11 +16,11 @@
         <div class="col-md-8">
           <div class="card-body" style="color: white; margin-bottom: 30px;">
             <div style="">
-              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result._doc.Image%>"></h1>
+              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result.Image%>"></h1>
             </div>
               <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
               
-              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result._doc.Stock %> id=<%= result._id%>></input>
+              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
           </div>
         </div>
         <div class="col-md-4 align-self-center">

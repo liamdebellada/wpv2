@@ -21,10 +21,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Stock: {
+    Image: {
         type: String,
         required: true
-    },
+    }
 });
 
 const item = mongoose.model('items', itemSchema);

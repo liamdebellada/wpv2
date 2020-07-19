@@ -1,6 +1,7 @@
 const e = require("express")
 const session = require("express-session")
 var crypto = require('crypto');
+const accounts = require('../models/accounts');
 var functions = {
 
     // Search Database With Arguments
@@ -14,7 +15,15 @@ var functions = {
         modelName.find(
                 query
             ).then(result => {
-                if (result.length > 0) {
+                if (pageRender == "items.ejs") {
+                    this.updateStock(result, modelName, function(stockResult) {
+                        if (result.length > 0) {
+                            res.render(pageRender, {
+                                results: stockResult
+                        })}
+                    })
+                }
+                else if (result.length > 0) {
                     res.render(pageRender, {
                         results: result
                     })
@@ -108,61 +117,49 @@ var functions = {
         return total.toFixed(2);
     },
 
-    updateStock : function(data, items) {
-        data.forEach(function(row) {
-            var id = row[0]._id
-            var quantity = row[1]
-            items.findOne(
-                { _id : id},
-                function(error, result) {
-                    if (error) {
-                        console.error(error)
-                    } else {
-                        var currentStock = result.Stock
-                        if (currentStock < quantity) {
-                            //refund here
-                        } else {
-                            var calculatedStock = currentStock - quantity
-                            items.updateOne(
-                                { _id : id},
-                                { $set: { Stock : calculatedStock } },
-                                function (error) {
-                                    if (error) {
-                                        console.log("error")
-                                    }
-                                }
-                            )
-                        }
+    updateStock : function(results, items, callback) {
+        var temp = []
+        for (let item in results) {
+            var id = results[item]._id
+            accounts.countDocuments( {itemID : id, availability : "true" },
+            function(error, stock) {
+                if (error) {
+                    console.log(error)
+                } else {
+                    var obj = results[item].toObject()
+                    obj.Stock = stock
+                    temp.push(obj)
+                    if (parseInt(item) + 1 == results.length) {
+                        return callback(temp)
                     }
                 }
-            )
-        })
+            })
+        }
+    
     },
 
-    checkStock: function(session, items, callback) {
-        var all = []
+    checkStock: function(session, accounts, callback) {
+        var result = []
         var conflicts = []
-        for (item in session) {
+        for (let item in session) {
             var id = session[item].id
-            var quantity = session[item].quantity
-            items.findOne( 
-                { _id : id},
-                function(error, result) {
-                    if (error) {
-                        console.error(error)
+            let quantity = session[item].quantity
+            accounts.countDocuments( {itemID : id, availability : "true" },
+            function(error, stock) {
+                if (error) {
+                    console.log(error) 
+                } else {
+                    if (quantity > stock) {
+                        result.push(true)
+                        conflicts.push(parseInt(item))
                     } else {
-                        if (result.Stock < quantity) {
-                            all.push(true)
-                            conflicts.push(item)
-                        } else {
-                            all.push(false)
-                        }
-                        if (session.length == all.length) {
-                            return callback(all, conflicts)
-                        }
+                        result.push(false)
+                    }
+                    if (parseInt(item) + 1 == session.length) {
+                        return callback(result, conflicts)
                     }
                 }
-            )
+            })
         }
     },
 

@@ -30,7 +30,7 @@ var mailFunction  = {
                         console.error(error)
                     } else {
                         //console.log("success", result)
-                        console.log("email sent")
+                        console.log("success")
                     }
                 })
 

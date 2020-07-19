@@ -67,7 +67,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn view-basket" data-dismiss="modal"
                     onclick="window.location.href='/cart'">View Basket</button>
-                    <button type="button" class="btn checkoutBtn" onclick="executePayment()" data-dismiss="modal">Checkout <text style="font-size: 10px;"><b>1</b> click</text></button>
+                    <button type="button" class="btn checkoutBtn" onclick="executePayment()" data-dismiss="modal">Express Checkout</button>
             </div>
                 
 
@@ -375,7 +375,7 @@
 
 .paymentSec {
   margin: auto; 
-  width: 65%;
+  width: 50%;
 }
 
 .inlineInp {
@@ -466,6 +466,11 @@
     height: 1px; 
     background-color:#ffffff17; 
     border: 1px;
+}
+
+.btn-dark.disabled, .btn-dark:disabled {
+    background-color: #ea6464;
+    border-image-slice: 0;
 }
 
 </style>
