@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
 });
 
 var mailFunction  = {
-    sendMail: function(emailAddress, datas, total) {
-        ejs.renderFile(__dirname +'/email.ejs', {items: datas, total: total}, function (error, data) {
+    sendMail: function(emailAddress, datas, total, purchaseID) {
+        ejs.renderFile(__dirname +'/email.ejs', {items: datas, total: total, purchaseID: purchaseID}, function (error, data) {
             if (error) {
                 console.error(error)
             } else {
@@ -29,7 +29,6 @@ var mailFunction  = {
                     if (error) {
                         console.error(error)
                     } else {
-                        //console.log("success", result)
                         console.log("success")
                     }
                 })

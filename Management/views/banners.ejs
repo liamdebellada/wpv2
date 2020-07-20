@@ -1,0 +1,194 @@
+<h1>Banners</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+      <a class="nav-link active" onclick="test(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+    <li>
+        <a class="nav-link" onclick="test(this)" id="createSelection">Create new</a>
+    </li>
+</ul>
+
+<div id="create" style="display: none;">
+    <form>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Title</label>
+          <input type="text" class="form-control" id="bannerTitle" placeholder="Enter banner content" onkeyup="updatePreview('text')">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Select type</label>
+          <select class="form-control" id="typeSelection" onchange="updatePreview(this)">
+            <option>Promotion</option>
+            <option>Update</option>
+            <option>Maintenence warning</option>
+          </select>
+        </div>
+        <div class="form-check" style="margin-bottom: 10px;">
+            <input type="checkbox" class="form-check-input" id="customColor">
+            <label class="form-check-label" for="exampleCheck1">Use custom color</label>
+        </div>
+        <div class="form-group" style="display: none;" id="colorPicker">
+            <input value="rgba(40,170,255,0.5)" data-jscolor="" id="colorPickerValue" onchange="changeColor(this)" style="border: none;">
+        </div>
+        <div class="form-check" style="margin-bottom: 10px;">
+            <input type="checkbox" class="form-check-input" id="customTextColor">
+            <label class="form-check-label" for="exampleCheck1">Use custom text color</label>
+        </div>
+        <div class="form-group" style="display: none;" id="textColorPicker">
+            <input value="rgba(40,170,255,0.5)" data-jscolor="" id="colorPickerValue" onchange="changeTextColor(this)" style="border: none;">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Additional information (not displayed)</label>
+          <textarea class="form-control" id="additonalInfo" rows="3"></textarea>
+        </div>
+
+        <style>
+            .center {
+                padding: 10px 0;
+                text-align: center;
+                background-color: green;
+            }
+        </style>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Preview</label>
+            <div style="width: 100%; border: 1px solid grey;">
+                <div class="center" id="bannerColor">
+                    <p style="margin: 0 !important;" id="previewText">Banner Text</p>
+                </div>                  
+            </div>
+          </div>
+        <div class="form-check" style="margin-bottom: 10px;">
+            <input type="checkbox" class="form-check-input" id="activeBanner">
+            <label class="form-check-label" for="exampleCheck1">Activate banner on creation</label>
+        </div>
+        <a href="#" class="btn btn-primary" onclick="postBanner()">Create banner</a>
+      </form>
+</div>
+
+<div id="dataTable" style="display: block;">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Date created</th>
+            <th scope="col">Color</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% data.forEach(function(row) {%>
+          <tr>
+            <td><%=row.title%></td>
+            <td><%=row.date%></td>
+            <td><div style="margin-left: 20px; height: 20px; width: 20px; background-color: <%=row.color%>"></div></td>
+            <td><%=row.active%></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+</div>
+
+<script>
+
+    var colorOptions = {
+        "Maintenence warning" : "red",
+        "Promotion" : "green",
+        "Update" : "yellow"
+    }
+    var selection = document.getElementById("typeSelection")
+    var colorpicker = document.getElementById("colorPicker")
+    var banner = document.getElementById("bannerColor")
+    var textColorPicker = document.getElementById("textColorPicker")
+    banner.style.backgroundColor = "green"
+    $("#customColor").click(function(){
+        var check = $(this).prop('checked');
+        if(check == true) {
+            console.log("checkd")
+            selection.disabled = true;
+            colorpicker.style.display = "block"
+
+        } else {
+            console.log("unchecked")
+            selection.disabled = false;
+            colorpicker.style.display = "none"
+            selection.value = "Promotion"
+            banner.style.backgroundColor = colorOptions["Promotion"]
+        }
+    });
+    $("#customTextColor").click(function(){
+        var check = $(this).prop('checked');
+        if(check == true) {
+            textColorPicker.style.display = "block"
+        } else {
+            textColorPicker.style.display = "none"
+        }
+    });
+    var active = false;
+    //activeBanner
+    $("#activeBanner").click(function(){
+        var check = $(this).prop('checked');
+        if(check == true) {
+            active = true;
+        } else {
+            active = false;
+        }
+    });
+    function changeColor(data) {
+        banner.style.backgroundColor = document.getElementById("colorPickerValue").value
+    }
+    function changeTextColor(data) {
+        previewText.style.color = data.value;
+    }
+
+    function test(option) {
+        var dropdown = document.getElementById("dropSelection")
+        var other = document.getElementById("createSelection")
+        var creationPage = document.getElementById('create')
+        var table = document.getElementById('dataTable')
+        if (option.id == "createSelection") {
+            option.classList.add('active')
+            option.disabled = false;
+            dropdown.disabled = true;
+            dropdown.classList.remove('active')
+            creationPage.style.display = "block"
+            table.style.display = "none"
+        } else {
+            dropdown.disabled = false;
+            other.classList.remove('active')
+            other.disabled = true;
+            dropdown.classList.add('active')
+            creationPage.style.display = "none"
+            table.style.display = "block"
+        }
+    }
+
+
+    function updatePreview(data) {
+        var title = document.getElementById("bannerTitle").value
+        var bannerContent = document.getElementById("previewText")
+        if (data == "text") {
+            bannerContent.innerText = title;
+        } else {
+            var color = data.value
+            banner.style.backgroundColor = colorOptions[color]
+        }
+    } 
+
+    function postBanner() {
+        console.log("posting")
+        $.ajax({
+            type: "POST",
+            url: "/createBanner",
+            data: {
+                title: document.getElementById("bannerTitle").value,
+                color: document.getElementById("bannerColor").style.backgroundColor,
+                textColor: document.getElementById("previewText").style.color,
+                additionalInfo: document.getElementById("additonalInfo").value,
+                active: active
+            }
+            }).done(data => {
+                window.location.href = data;
+        });
+    }
+ 
+</script>

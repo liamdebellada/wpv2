@@ -4,14 +4,14 @@ function displayBasketContent(basketContent) {
     if (basketContent == "e") {
         basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
         console.log("your session basket is empty")
-        // document.getElementById("basketQuantity").innerText = ""
-        $(".basketQuantity").text("")
+        // document.getElementById("basket-items-quantity").innerText = ""
+        $(".basket-items-quantity").text("")
         $(".checkoutBtn").hide()
-        
+
     } else {
         basket.innerHTML = ""
-        // document.getElementById("basketQuantity").innerText = basketContent.length
-        $(".basketQuantity").text(basketContent.length)
+        // document.getElementById("basket-items-quantity").innerText = basketContent.length
+        $(".basket-items-quantity").text(basketContent.length)
         $(".checkoutBtn").show()
         basketContent.forEach(function (row) {
             var item = row[0]
@@ -28,16 +28,16 @@ function displayBasketContent(basketContent) {
             </div>
             <hr/>
             `
-    
+
             basketRow.innerHTML = rowContent
             // modal-body
-    
+
             basket.append(basketRow)
         });
         var totalText = document.createElement("text").innerText = "Total: £" + total.toFixed(2)
         basket.append(totalText)
     }
-    
+
 }
 
 
@@ -49,7 +49,7 @@ function confirmPayment() {
         url: "/confirmPayment",
         data: {
             paymentId: client_paymentId,
-            payerId: client_payerId 
+            payerId: client_payerId
         }
     }).done(data => {
         //window.location.href = data
@@ -120,7 +120,7 @@ function updateQuantity(item) {
         console.log("Not a number") //Send back user alert error.
     }
 
-    
+
 
     if (value > item.max) {
         item.value = item.max
@@ -149,4 +149,22 @@ function executePayment() {
     }).done(data => {
         window.location.href = data //redirect to confirm payment
     });
+}
+
+var prevScrollpos = window.pageYOffset;
+window.onscroll = function () {
+    var currentScrollPos = window.pageYOffset;
+    if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+        document.getElementById("navbar").style.top = "-75px"; //up
+        document.getElementById("fixed-navbar-row").style.top = "0";
+        document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "58px";
+        $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").show();
+
+    } else {
+        document.getElementById("navbar").style.top = "0"; //down
+        document.getElementById("fixed-navbar-row").style.top = "70px";
+        document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "30px";
+        $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();
+    }
+    prevScrollpos = currentScrollPos;
 }

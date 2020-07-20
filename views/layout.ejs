@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="/bootstrap.min.css">
     
     <script src="https://kit.fontawesome.com/e145c5f059.js" crossorigin="anonymous"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+<link rel="manifest" href="/favicons/site.webmanifest">
+<link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/favicons/favicon.ico">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-config" content="/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
     <title>WorldPlugs</title>
 </head>
 
@@ -19,7 +28,7 @@
 background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family: 'Raleway', sans-serif; padding-top: 70px;">
 
 
-    <%- include('testing.ejs') %>    
+    <%- include('navbar.ejs') %>    
     <div></div>
 
     
@@ -41,6 +50,226 @@ background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
     </script>
+
+<style>
+
+    .iconSize {
+        width: 23px;
+    }
+
+    .titleText {
+        margin: auto;
+        color: white;
+    }
+
+    .removeBtn:hover {
+        background-color: #ea6464 !important;
+        color: white !important;
+    }
+
+    .itemCard {
+        margin: 20px;
+        background-color: #1e1c29;
+        border-radius: 0;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    }
+
+    .viewProducts {
+        border-radius: 0;
+        border-color: white;
+        position: relative;
+        color: white;
+        line-height: 50px;
+        width: 200px;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        background: transparent;
+        transition: all 1s ease-in-out;
+        
+    }
+
+    .btn {
+        color: white;
+        background: transparent;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        border-radius: 0px;
+    }
+
+    .btn:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        
+    }
+
+    .viewProducts:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        border: none;
+    }
+
+
+    input[type="number"] {
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .itemQuantity {
+        color: white;
+        width: 45px;
+        padding: auto;
+        -webkit-appearance: none;
+        border-style: none;
+        background-color: transparent;
+        outline: none;
+        border-bottom: 1px solid grey;
+        border-radius: 1px;
+        transition: all 0.3s;
+    }
+
+    .itemQuantity:focus, .itemQuantity:hover {
+        border-bottom: 1px solid white;
+
+    }
+
+    /*Right*/
+    .button {
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+        color: #ea6464;
+        font-family: arial;
+        font-size: 23px;
+        font-weight: 200;
+        vertical-align: middle;
+    }
+
+    .content-box-span {
+        height: auto;
+        width: 50%;
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+        padding: 10px;
+        background-color: #1e1c29;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    }
+
+.paymentSec {
+  margin: auto; 
+  width: 50%;
+}
+
+.inlineInp {
+    float: left;
+    display: inline;
+}
+
+.resultDivider {
+    max-width: 50%;
+}
+
+@media(min-width:1200px) {
+  .product-content-image {
+    float: left;
+  }
+
+  .cardText {
+    text-align: left
+  }
+
+  .itemQuantity {
+    float: left;
+  }
+}
+
+@media(min-width:992px) and (max-width:1199px) {
+  .cardText {
+    text-align: center
+  }
+  .inlineInp {
+    float: unset;
+  }
+
+  .content-box-span {
+    width: 80%;
+  }
+  .paymentSec {
+    width: 80%;
+  }
+  .resultDivider {
+    max-width: 80%;
+  }
+  .accountText{
+    text-align: center;
+}
+}
+
+@media(max-width:992px) {
+  .content-box-span {
+    width: 90%;
+  }
+  .paymentSec {
+    width: 90%;
+  }
+  .inlineInp {
+    float: unset;
+  }
+  .resultDivider {
+    max-width: 90%;
+  }
+  .accountText{
+    text-align: center;
+}
+}
+
+@media(max-width: 320px) {
+    .mobile-content-margin {
+        margin-left: 0 !important;
+    }
+}
+
+#itemHeader {
+  color: white;
+  text-transform: capitalize;
+}
+
+.homeCard {
+    background-color: #1e1c29 !important;
+}
+
+.checkout-basket:hover {
+    background-color: #03fc8c !important
+}
+
+
+.horizontalSep{
+    width: 100%; 
+    height: 1px; 
+    background-color:#ffffff17; 
+    border: 1px;
+}
+
+.btn-dark.disabled, .btn-dark:disabled {
+    background-color: #ea6464;
+    border-image-slice: 0;
+}
+
+</style>
+
+
 
 </body>
 

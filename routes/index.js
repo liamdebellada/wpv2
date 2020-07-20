@@ -44,6 +44,10 @@ router.get('/products/:product', function (req, res) {
 
 })
 
+router.get('/success', function(req, res) {
+    res.render('success.ejs')
+})
+
 
 router.get('/products/:product/items/:items',  function (req, res) {
     var item = req.params.items.toString();

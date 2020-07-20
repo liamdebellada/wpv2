@@ -134,7 +134,6 @@ router.post('/confirmPayment', async function (req, res, next) {
             console.error(JSON.stringify(error));
         } else {
             if (payment.state == 'approved'){
-                res.send('/').status(202).end()
                 var ids = []
                 for(let item in req.session.order) {
                     req.session.order[item].push([])
@@ -161,7 +160,6 @@ router.post('/confirmPayment', async function (req, res, next) {
                     })
                     
                 }
-                console.log("calling email function")
                 for (id in ids) {
                     accounts.updateOne(
                         {_id : ids[id]},
@@ -175,7 +173,9 @@ router.post('/confirmPayment', async function (req, res, next) {
                             }
                     })
                 }
-                emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total)
+                purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
+                console.log(purchaseID)
+                emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
                 req.session.total = "empty"
             } else {
                 res.send('/').status(400).end();

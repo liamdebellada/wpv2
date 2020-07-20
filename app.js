@@ -1,4 +1,3 @@
-
 // App Modules
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
@@ -36,7 +35,7 @@ app.use(require('express-session')({
     store: store,
     resave: true,
     saveUninitialized: true
-  }));
+}));
 
 
 // DB Config

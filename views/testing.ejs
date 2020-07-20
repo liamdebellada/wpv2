@@ -1,81 +1,79 @@
+<!-- COLLAPSE TOP NAVBAR -->
 <nav class="navbar navbar-expand-sm navbar-dark fixed-top" id="navbar" style="background-color: #2f3758;">
     <span class="navbar-text">&nbsp;</span>
-    <ul class="navbar-nav abs-center-x">
+    <ul class="navbar-nav center-navbar-items">
         <li class="nav-item">
-            <div class="hideme">
+            <div class="collapse-navbar-items">
                 <a href="/"> <img src="http://fbbsvr.ddns.net/wplogo.svg" style="width:80px;" alt="logo"></a>
                 <text class="title" style="font-weight: 500;">WorldPlugs</text>
             </div>
         </li>
     </ul>
-    <div class="keepIcons" id="navbar8">
+    <div class="collapse-navbar-icons" id="navbar8">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
+            <li class="nav-item" data-toggle="modal" data-target="#shopping-basket-toggle">
                 <img src="http://fbbsvr.ddns.net/searchbar.svg" style="width: 23px;"alt="Search">
             </li>
-            <li class="nav-item" data-toggle="modal" data-target="#exampleModal">
-                <div class="basketContainer">
-                    <img class="fitsmall" src="http://fbbsvr.ddns.net/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
-                    <span class="basketQuantity"></span>
+            <li class="nav-item" data-toggle="modal" data-target="#shopping-basket-toggle">
+                <div class="collapse-shopping-basket-container">
+                    <img class="mobile-content-margin" src="http://fbbsvr.ddns.net/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
+                    <span class="basket-items-quantity"></span>
                 </div>
             </li>
         </ul>
     </div>
 </nav>
-<div class="secondaryNav" id="secondaryNav">
-    <div class="topnav">
-        <ul class="abs-center-x" style="white-space: nowrap; padding: 0;">
+
+
+<!-- FIXED NAVBAR -->
+<div class="fixed-navbar" id="fixed-navbar-row">
+    <div class="fixed-navbar-content">
+        <ul class="center-navbar-items" style="white-space: nowrap; padding: 0;">
             <a href="/">
-                <li class="active navItems" id="navItems" style="display: inline; line-height: 30px;">Home</li>
+                <li class="fixed-navbar-content-items" id="fixed-navbar-content-items-toggle" style="display: inline; line-height: 30px;">Home</li>
             </a>
             <a href="/">
-                <li class="active navItems" style="display: inline;" href="/">Store</li>
+                <li class="fixed-navbar-content-items" style="display: inline;" href="/">Store</li>
             </a>
             <a href="/cart">
-                <li class="active navItems" style="display: inline;" href="#home">Basket</li>
+                <li class="fixed-navbar-content-items" style="display: inline;" href="#home">Basket</li>
             </a>
         </ul>
-        <div class="topnav-right" style="margin: 15px;">
-            <div class="basketContainer-secondaryNav">
-                <img id="search-button-secondaryNav" src="http://fbbsvr.ddns.net/searchbar.svg"
-                    style="width:23px; display: none; " alt="Search">
-
-                <a data-toggle="modal" data-target="#exampleModal">
-                    <img class="fitsmall" id="basket-button-secondaryNav" src="http://fbbsvr.ddns.net/basket.svg"
-                        style="width:25px; margin-left: 15px; display: none;" alt="Basket">
-                    <span id="basketQuantity-secondaryNav" style="display: none;" class="basketQuantity"></span>
+        <div class="fixed-navbar-content-right" style="margin: 15px;">
+            <div class="fixed-navbar-content-icons-container">
+                <img class="fixed-navbar-content-icons-search" id="fixed-navbar-content-icons-search-toggle" src="http://fbbsvr.ddns.net/searchbar.svg" style="width:23px; display: none; " alt="Search">
+                <a data-toggle="modal" data-target="#shopping-basket-toggle">
+                    <img class="fixed-navbar-content-icons-basket mobile-content-margin" id="fixed-navbar-content-icons-basket-toggle" src="http://fbbsvr.ddns.net/basket.svg" alt="Basket">
+                    <span id="fixed-navbar-content-icons-quantity-toggle" style="display: none;" class="basket-items-quantity"></span>
                 </a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal right fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+
+<!-- RIGHT SIDE SHOPPING BASKET -->
+<div class="modal right fade" id="shopping-basket-toggle" tabindex="-1" role="dialog" aria-labelledby="shopping-basket-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel2">Your Basket</h4>
+                <h4 class="modal-title" id="shopping-basket-label">Your Basket</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;"><span
                         aria-hidden="true">&times;</span></button>
             </div>
-
             <div class="modal-body" id="modalBody">
-
+                <!-- BASKET ITEMS -->
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn view-basket" data-dismiss="modal"
                     onclick="window.location.href='/cart'">View Basket</button>
                     <button type="button" class="btn checkoutBtn" onclick="executePayment()" data-dismiss="modal">Express Checkout</button>
             </div>
-                
-
-
-        </div><!-- modal-content -->
-    </div><!-- modal-dialog -->
-</div><!-- modal -->
+        </div>
+    </div>
 </div>
+
+
 <div>
     <div class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;" id="alertMsg">
         Item is already in your basket.
@@ -87,23 +85,15 @@
 
 
 <style>
-    .iconSize {
-        width: 23px;
+
+    .fixed-navbar-content-icons-basket {
+        width:25px;
+        margin-left: 15px;
+        display: none;
     }
 
     .modal-footer {
         justify-content: space-between; 
-    }
-
-
-    .titleText {
-        margin: auto;
-        color: white;
-    }
-
-    .removeBtn:hover {
-        background-color: #ea6464 !important;
-        color: white !important;
     }
 
     .checkoutBtn:hover {
@@ -112,48 +102,12 @@
     }
 
     #navbar {
-        transition: top 0.3s;
+        transition: top 0.2s;
     }
 
-    .itemCard {
-        margin: 20px;
-        background-color: #1e1c29;
-        border-radius: 0;
-        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    #fixed-navbar-row {
+        transition: top 0.2s;
     }
-
-    .viewProducts {
-        border-radius: 0;
-        border-color: white;
-        position: relative;
-        color: white;
-        line-height: 50px;
-        width: 200px;
-        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
-        max-width: 100%;
-        border-image-slice: 1;
-        background: transparent;
-        transition: all 1s ease-in-out;
-        
-    }
-
-    .btn {
-        color: white;
-        background: transparent;
-        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
-        max-width: 100%;
-        border-image-slice: 1;
-        border-radius: 0px;
-    }
-
-    .btn:hover {
-        border-radius: 0;
-        background-color: white;
-        color: black;
-        border-image-source: none;
-        
-    }
-
 
     .view-basket {
         background-color: white;
@@ -161,18 +115,7 @@
         border: none;
     }
 
-
-
-    .viewProducts:hover {
-        border-radius: 0;
-        background-color: white;
-        color: black;
-        border-image-source: none;
-        border: none;
-    }
-
-
-    .abs-center-x {
+    .center-navbar-items {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
@@ -187,12 +130,12 @@
         color: white;
     }
 
-    .hideme {
+    .collapse-navbar-items {
         white-space: nowrap;
         display: inline-block;
     }
 
-    .secondaryNav {
+    .fixed-navbar {
         text-align: center;
         position: -webkit-sticky;
         /* Safari */
@@ -202,24 +145,24 @@
         z-index: 1;
     }
 
-    .keepIcons {
+    .collapse-navbar-icons {
         display: flex;
         flex-basis: auto;
         flex-grow: 1;
     }
 
-    .topnav {
+    .fixed-navbar-content {
         z-index: 1;
         text-align: center;
         background-color: #1e2338;
         overflow: hidden;
     }
 
-    .topnav-right {
+    .fixed-navbar-content-right {
         float: right;
     }
 
-    .topnav-centered a {
+    .fixed-navbar-content-centered a {
         float: none;
         position: absolute;
         top: 50%;
@@ -227,13 +170,13 @@
         transform: translate(-50%, -50%);
     }
 
-    .basketContainer {
+    .collapse-shopping-basket-container {
         position: relative;
         text-align: center;
         color: white;
     }
 
-    .basketQuantity {
+    .basket-items-quantity {
         color: white;
         position: relative;
         top: 2px;
@@ -277,7 +220,7 @@
     }
 
 
-    .navItems {
+    .fixed-navbar-content-items {
         color: white;
         padding-left: 10px;
     }
@@ -373,6 +316,184 @@
   border: none;
 }
 
+
+#itemHeader {
+  color: white;
+  text-transform: capitalize;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+    
+
+    .iconSize {
+        width: 23px;
+    }
+
+    .titleText {
+        margin: auto;
+        color: white;
+    }
+
+    .removeBtn:hover {
+        background-color: #ea6464 !important;
+        color: white !important;
+    }
+
+    .itemCard {
+        margin: 20px;
+        background-color: #1e1c29;
+        border-radius: 0;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    }
+
+    .viewProducts {
+        border-radius: 0;
+        border-color: white;
+        position: relative;
+        color: white;
+        line-height: 50px;
+        width: 200px;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        background: transparent;
+        transition: all 1s ease-in-out;
+        
+    }
+
+    .btn {
+        color: white;
+        background: transparent;
+        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+        max-width: 100%;
+        border-image-slice: 1;
+        border-radius: 0px;
+    }
+
+    .btn:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        
+    }
+
+
+    
+
+
+
+    .viewProducts:hover {
+        border-radius: 0;
+        background-color: white;
+        color: black;
+        border-image-source: none;
+        border: none;
+    }
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    input[type="number"] {
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .itemQuantity {
+        color: white;
+        width: 45px;
+        padding: auto;
+        -webkit-appearance: none;
+        border-style: none;
+        background-color: transparent;
+        outline: none;
+        border-bottom: 1px solid grey;
+        border-radius: 1px;
+        transition: all 0.3s;
+    }
+
+    .itemQuantity:focus, .itemQuantity:hover {
+        border-bottom: 1px solid white;
+
+    }
+
+
+    
+
+    
+
+    
+
+    
+
+    /*Right*/
+    
+
+    .button {
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+        color: #ea6464;
+        font-family: arial;
+        font-size: 23px;
+        font-weight: 200;
+        vertical-align: middle;
+    }
+
+    .content-box-span {
+        height: auto;
+        width: 50%;
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+        padding: 10px;
+        background-color: #1e1c29;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    }
+
 .paymentSec {
   margin: auto; 
   width: 50%;
@@ -442,7 +563,7 @@
 }
 
 @media(max-width: 320px) {
-    .fitsmall {
+    .mobile-content-margin {
         margin-left: 0 !important;
     }
 }
@@ -473,24 +594,6 @@
     border-image-slice: 0;
 }
 
+
 </style>
 
-<script>
-    var prevScrollpos = window.pageYOffset;
-    window.onscroll = function () {
-        var currentScrollPos = window.pageYOffset;
-        if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
-            document.getElementById("navbar").style.top = "-75px"; //up
-            document.getElementById("secondaryNav").style.top = "0";
-            document.getElementById("navItems").style.lineHeight = "58px";
-            $("#search-button-secondaryNav, #basket-button-secondaryNav, #basketQuantity-secondaryNav").show();
-            
-        } else {
-            document.getElementById("navbar").style.top = "0"; //down
-            document.getElementById("secondaryNav").style.top = "70px";
-            document.getElementById("navItems").style.lineHeight = "30px";
-            $("#search-button-secondaryNav, #basket-button-secondaryNav, #basketQuantity-secondaryNav").hide();
-        }
-        prevScrollpos = currentScrollPos;
-    }
-</script>
