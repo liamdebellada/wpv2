@@ -1,0 +1,69 @@
+<a href="/dashboard"><- Back</a>
+<h1>Categories</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+      <a class="nav-link active" onclick="test(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+    <li>
+        <a class="nav-link" onclick="test(this)" id="createSelection">Create new</a>
+    </li>
+</ul>
+
+<div id="create" style="display: none;">
+    <text>other content</text>
+</div>
+
+<style>
+    .btn {
+        padding-right: 2px;
+        padding-left: 2px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+</style>
+
+<div id="dataTable" style="display: block;">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Category key</th>
+            <th scope="col">Icon</th>
+            <th scope="col">Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% data.forEach(function(r) { %>
+          <tr>
+            <td><%=r.CategoryKey %></td>
+            <td><image style="width: 20px;" src="<%=r.Image %>"></image></td>
+            <td><button class="btn btn-dark" style="margin: 0;">edit</button></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+</div>
+
+
+<script>
+        function test(option) {
+        var dropdown = document.getElementById("dropSelection")
+        var other = document.getElementById("createSelection")
+        var creationPage = document.getElementById('create')
+        var table = document.getElementById('dataTable')
+        if (option.id == "createSelection") {
+            option.classList.add('active')
+            option.disabled = false;
+            dropdown.disabled = true;
+            dropdown.classList.remove('active')
+            creationPage.style.display = "block"
+            table.style.display = "none"
+        } else {
+            dropdown.disabled = false;
+            other.classList.remove('active')
+            other.disabled = true;
+            dropdown.classList.add('active')
+            table.style.display = "block"
+            creationPage.style.display = "none"
+        }
+    }
+</script>

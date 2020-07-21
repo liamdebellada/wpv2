@@ -177,6 +177,7 @@ router.post('/confirmPayment', async function (req, res, next) {
                 console.log(purchaseID)
                 emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
                 req.session.total = "empty"
+                res.send('/success')
             } else {
                 res.send('/').status(400).end();
             }

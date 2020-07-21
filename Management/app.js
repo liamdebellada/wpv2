@@ -10,6 +10,12 @@ const passport = require('passport');
 
 const app = express();
 
+app.use(session({
+    secret: '8jcY!vo1a6u',
+    saveUninitialized: true,
+    resave: true
+}));
+
 // Passport Config
 require('./config/passport')(passport)
 
@@ -21,7 +27,7 @@ const db = require('./config/keys').MongoURI;
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('MongoDB Connection Successful'))
-.catch(err => console.log(err));
+.catch(err => err);
 
 // EJS
 app.use(express.static(__dirname + '/public'));
@@ -29,20 +35,16 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs')
 
 // Bodyparser
-app.use(express.urlencoded({ extended: false }));
+
 
 // Express Session
-app.use(session({
-    secret: '8jcY!vo1a6u',
-    resave: true,
-    saveUninitialized: true
-}));
+
 
 
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(express.urlencoded({ extended: false }));
 // Connect flash
 
 app.use(flash());

@@ -8,7 +8,9 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const assert = require('assert');
 
-const banners = require('../models/banners')
+const banners = require('../models/banners');
+const categoires = require('../../models/categories')
+const e = require('express');
 
 
 var algorithm = 'aes-256-cbc'
@@ -36,7 +38,7 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
     }
 )
 
-router.get('/banners', function(req, res) {
+router.get('/banners', ensureAuthenticated, function(req, res) {
     banners.find({}, function(error, result) {
         if (error) {
             console.log(error)
@@ -48,8 +50,18 @@ router.get('/banners', function(req, res) {
     })
 })
 
+router.get('/categories', ensureAuthenticated, function(req, res) {
+    categoires.find({}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            res.render('categories.ejs', { data: result })
+        }
+    })
+})
 
-router.post('/createBanner', function(req, res) {
+
+router.post('/createBanner', ensureAuthenticated, function(req, res) {
     //console.log(req.body)
     var datetime = new Date();
     var date = datetime.toISOString().split("T", 1);

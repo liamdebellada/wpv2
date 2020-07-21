@@ -52,6 +52,7 @@ function confirmPayment() {
             payerId: client_payerId
         }
     }).done(data => {
+        console.log(data)
         //window.location.href = data
         $('.circle-loader').toggleClass('load-complete');
         $('.checkmark').toggle();
