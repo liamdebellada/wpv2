@@ -45,7 +45,14 @@ router.get('/products/:product', function (req, res) {
 })
 
 router.get('/success', function(req, res) {
-    res.render('success.ejs')
+    try {
+        if (req.session.viewOrder[0] && req.session.userInfo) {
+            res.render('success.ejs', {purchaseContents: req.session.viewOrder, addressContents: req.session.userInfo})
+        }
+    } catch {
+        res.redirect('/error')
+    }
+    
 })
 
 

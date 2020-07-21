@@ -9,23 +9,19 @@ const crypto = require('crypto');
 const assert = require('assert');
 
 const banners = require('../models/banners');
-const categoires = require('../../models/categories')
+const categories = require('../../models/categories')
 const e = require('express');
 
 
-var algorithm = 'aes-256-cbc'
-
-router.get('/bcrypt', (req, res) => {
-
-    var ECAUID = '7a83fdda3ad8283316ef5db8e329f88a';
-    var key = ECAKey + ECAUID
-
-    var mykey = crypto.createCipher('aes-256-cbc', key)
-    var mystr = mykey.update('', 'utf8', 'hex');
-    mystr += mykey.final('hex');
-    console.log(mystr)
-    
-})
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 
 router.get('/dashboard', ensureAuthenticated, (req, res) => {
 
@@ -50,12 +46,61 @@ router.get('/banners', ensureAuthenticated, function(req, res) {
     })
 })
 
-router.get('/categories', ensureAuthenticated, function(req, res) {
-    categoires.find({}, function(error, result) {
+router.get('/categories', ensureAuthenticated, async function(req, res) {
+    var results = []
+    await categories.find({}, function(error, result) {
         if (error) {
             console.log(error)
         } else {
-            res.render('categories.ejs', { data: result })
+            results.push(result)
+        }
+    })
+    res.render('categories.ejs', {
+        data: results
+    })
+})
+
+router.post('/updateCategory', ensureAuthenticated, function(req, res) {
+    var id = req.body.id
+    console.log(req.body.categoryKey, req.body.Image)
+    categories.findOne({_id: id}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            console.log(result)
+        }
+    })
+    categories.updateOne({ _id: id}, {$set : {  CategoryKey: req.body.categoryKey, Image: req.body.Image}}, {upsert: true}, function(error, res) {
+        if (error) {
+            console.log(error)
+        }
+    })
+    res.send('/categories')
+})
+
+router.post('/createCategory', ensureAuthenticated, function(req, res) {
+    var id = makeid(24)
+    var obj = {
+        CategoryKey: req.body.categoryKey,
+        Image: req.body.Image,
+        _id: id
+    }
+    categories.create(obj, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            res.send('/categories')
+        }
+    })
+})
+
+router.post('/deleteCategory', ensureAuthenticated, function(req, res) {
+    var id = req.body.id
+    categories.deleteOne({_id: id}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            res.send('/categories')
         }
     })
 })

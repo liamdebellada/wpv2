@@ -40,7 +40,6 @@ function displayBasketContent(basketContent) {
 
 }
 
-
 function confirmPayment() {
     $('.circle-loader').css("display", "inline-block")
     $('#confirmation-button').toggle()
@@ -52,10 +51,22 @@ function confirmPayment() {
             payerId: client_payerId
         }
     }).done(data => {
-        console.log(data)
-        //window.location.href = data
-        $('.circle-loader').toggleClass('load-complete');
-        $('.checkmark').toggle();
+        if (data == '/success') {
+
+            $('.circle-loader').toggleClass('load-complete');
+            $('.checkmark').toggle();
+
+            setTimeout(function () {
+
+                window.location.href = data
+
+            }, 1500);
+
+        } else {
+            console.log(data)
+        }
+
+
     });
 }
 

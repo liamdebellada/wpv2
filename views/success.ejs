@@ -9,13 +9,19 @@
 
     <div class="confirmed-purchase-contents">
         <p class="confirmed-purchase-text confirmed-purchase-contents-header" style="text-align: left;">What you've purchased:</p>
-        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+        <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 5px;" width="100%">
 
             <!-- ITEM -->
-            <tr>
-                <td width="75%" align="left" style="font-family: 'Raleway', sans-serif;" class="confirmed-purchase-text">Nandos Red x3</td> 
-                <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; text-align: right;" class="confirmed-purchase-text"> £14 </td>
-            </tr>
+
+
+            <% purchaseContents.forEach(function(item) { %>
+                <tr>
+                    <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; padding-bottom: 5px;" class="confirmed-purchase-text"><%= item[0].Title %> <b>x<%= item[1] %> </b></td>
+                    <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; text-align: right; padding-bottom: 5px;" class="confirmed-purchase-text"> £<%= item[0].Price %></td> 
+                </tr>
+            <% }) %>
+            
+                
 
         </table>
     
@@ -28,19 +34,20 @@
     
 
       <div class="access-purchase">
-        <p class="access-purchase-text access-purchase-info">To access the accounts please head over to your email client associated with:</p>
-        <p class="access-purchase-text access-purchase-email"> worldplugsA414@gmail.com </p>
+        <p class="access-purchase-text access-purchase-info">To access the credentials for the accounts you've bought, check your email inbox!</p>
+        <p class="access-purchase-text access-purchase-email">(<%= addressContents[0] %>)</p>
           <img class="access-purchase-symbol" src="mail.svg" width="10%">
           <img class="access-purchase-symbol" src="next.svg" width="10%">
           <img class="access-purchase-symbol" src="card.svg" width="10%">
+
+          <p class="access-purchase-text access-purchase-confirmation">Order Confirmation # <b><%= addressContents[1].slice(1, -1) %></b></p>
       </div>
+
+
+      <hr style="background-color: #ffffff5c;">
   
     </div>
 
-
-    <div class="circle-loader">
-      <div class="checkmark draw"></div>
-    </div>
 
 
 </div>
@@ -78,6 +85,10 @@
 .confirmed-purchase-text {
     font-size: 0.85rem;
     color: white;
+}
+
+.access-purchase-confirmation {
+    font-size: 0.75rem;
 }
     
 </style>

@@ -36,6 +36,7 @@ router.post('/executePayment', function (req, res) {
 
             functions.getBasket(req.session.cart, items, function(result) {
                 req.session.order = result //use this to pass to email template
+                req.session.viewOrder = result
                 paymentData.transactions[0].item_list.items = []
                 var total = functions.getTotal(result)
                 for (item in result) {
@@ -74,28 +75,41 @@ router.post('/executePayment', function (req, res) {
 
 router.get('/checkout', function (req, res, next) {
 
-    var total = req.session.total
-
-    if (total == undefined || total == "empty") {
-        res.redirect('/cart').end()
+    try{
+        var total = req.session.total
+        if (total == undefined || total == "empty") {
+            res.redirect('/cart')
+        }
+    } catch {
+        res.redirect('/cart')
     }
 
-
-    var paymentId = req.query.paymentId;
-    var payerId = req.query.PayerID;
     
-    if (paymentId === undefined || payerId === undefined) {
-        res.send("error")
+
+    
+
+    try {
+        var paymentId = req.query.paymentId;
+        var payerId = req.query.PayerID;
+        if (paymentId === undefined || payerId === undefined) {
+            res.redirect('/cart')
+        }
+        else if (paymentId == "" || payerId == "") {
+            res.redirect('/cart')
+        } else {
+            res.render('confirmation.ejs', {
+                items: req.session.viewOrder,
+                paymentId: paymentId,
+                payerId: payerId
+            })
+        }
+    } catch {
+        res.redirect('/cart')
     }
-    else if (paymentId == "" || payerId == "") {
-        res.send("error")
-    } else {
-        res.render('confirmation.ejs', {
-            items: req.session.order,
-            paymentId: paymentId,
-            payerId: payerId
-        })
-    }
+
+    
+    
+    
 })
 
 
@@ -107,11 +121,11 @@ router.post('/confirmPayment', async function (req, res, next) {
         var payerId = req.body.payerId
         var total = req.session.total
 
-        // if (total == undefined || total == "empty") {
-        //     res.send('/cart').status(418).end()
-        // }
+        if (total == undefined || total == "empty") {
+            res.send('/cart').status(418).end()
+        }
     } catch {
-        // res.send('/cart').status(418).end()
+        res.send('/cart').status(418).end()
         console.log("error")
     }
     
@@ -131,7 +145,7 @@ router.post('/confirmPayment', async function (req, res, next) {
 
     paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
         if(error){
-            console.error(JSON.stringify(error));
+            res.send('/').status(400).end();
         } else {
             if (payment.state == 'approved'){
                 var ids = []
@@ -174,10 +188,18 @@ router.post('/confirmPayment', async function (req, res, next) {
                     })
                 }
                 purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
-                console.log(purchaseID)
+
                 emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
+
+
                 req.session.total = "empty"
-                res.send('/success')
+                req.session.cart = []
+
+                req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
+
+                req.session.save()
+
+                res.send('/success').status(200).end()
             } else {
                 res.send('/').status(400).end();
             }
