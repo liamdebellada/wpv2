@@ -154,6 +154,7 @@ function updateQuantity(item) {
 }
 
 function executePayment() {
+
     $.ajax({
         type: "POST",
         url: "/executePayment",
