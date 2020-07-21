@@ -10,6 +10,7 @@ const products = require('../models/products');
 const items = require('../models/items');
 const accounts = require('../models/accounts');
 const { db } = require('../models/categories');
+const banners = require('../Management/models/banners')
 
 
 // Export Functions
@@ -31,7 +32,6 @@ router.get('/', (req, res) => {
     functions.searchQuery(res, category, '', '', 'homepage.ejs');
 
 })
-
 
 router.get('/products/:product', function (req, res) {
 

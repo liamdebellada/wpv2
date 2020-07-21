@@ -2,6 +2,7 @@ const e = require("express")
 const session = require("express-session")
 var crypto = require('crypto');
 const accounts = require('../models/accounts');
+const banners = require('../Management/models/banners')
 var functions = {
 
     // Search Database With Arguments
@@ -18,14 +19,20 @@ var functions = {
                 if (pageRender == "items.ejs") {
                     this.updateStock(result, modelName, function(stockResult) {
                         if (result.length > 0) {
-                            res.render(pageRender, {
-                                results: stockResult
+                            functions.getBanners(function(banner) {
+                                res.render(pageRender, {
+                                    results: stockResult,
+                                    banner: banner
+                            })
                         })}
                     })
                 }
                 else if (result.length > 0) {
-                    res.render(pageRender, {
-                        results: result
+                    this.getBanners(function(banner) {
+                        res.render(pageRender, {
+                            results: result,
+                            banner: banner
+                        })
                     })
                 } else {
                     // Liam include socket.io response here
@@ -168,6 +175,16 @@ var functions = {
         var mystr = mykey.update(data, 'hex', 'utf8')
         mystr += mykey.final('utf8');
         return mystr;
+    },
+
+    getBanners: function(callback) {
+        banners.findOne({active: true}, function(error, banner) {
+            if (error) {
+                console.log(error)
+            } else {
+                return callback(banner)
+            }
+        })
     }
 
 }

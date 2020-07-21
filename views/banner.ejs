@@ -1,0 +1,12 @@
+<% if (banner != null) { %>
+    <style>
+        .center {
+            padding: 5px 0;
+            text-align: center;
+        }
+    </style>
+
+    <div class="center" style="background-color: <%=banner.color%>;">
+        <p style="margin: 0 !important; color: <%=banner.textColor%>" id="previewText"><%=banner.title%></p>
+    </div> 
+<% } %>

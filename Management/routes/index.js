@@ -63,6 +63,12 @@ router.post('/createBanner', function(req, res) {
         active: req.body.active
     }
 
+    banners.updateMany({}, {$set: {active: false}}, function(error){
+        if(error) {
+            console.log(error)
+        }
+    })
+
     banners.create(obj, function(error, result) {
         if (error) {
             console.log(error)

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+mongoose.connect('mongodb://localhost:27017/test')
 const bannerSchema = new mongoose.Schema({
     title: {
         type: String,
