@@ -13,8 +13,8 @@ var mongoose = require('mongoose');
 const items = require('../models/items');
 const accounts = require('../models/accounts')
 const { all } = require('./cart');
-const Recaptcha = require('express-recaptcha').RecaptchaV2;
-var recaptcha = new Recaptcha(proccess.env.RECAPTCHA_SITE_KEY, proccess.env.RECAPTCHA_SECRET_KEY)
+//const Recaptcha = require('express-recaptcha').RecaptchaV2;
+//var recaptcha = new Recaptcha(proccess.env.RECAPTCHA_SITE_KEY, proccess.env.RECAPTCHA_SECRET_KEY)
 
 //paypal config (located in .env)
 paypal.configure({
@@ -24,13 +24,8 @@ paypal.configure({
 });
 
 
-router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
+router.post('/executePayment',  function (req, res) {
 
-    if (!req.recaptcha.error) {
-        console.log("success")
-    } else{
-        console.log("error")
-    }
 
 
     var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {

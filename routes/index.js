@@ -12,8 +12,8 @@ const accounts = require('../models/accounts');
 const { db } = require('../models/categories');
 const banners = require('../Management/models/banners')
 
-const Recaptcha = require('express-recaptcha').RecaptchaV2;
-var recaptcha = new Recaptcha(proccess.env.RECAPTCHA_SITE_KEY, proccess.env.RECAPTCHA_SECRET_KEY)
+//const Recaptcha = require('express-recaptcha').RecaptchaV2;
+//var recaptcha = new Recaptcha(proccess.env.RECAPTCHA_SITE_KEY, proccess.env.RECAPTCHA_SECRET_KEY)
 
 // Export Functions
 const functions = require('../exports/functions');
@@ -86,9 +86,7 @@ router.get('/cart', function(req, res) {
     }
 })
 
-router.get('/paypal-test', recaptcha.middleware.render, function(req, res) {
-    res.render('homepage.ejs')
-})
+
 
 
 // Export back to app.js
