@@ -1,0 +1,46 @@
+<a href="/dashboard"><- Back</a>
+<h1>Products and Items</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+      <a class="nav-link active" onclick="test(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+</ul>
+
+<div id="create" style="display: none;">
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Category key</label>
+    <input type="text" class="form-control" id="newCategoryKey" placeholder="Enter Category key">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Image url</label>
+    <input type="text" class="form-control" id="newImageUrl" placeholder="Enter image url" onkeyup="updateImagePreview(this)">
+  </div>
+  <label for="exampleFormControlInput1">Image preview</label>
+  <div class="form-group" style="border: 1px solid grey;">
+    <img id="previewImageCreate" style="width: 50px;">
+  </div>
+  <a href="#" class="btn btn-primary" onclick="createNewCategory()">Create banner</a>
+</div>
+
+
+<div id="dataTable" style="display: block;">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Manage Products</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% for (item in data) { %>
+          <% for (i in data[item]) { %>
+          <tr>
+            <td><%=data[item][i].CategoryKey %></td>
+                <input type="hidden" class*="categoryKey" name="CategoryKey" value="<%=data[item][i].CategoryKey %>">
+                <td><a href="/browseProducts/<%= data[item][i].CategoryKey %>" class="btn btn-dark editbannerbutton"  style="margin: 0;" type="submit">Browse Products</button></a>
+          </tr>
+          <% } %>
+        <% } %>
+        </tbody>
+      </table>
+</div>

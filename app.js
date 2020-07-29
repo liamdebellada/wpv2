@@ -3,10 +3,13 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose')
 var bodyParser = require('body-parser');
-var EV = require('dotenv').config()
+var EV = require('dotenv').config() 
+const bcrypt = require('bcrypt')
+
 
 //sessions
-const session = require("express-session")
+const session = require("express-session");
+const nodemon = require('nodemon');
 var MongoDBStore = require('connect-mongodb-session')(session);
 
 var store = new MongoDBStore({
@@ -68,9 +71,28 @@ app.use('/', require('./routes/index'));
 app.use('/', require('./routes/payment'));
 app.use('/', require('./routes/cart'));
 
+// Server Shutdown
+app.post('/secureShutdown', function(req, res) {
+    
+    var pass = req.body.key
+    bcrypt.compare(pass, process.env.SPASS, function(err, result) {
+        if(err) {
+            console.error(err)
+        } else{
+            if (result) {
+                process.on('exit', function() {
+                    res.send('s')
+                })
+                process.exit()
+            } else {
+                res.send('e')
+            }
+        }
+    });
+})
 
 // Start server
-var server = app.listen(80, process.env.ADDRESS)
+var server = app.listen(443, process.env.ADDRESS)
 var io = require('socket.io').listen(server);
 io.on('connection', function(client) {
 	client.on('join', function(data) {

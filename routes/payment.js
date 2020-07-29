@@ -12,9 +12,10 @@ var mongoose = require('mongoose');
 //mongo models
 const items = require('../models/items');
 const accounts = require('../models/accounts')
+const logs = require('../Management/models/logs')
 const { all } = require('./cart');
-//const Recaptcha = require('express-recaptcha').RecaptchaV2;
-//var recaptcha = new Recaptcha(proccess.env.RECAPTCHA_SITE_KEY, proccess.env.RECAPTCHA_SECRET_KEY)
+const Recaptcha = require('express-recaptcha').RecaptchaV2;
+var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
 //paypal config (located in .env)
 paypal.configure({
@@ -24,9 +25,13 @@ paypal.configure({
 });
 
 
-router.post('/executePayment',  function (req, res) {
+router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
 
-
+    if (!req.recaptcha.error) {
+        console.log("success")
+      } else {
+        console.log("error")
+      }
 
     var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
         if (result.includes(true)) {
@@ -88,9 +93,6 @@ router.get('/checkout', function (req, res, next) {
     } catch {
         res.redirect('/cart')
     }
-
-    
-
     
 
     try {
@@ -112,9 +114,6 @@ router.get('/checkout', function (req, res, next) {
         res.redirect('/cart')
     }
 
-    
-    
-    
 })
 
 
@@ -133,6 +132,8 @@ router.post('/confirmPayment', async function (req, res, next) {
         res.send('/cart').status(418).end()
         console.log("error")
     }
+
+    //WE ARE MISSING VALIDATION TO CHECK ACCOUNT STOCK
     
 
     const execute_payment_json = {
@@ -144,9 +145,6 @@ router.post('/confirmPayment', async function (req, res, next) {
             }
         }]
     }
-
-    
-
 
     paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
         if(error){
@@ -203,6 +201,14 @@ router.post('/confirmPayment', async function (req, res, next) {
                 req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
 
                 req.session.save()
+
+                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total}, function(error, result) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log(result)
+                    }
+                })
 
                 res.send('/success').status(200).end()
             } else {

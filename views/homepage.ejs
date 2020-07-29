@@ -5,6 +5,14 @@
   -webkit-text-fill-color: transparent; font-weight: 400;">WorldPlugs</text>
 </h1>
 
+<section class="jumbotron">
+  <div class="container">
+    
+    </div>
+  </section>
+
+
+
 <div class="container">
   <div class="row justify-content-center">
   <% results.forEach(function(result) { %>
@@ -22,3 +30,22 @@
   <% }); %>
 </div>
 </div>
+
+
+<style>
+.jumbotron{
+background-image: url("https://worldplugs.net/images/hero-element.svg");
+background-color: #1d1b28;
+height: 500px;
+background-position: center;
+background-repeat: no-repeat;
+position: relative;
+}
+
+
+@media (max-width: 992px) {
+  .jumbotron {
+  background-size: cover;
+  }
+}
+</style>

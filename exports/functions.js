@@ -16,7 +16,6 @@ var functions = {
         modelName.find(
                 query
             ).then(result => {
-		console.log(result)
                 if (pageRender == "items.ejs") {
                     this.updateStock(result, modelName, function(stockResult) {
                         if (result.length > 0) {
@@ -37,13 +36,11 @@ var functions = {
                     })
                 } else {
                     // Liam include socket.io response here
-		    console.log("error here 1")
                     res.redirect(fallbackRedirect)
                 }
             })
             .catch(categories => {
                 // Liam include socket.io response here
-		console.log("error here 2")
                 res.redirect(fallbackRedirect)
             })
 

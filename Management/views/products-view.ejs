@@ -1,0 +1,120 @@
+<h1>
+    Manage Products
+</h1>
+
+<style>
+    .editbutton {
+        padding-right: 2px;
+        padding-left: 2px;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-radius: 1px;
+    }
+</style>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Image</th>
+            <th scope="col">Edit Product</th>
+            <th scope="col">Manage Items</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% products.forEach(function(product) { %>
+                <tr>
+                    <td><%= product.Title %></td>
+                    <td><img src="<%= product.Image %>" style="width: 30px;"></td>
+                    <td><button class="btn btn-dark editbutton" id="<%= product._id %>" onclick="drawModal(this)" data-items="<%= product.Title %>|<%= product.Description %>|<%= product.Image %>|<%= product.ProductKey %>"  type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
+                        <td><a href="/browseItems/<%=product.ProductKey %>" class="btn btn-dark editbutton">Browse</a></td>
+                </tr>
+            <% }) %> 
+        </tbody>
+      </table>
+
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content" style="border-radius: 0; border: none;">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text> category</h5>
+    </div>
+    <div class="modal-body" style="display: block;">
+        <div style="display: block;">
+        <div class="form-group">
+            <label for="formGroupExampleInput">Title</label>
+            <input id="title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Product Key:</label>
+            <input id="productKey" class="form-control" value="">
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Image url</label>
+            <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control" placeholder="Another input">
+        </div>
+        <text >Image preview:</text><img  style="width: 50px" id="iconDisplay">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Description:</label>
+            <input id="description" class="form-control" value="">
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save changes</button>
+    </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+
+function drawModal(item) {
+      var data = $("#" + item.id).data('items')
+      var dataArr = data.split("|")
+      dataArray = data.split("|")
+
+    console.log(dataArray)
+
+      var title = dataArray[0]
+      var description = dataArray[1]
+      var image = dataArray[2]
+      var productkey = dataArray[3]
+
+      console.log(productkey)
+
+      document.getElementById("title").value = title
+      document.getElementById("icon").value = image
+      document.getElementById("iconDisplay").src = image
+      document.getElementById("description").value = description
+      document.getElementById("productKey").value = productkey
+      document.getElementById("updateProduct").setAttribute("name", item.id)
+    }
+
+    function updateImage(data) {
+        document.getElementById("iconDisplay").src = data.value
+    }
+
+    function updateProduct(data) {
+      $.ajax({
+        type: "POST",
+        url: "/updateProduct",
+        data: {
+            id: data.name,
+            title: document.getElementById("title").value,
+            image: document.getElementById("icon").value,
+            description: document.getElementById("description").value,
+            productkey: document.getElementById("productKey").value
+        } 
+      }).done(data => {
+          if (data == "e") {
+            window.location.reload();
+          }
+      });
+      
+    }
+
+</script>

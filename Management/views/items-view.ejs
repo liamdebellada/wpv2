@@ -1,0 +1,143 @@
+<h1>
+    Manage Items
+</h1>
+
+
+
+
+<style>
+    .editbutton {
+        padding-right: 2px;
+        padding-left: 2px;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-radius: 1px;
+    }
+</style>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Image</th>
+            <th scope="col">Manage Item</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% items.forEach(function(item) { %>
+                <tr>
+                    <td><%= item.Title %></td>
+                    <td>£<%= item.Price %></td>
+                    <td><img src="img" style="width: 30px;"></td>
+                    <td><button class="btn btn-dark editbutton" id="<%= item._id %>" onclick="drawModal(this)" data-items="<%= item.Title %>|<%= item.Description %>|<%= item.Image %>|<%= item.Price %>|<%= item.ProductKey %>"  type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
+                </tr>
+            <% }) %> 
+        </tbody>
+      </table>
+      
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content" style="border-radius: 0; border: none;">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text>Item</h5>
+    </div>
+    <div class="modal-body" style="display: block;">
+        <div style="display: block;">
+        <div class="form-group">
+            <label for="formGroupExampleInput">Title</label>
+            <input id="title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Price:</label>
+            <input id="price" class="form-control" value="">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Stock:</label>
+            <text id="stock"></text>
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Image url</label>
+            <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control" placeholder="Another input">
+        </div>
+        <text >Image preview:</text><img  style="width: 50px" id="iconDisplay">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Description:</label>
+            <input id="description" class="form-control" value="">
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+
+            <a id="manageButton" href="" class="btn btn-secondary">Manage accounts</a>
+
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save changes</button>
+    </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+
+function drawModal(item) {
+      var data = $("#" + item.id).data('items')
+      var dataArr = data.split("|")
+      dataArray = data.split("|")
+      var title = dataArray[0]
+      var description = dataArray[1]
+      var image = dataArray[2]
+      var price = dataArray[3]
+      var productkey = dataArray[4]
+
+      console.log(productkey)
+
+      document.getElementById("title").value = title
+      //document.getElementById("icon").value = image
+      //document.getElementById("iconDisplay").src = image
+      document.getElementById("description").value = description
+      document.getElementById("price").value = parseFloat(price).toFixed(2)
+      document.getElementById("")
+      document.getElementById("updateProduct").setAttribute("name", item.id)
+      document.getElementById("manageButton").href = '/manageAccounts/' + item.id 
+      
+
+      $.ajax({
+        type: "POST",
+        url: "/getStock",
+        data: {
+            id: item.id
+        } 
+      }).done(data => {
+        document.getElementById("stock").innerText = data
+      });
+
+
+    }
+
+    function updateImage(data) {
+        document.getElementById("iconDisplay").src = data.value
+    }
+
+    function updateProduct(data) {
+      $.ajax({
+        type: "POST",
+        url: "/updateItem",
+        data: {
+            id: data.name,
+            title: document.getElementById("title").value,
+            image: document.getElementById("icon").value,
+            price: document.getElementById("price").value,
+            description: document.getElementById("description").value
+        } 
+      }).done(data => {
+          if (data == "e") {
+            window.location.reload();
+          }
+      });
+      
+    }
+
+</script>

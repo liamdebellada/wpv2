@@ -6,13 +6,15 @@ function displayBasketContent(basketContent) {
         console.log("your session basket is empty")
         // document.getElementById("basket-items-quantity").innerText = ""
         $(".basket-items-quantity").text("")
-        $(".checkoutBtn").hide()
+        $("#captchaSubmission").hide()
+        $(".g-recaptcha").hide()
 
     } else {
         basket.innerHTML = ""
         // document.getElementById("basket-items-quantity").innerText = basketContent.length
         $(".basket-items-quantity").text(basketContent.length)
-        $(".checkoutBtn").show()
+        $("#captchaSubmission").show()
+        $(".g-recaptcha").show()
         basketContent.forEach(function (row) {
             var item = row[0]
             var quantity = row[1]
@@ -23,7 +25,7 @@ function displayBasketContent(basketContent) {
             <text>${item.Title}</text>
             <div class="propertyContainer" style="float:right;">
             <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="itemQuantity" onchange="updateQuantity(this)" style="width: 50px;"></input>
-            <input id="${item._id}" class="button" type="submit" onclick="removeItem(this)" value="&times;"></div>
+            <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;"></div>
             </div>
             </div>
             <hr/>
@@ -89,6 +91,7 @@ window.addEventListener("load", function () {
     var buttons = document.getElementsByClassName("0")
     for (item in buttons) {
         buttons[item].disabled = true;
+        buttons[item].classList.remove("wp-button-default-hover");
         //buttons[item].style.backgroundColor = "#ea6464"
         buttons[item].innerText = "Unavaliable"
         buttons[item].cssText = "border-image-slice: 0;"
@@ -180,4 +183,57 @@ window.onscroll = function () {
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();
     }
     prevScrollpos = currentScrollPos;
+}
+
+let typingTimer;
+let doneTypingInterval = 100;  
+let myInput = document.getElementById('searched');
+
+myInput.addEventListener('keyup', () => {
+    clearTimeout(typingTimer);
+    if (myInput.value) {
+        typingTimer = setTimeout(function() {doneTyping(myInput.value)}, doneTypingInterval);
+    }
+    else if (myInput.value == "") {
+        doneTyping(myInput.value)
+    } 
+});
+
+function drawSearchResults(data) {
+    var resultsField = document.getElementById("search-results")
+    resultsField.innerHTML = ""
+
+    if (typeof(data) == "object") {
+        data.forEach(function(item) {     
+            var resultArea = document.createElement("DIV")
+            var rowContent = `
+            <div>
+            <text>${item.Title}</text>
+            <div class="propertyContainer" style="float:right;">
+            <a href="/products/${item.CategoryKey}/items/${item.ProductKey}" class="btn wp-button wp-button-gradient wp-button-checkout">View Product</a>
+            </div>
+            </div>
+            <hr/>
+            `
+    
+            resultArea.innerHTML = rowContent
+    
+            resultsField.append(resultArea)
+        })
+    } else {
+        resultsField.innerHTML = data;
+    }
+}
+
+
+function doneTyping (query) {
+    $.ajax({
+        type: "POST",
+        url: "/searchData",
+        data: {
+            searchQuery: query
+        }
+    }).done(data => {
+        drawSearchResults(data)
+    });
 }

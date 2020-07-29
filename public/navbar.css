@@ -8,9 +8,9 @@
     justify-content: space-between; 
 }
 
-.checkoutBtn:hover {
-    background-color: #4BB543 !important;
-    color: white !important;
+
+.view-basket {
+    border: none;
 }
 
 #navbar {
@@ -201,7 +201,7 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: #FAFAFA;
 }
 
-.button {
+.remove-small-cart-button {
     background-color: transparent;
     border: 0;
     padding: 0;
@@ -233,3 +233,8 @@ border: none;
 color: white;
 text-transform: capitalize;
 }
+
+.wp-nav-button {
+    cursor: pointer
+}
+

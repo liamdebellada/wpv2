@@ -1,0 +1,67 @@
+<h1 class="mt-4">Administration</h1>
+
+<div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Server Shutdown</h5>
+          <p class="card-text">Stop the main servers proccess immediately</p>
+          <a onclick="$('#infoModal').modal('show')" style="color: white !important" class="btn btn-danger">Shutdown</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Toggle Maintanence Mode</h5>
+          <p class="card-text">Make the server unacccessible to customers, for development features</p>
+          <a href="/categories" class="btn btn-warning">Toggle Maintanence</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 0; border: none;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Please enter the shutdown key</h5>
+            </div>
+            <div class="modal-body" style="display: block; text-align: center;">
+              <text id="response"></text>
+                <div class="form-inline" style="margin: 15px 0px 15px;">
+                    <label for="usr">Shutdown Key:</label>
+                    <input type="password" placeholder="Enter Shutdown Key" class="form-control" style="margin: 0px 10px 0px; height: 30px;" id="shutdownKey">
+                  </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center !important;">
+                <button onclick="sendShutdown()" class="btn btn-danger" style="color: white !important;">Confirm Shutdown</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+
+
+  function sendShutdown() {
+      var key = document.getElementById("shutdownKey").value
+      $.ajax({
+          type: "POST",
+          url: "/sendShutdown",
+          data: {
+              shutdownKey: key
+          }
+        }).done(data => {
+          var response = document.getElementById("response")
+          if (data == "Incorrect Password") {
+            $("#response").css("color", "red")
+          } else{
+            $("#response").css("color", "green")
+          }
+          response.innerText = data;
+        });
+  }
+</script>

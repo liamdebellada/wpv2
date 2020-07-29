@@ -5,10 +5,12 @@ var ejs = require("ejs");
 
 //email config
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.livemail.co.uk',
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
-        user: 'nwilliamspe@gmail.com',
-        pass: 'ycSZ7O2Z$LqP'
+      user: 'support@worldplugs.net', // your domain email address
+      pass: 'i8pqjk$dw42tog16y1G8G$Zf' // your password
     }
 });
 
@@ -19,9 +21,9 @@ var mailFunction  = {
                 console.error(error)
             } else {
                 const mailOptions = {
-                    from: 'nwilliamspe@gmail.com',
+                    from: 'support@worldplugs.net',
                     to: emailAddress,
-                    subject: 'WorldPlugs order success!',
+                    subject: 'Thank you for your order!',
                     html: data
                 };
 
