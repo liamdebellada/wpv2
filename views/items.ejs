@@ -19,7 +19,7 @@
               <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result.Image%>"></h1>
             </div>
               <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
-              
+              <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
               <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
           </div>
         </div>

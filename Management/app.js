@@ -69,6 +69,5 @@ app.use('/', require('./routes/users'));
 
 
 // Run Server
-const PORT = process.env.PORT || 5000;
-app.listen(5129, '77.68.92.74')
+app.listen(69, '192.168.1.225')
 

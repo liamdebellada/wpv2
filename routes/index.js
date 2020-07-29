@@ -3,7 +3,7 @@ const express = require('express');
 const app = express()
 const router = express.Router();
 const mongoose = require('mongoose');
-
+var sanitize = require('mongo-sanitize');
 const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching-v2');
 
 // Export Models
@@ -46,7 +46,7 @@ router.get('/products/:product', function (req, res) {
 
 
 router.post('/searchData', function(req, res) {
-    var query = req.body.searchQuery
+    var query = sanitize(req.body.searchQuery)
     if (query == "") {
         res.send("Cant find what your looking for? Request an item in our discord!")
     } else {
@@ -101,6 +101,15 @@ router.get('/cart', function(req, res) {
             })
         }) 
     }
+})
+
+
+router.get('/terms', function(req, res) {
+    res.render('terms')
+})
+
+router.get('/payment-policy', function(req, res) {
+    res.render('payment-policies')
 })
 
 // Export back to app.js

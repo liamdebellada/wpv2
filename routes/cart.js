@@ -21,31 +21,37 @@ router.post('/updateCart', (req, res) => {
     }
 
     checkId.then(function (result) {
+        console.log(result)
         if (!result) { //if the value doesnt exist yet
             var check = functions.checkItem(cartItemId, items)
             check.then(function (result) {
-                var calculatePrice = functions.getPrice(result, quantity)
-                if (calculatePrice !== undefined) { //checks if the price is above 1
-                    result.Price = calculatePrice
-
-                    var item = {
-                        "id": result._id,
-                        "quantity": quantity
+                if (result != undefined || result != null) {
+                    var calculatePrice = functions.getPrice(result, quantity)
+                    if (calculatePrice !== undefined) { //checks if the price is above 1
+                        result.Price = calculatePrice
+    
+                        var item = {
+                            "id": result._id,
+                            "quantity": quantity
+                        }
+    
+                        if (req.session.cart.length > 0) {
+                            req.session.cart.push(item)
+                        } else {
+                            req.session.cart = [item]
+                        }
+                        var getBasket = functions.getBasket(req.session.cart, items, function(result) {
+                            res.send(result)
+                        }) 
+    
+    
+    
+                        //res.send(req.session.cart)
                     }
-
-                    if (req.session.cart.length > 0) {
-                        req.session.cart.push(item)
-                    } else {
-                        req.session.cart = [item]
-                    }
-                    var getBasket = functions.getBasket(req.session.cart, items, function(result) {
-                        res.send(result)
-                    }) 
-
-
-
-                    //res.send(req.session.cart)
+                } else {
+                    res.send("There was an error adding the item to the basket. Please try again")
                 }
+                
 
             })
         } else {

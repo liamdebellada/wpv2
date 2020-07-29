@@ -134,6 +134,8 @@ router.post('/confirmPayment', async function (req, res, next) {
     }
 
     //WE ARE MISSING VALIDATION TO CHECK ACCOUNT STOCK
+
+    console.log(req.session.order)
     
 
     const execute_payment_json = {

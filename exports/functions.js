@@ -69,6 +69,7 @@ var functions = {
         }).then(result => {
             return result
         }).catch(errorCatch => {
+            console.log("error")
             res.redirect("/")
         })
     },

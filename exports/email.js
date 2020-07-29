@@ -11,7 +11,11 @@ const transporter = nodemailer.createTransport({
     auth: {
       user: 'support@worldplugs.net', // your domain email address
       pass: 'i8pqjk$dw42tog16y1G8G$Zf' // your password
-    }
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: true
+    },
 });
 
 var mailFunction  = {
