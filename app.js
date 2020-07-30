@@ -92,7 +92,7 @@ app.post('/secureShutdown', function(req, res) {
 })
 
 // Start server
-var server = app.listen(80, process.env.ADDRESS)
+var server = app.listen(443, process.env.ADDRESS)
 var io = require('socket.io').listen(server);
 io.on('connection', function(client) {
 	client.on('join', function(data) {

@@ -29,9 +29,9 @@ router.post('/executePayment', recaptcha.middleware.verify,  function (req, res)
 
     if (!req.recaptcha.error) {
         console.log("success")
-      } else {
+    } else {
         console.log("error")
-      }
+    }
 
     var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
         if (result.includes(true)) {
@@ -39,7 +39,8 @@ router.post('/executePayment', recaptcha.middleware.verify,  function (req, res)
             for (i in conflicts) {
                 req.session.cart.splice(conflicts[i], 1)
             }
-            res.send('/error').end()
+            req.session.errorMsg = "Your quantity is greater than the current stock for that item."
+            res.redirect('/error')
             //call function to draw error messages to the page
         } else {
             var paymentData = paymentDataConst
@@ -119,7 +120,7 @@ router.get('/checkout', function (req, res, next) {
 
 
 router.post('/confirmPayment', async function (req, res, next) {
-
+    var stockResult = []
     try {
         var paymentId = req.body.paymentId
         var payerId = req.body.payerId
@@ -134,10 +135,23 @@ router.post('/confirmPayment', async function (req, res, next) {
     }
 
     //WE ARE MISSING VALIDATION TO CHECK ACCOUNT STOCK
-
-    console.log(req.session.order)
     
+    for (item in req.session.order) {
+        var id = req.session.order[item][0]._id
+        var previousQuantity = req.session.order[item][1]
+        await accounts.countDocuments({itemID: id, availability: "true"}, function(error, result) {
+            if (error) {
+                console.log("Error checking stock on payement execute", error)
+            } else {
+                console.log(previousQuantity, result)
+                if (previousQuantity > result) {
+                    stockResult.push(true)
+                }
+            }
+        })
+    }
 
+    console.log(stockResult)
     const execute_payment_json = {
         "payer_id": payerId,
         "transactions": [{
@@ -147,79 +161,85 @@ router.post('/confirmPayment', async function (req, res, next) {
             }
         }]
     }
-
-    paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
-        if(error){
-            res.send('/').status(400).end();
-        } else {
-            if (payment.state == 'approved'){
-                var ids = []
-                var orderLog = []
-                for(let item in req.session.order) {
-                    req.session.order[item].push([])
-                    let itemData = req.session.order[item][0] 
-                    let quantity = req.session.order[item][1]
-
-                    await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
-                        for (i in data) {
-                            if (i < quantity) {
-                                ids.push(data[i]._id)
-                                orderLog.push({"Title" : itemData.Title, "AccountID": data[i]._id})
-
-                                var email = functions.decrypt(data[i].email)
-                                var password = functions.decrypt(data[i].password)
-                                //console.log(email, password)
-
-                                req.session.order[item][2].push({email : email, password: password})
-                                console.log(req.session.order)
-                                req.session.save()
-
-                                
-                            }
-                        }
-
-                    })
-                    
-                }
-                for (id in ids) {
-                    accounts.updateOne(
-                        {_id : ids[id]},
-                        {availability : "false"},
-                        function(error, success) {
-                            if (error) {
-                                console.log(error)
-                            } else {
-                                console.log("calling")
-                                
-                            }
-                    })
-                }
-                purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
-
-                emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
-
-
-                req.session.total = "empty"
-                req.session.cart = []
-
-                req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
-
-                req.session.save()
-
-                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
-                    if (error) {
-                        console.log(error)
-                    } else {
-                        console.log(result)
-                    }
-                })
-
-                res.send('/success').status(200).end()
-            } else {
+    if (stockResult.includes(true)) {
+        console.log("stock error")
+        req.session.errorMsg = "One or more of your items has already been purchased during the checkout process."
+        res.send('/error')
+    } else {
+        paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
+            if(error){
                 res.send('/').status(400).end();
+            } else {
+                if (payment.state == 'approved'){
+                    var ids = []
+                    var orderLog = []
+                    for(let item in req.session.order) {
+                        req.session.order[item].push([])
+                        let itemData = req.session.order[item][0] 
+                        let quantity = req.session.order[item][1]
+    
+                        await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
+                            if (data.length < 1) {
+                                stockResult = true
+                            } else {
+                                for (i in data) {
+                                    if (i < quantity) {
+                                        ids.push(data[i]._id)
+                                        orderLog.push({"Title" : itemData.Title, "AccountID": data[i]._id})
+        
+                                        var email = functions.decrypt(data[i].email)
+                                        var password = functions.decrypt(data[i].password)
+        
+                                        req.session.order[item][2].push({email : email, password: password})
+                                        req.session.save()
+        
+                                        
+                                    }
+                                }
+                            }
+    
+                        })
+                        
+                    }
+                    for (id in ids) {
+                        accounts.updateOne(
+                            {_id : ids[id]},
+                            {availability : "false"},
+                            function(error, success) {
+                                if (error) {
+                                    console.log(error)
+                                } else {
+                                    console.log("Accounts being updated") 
+                                }
+                        })
+                    }
+                    purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
+    
+                    emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
+    
+    
+                    req.session.total = "empty"
+                    req.session.cart = []
+    
+                    req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
+    
+                    req.session.save()
+    
+                    logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log(result)
+                        }
+                    })
+    
+                    res.send('/success').status(200).end()
+                } else {
+                    res.send('/').status(400).end();
+                }
             }
-        }
-    });
+        });
+    }
 })
 
 

@@ -8,6 +8,7 @@ const {ECAKey} = require('../config/keys')
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const assert = require('assert');
+const bcrypt = require('bcrypt')
 
 var http = require('http');
 
@@ -17,7 +18,13 @@ const products = require('../../models/products')
 const items = require('../../models/items')
 const accounts = require('../../models/accounts')
 const logs = require('../models/logs')
+const users = require('../models/User')
 const e = require('express');
+
+const Recaptcha = require('express-recaptcha').RecaptchaV2;
+var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
+
+
 
 
 function makeid(length) {
@@ -58,7 +65,117 @@ router.get('/logs', ensureAuthenticated, function(req, res) {
 })
 
 router.get('/staff', ensureAuthenticated, ensureAdmin, function(req, res){ 
-    res.render('staff.ejs')
+    users.find({}, 'name email group', function(error, result) {
+        if (error) {
+            console.log(error)
+        } else{
+            res.render('staff.ejs', { staffAccounts : result })
+        }
+    })
+    
+})
+
+router.post('/updateStaffAccount', ensureAuthenticated, ensureAdmin, function (req, res) {
+
+    if (!Object.values(req.body).includes("")) {
+
+        var accountID = req.body.id
+        var accountName = req.body.name
+        var accountEmail = req.body.email
+        var accountGroup = req.body.group
+
+        users.updateOne({ _id: accountID}, {$set : {  name: accountName, email: accountEmail, group: accountGroup}}, function(error, result) {
+            if (error) {
+                res.send("E").status(400).end()
+            } else{
+                console.log(result, accountID)
+                if (result.n == 0) {
+                    res.send("NA").status(401).end()
+                } else {
+                    if (result.nModified == 1) {
+                        res.send("S").status(200).end()
+                    } else if (result.nModified == 0) {
+                        res.send("N").status(202).end()
+                    }
+                }
+            }
+        })
+
+    } else {
+        res.send("FC").status(406).end()
+    }
+
+})
+
+router.post('/createResetPassword', ensureAuthenticated, ensureAdmin, function (req, res) {
+    if (!Object.values(req.body).includes("")) {
+
+        var accountID = req.body.id
+
+        const resetPasswordURL = 'https://admin.worldplugs.net/reset-password/' + [...Array(70)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
+
+        users.updateOne({_id: accountID}, {$set: { requirePasswordChange: ["true", resetPasswordURL]}}, function(error, result) {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log(result)
+            }
+        })
+
+
+
+    } else {
+        res.send("Missing User ID").status(406).end()
+    }
+})
+
+router.get('/reset-password/:resetURL', function (req, res) {
+    users.findOne({requirePasswordChange: {$all: ["true", 'https://admin.worldplugs.net/reset-password/' + req.params.resetURL]}}, function (error, result){
+        if (error) {
+            console.log(error)
+            res.redirect('/')
+        } else {
+            if (result == null) {
+                res.redirect('/')
+            } else {
+                res.render('reset-password.ejs', {aURL : result.requirePasswordChange[1]})
+            }
+        }
+    })
+})
+
+router.post('/reset-password', recaptcha.middleware.verify, function (req, res) {
+    if (!req.recaptcha.error) {
+
+
+        users.findOne({
+            requirePasswordChange: {$all: ["true", req.body.url]}
+        
+        }, function (error, result) {
+            if (error) {
+                console.log(error)
+            } else {
+                if (result == null) {
+                    console.log("aaaa")
+                } else {
+                    console.log("afafafaf")
+                }
+            }
+        })
+
+        // bcrypt.hash(req.body.password, 10, function(err, hash) {
+        //     if (err) {
+        //         console.log(err)
+        //     } else{
+        //         console.log(hash)
+        //     }
+        // });
+        // users.updateOne({_id: accountID}, {set: { requirePasswordChange: ["false"]}}, function (error, result) {
+
+        // })
+      } else {
+        res.send("E").status(200).end()
+      }
 })
 
 router.get('/banners', ensureAuthenticated, ensureAdmin, function(req, res) {
@@ -355,7 +472,7 @@ router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function(req, res
 
     var data = JSON.stringify({key : req.body.shutdownKey.toString()})
     const options = {
-        hostname: 'fbbsvr.ddns.net',
+        hostname: 'worldplugs.net',
         port: 80,
         path: '/secureShutdown',
         method: 'POST',

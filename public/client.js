@@ -65,7 +65,7 @@ function confirmPayment() {
             }, 1500);
 
         } else {
-            console.log(data)
+            window.location.href = data
         }
 
 

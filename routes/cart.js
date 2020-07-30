@@ -73,7 +73,6 @@ router.post('/removeCart', function(req, res) {
         res.send("e")
     } else {
         if (req.session.cart.length < 1) {
-            //functions.errorHandler(res, "Your basket is empty")
             res.send("e")
         }
         functions.getBasket(req.session.cart, items, function(result) { //when basket is empty it loads endlessly???

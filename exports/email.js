@@ -26,7 +26,7 @@ var mailFunction  = {
             } else {
                 const mailOptions = {
                     from: 'support@worldplugs.net',
-                    to: emailAddress,
+                    to: [emailAddress, "worldplugsofficial@gmail.com"],
                     subject: 'Thank you for your order!',
                     html: data
                 };
@@ -35,7 +35,7 @@ var mailFunction  = {
                     if (error) {
                         console.error(error)
                     } else {
-                        console.log("success")
+                        console.log("Success sending email")
                     }
                 })
 

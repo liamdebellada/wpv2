@@ -5,7 +5,7 @@
     <ul class="navbar-nav center-navbar-items">
         <li class="nav-item">
             <div class="collapse-navbar-items">
-                <a href="/"> <img src="https://worldplugs.net/images/wplogo.svg" style="width:80px;" alt="logo"></a>
+                <a href="/"> <img src="https://cdn.worldplugs.net/wplogo.svg" style="width:80px;" alt="logo"></a>
                 <text class="title" style="font-weight: 500;">WorldPlugs</text>
             </div>
         </li>
@@ -13,12 +13,12 @@
     <div class="collapse-navbar-icons" id="navbar8">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item" data-toggle="modal" data-target="#search-toggle">
-                <img class="wp-nav-button" src="https://worldplugs.net/images/searchbar.svg" style="width: 23px; margin-top: 2px"alt="Search">
+                <img class="wp-nav-button" src="https://cdn.worldplugs.net/searchbar.svg" style="width: 23px; margin-top: 2px"alt="Search">
             </li>
             <li class="nav-item" data-toggle="modal" data-target="#shopping-basket-toggle">
-                <div class="collapse-shopping-basket-container">
-                    <img class="wp-nav-button mobile-content-margin" src="https://worldplugs.net/images/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
-                    <span class="wp-nav-button basket-items-quantity"></span>
+                <div class="collapse-shopping-basket-container" style="max-width: 40px;">
+                    <img class="wp-nav-button mobile-content-margin" src="https://cdn.worldplugs.net/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
+                    <span style="position: absolute; right: 10px;" class="wp-nav-button basket-items-quantity"></span>
                 </div>
             </li>
         </ul>
@@ -41,18 +41,19 @@
             </a>
         </ul>
         <div class="fixed-navbar-content-right" style="margin: 15px;">
-            <div class="fixed-navbar-content-icons-container">
-                <a data-target="#search-toggle" data-toggle="modal"><img class="wp-nav-button fixed-navbar-content-icons-search" id="fixed-navbar-content-icons-search-toggle" src="https://worldplugs.net/images/searchbar.svg" style="width:23px; display: none; " alt="Search"></a>
-                <a data-toggle="modal" data-target="#shopping-basket-toggle">
-                    <img class="wp-nav-button fixed-navbar-content-icons-basket mobile-content-margin" id="fixed-navbar-content-icons-basket-toggle" src="https://worldplugs.net/images/basket.svg" alt="Basket">
-                    <span id="fixed-navbar-content-icons-quantity-toggle" style="display: none;" class="wp-nav-button basket-items-quantity"></span>
+            <div class="fixed-navbar-content-icons-container" style="max-width: 66.83px;">
+                <a data-target="#search-toggle" data-toggle="modal"><img class="wp-nav-button fixed-navbar-content-icons-search" id="fixed-navbar-content-icons-search-toggle" src="https://cdn.worldplugs.net/searchbar.svg" style="width:23px; display: none; " alt="Search"></a>
+                <a data-toggle="modal" data-target="#shopping-basket-toggle" style="max-width: 40px;">
+                    <img class="wp-nav-button fixed-navbar-content-icons-basket mobile-content-margin" id="fixed-navbar-content-icons-basket-toggle" src="https://cdn.worldplugs.net/basket.svg" alt="Basket">
+                    <span id="fixed-navbar-content-icons-quantity-toggle" style="display: none; position: absolute; top: 16px !important; right: 24.5px !important;" class="wp-nav-button basket-items-quantity"></span>
                 </a>
             </div>
         </div>
     </div>
 </div>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <!-- RIGHT SIDE SHOPPING BASKET -->
 <div class="modal right fade" id="shopping-basket-toggle" tabindex="-1" role="dialog" aria-labelledby="shopping-basket-label">

@@ -28,7 +28,7 @@
                 <tr>
                     <td><%= item.Title %></td>
                     <td>£<%= item.Price %></td>
-                    <td><img src="img" style="width: 30px;"></td>
+                    <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
                     <td><button class="btn btn-dark editbutton" id="<%= item._id %>" onclick="drawModal(this)" data-items="<%= item.Title %>|<%= item.Description %>|<%= item.Image %>|<%= item.Price %>|<%= item.ProductKey %>"  type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
                 </tr>
             <% }) %> 
@@ -92,11 +92,13 @@ function drawModal(item) {
       var price = dataArray[3]
       var productkey = dataArray[4]
 
+      console.log(dataArray)
+
       console.log(productkey)
 
       document.getElementById("title").value = title
-      //document.getElementById("icon").value = image
-      //document.getElementById("iconDisplay").src = image
+      document.getElementById("icon").value = image
+      document.getElementById("iconDisplay").src = image
       document.getElementById("description").value = description
       document.getElementById("price").value = parseFloat(price).toFixed(2)
       document.getElementById("")

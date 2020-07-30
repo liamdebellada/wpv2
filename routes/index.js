@@ -29,6 +29,7 @@ var crypto = require("crypto")
 
 router.get('/', (req, res) => {
     // Call searchQuery Function
+    req.session.errorMsg = ""
     functions.searchQuery(res, category, '', '', 'homepage.ejs');
 
 })
@@ -71,7 +72,7 @@ router.get('/success', function(req, res) {
             res.render('success.ejs', {purchaseContents: req.session.viewOrder, addressContents: req.session.userInfo})
         }
     } catch {
-        res.redirect('/error')
+        res.redirect('/')
     }
     
 })
@@ -104,6 +105,18 @@ router.get('/cart', function(req, res) {
 })
 
 
+
+//error handler using sessions
+router.get('/error', function(req, res) {
+    functions.errorHandler(res, req.session.errorMsg)
+    req.session.errorMsg = ""
+})
+
+
+
+
+
+//Terms and policies page renders
 router.get('/terms', function(req, res) {
     res.render('terms')
 })

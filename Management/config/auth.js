@@ -14,7 +14,7 @@ module.exports = {
     },
     ensureAdmin: function(req, res, next) {
         if (req.isAuthenticated()) {
-            if (req.user.group == "admin") {
+            if (req.user.group == "Admin") {
                 return next();
             }
             res.redirect('/dashboard')

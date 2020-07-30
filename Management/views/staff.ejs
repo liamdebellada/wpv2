@@ -2,10 +2,10 @@
 <h1>Staff Management</h1>
 <ul class="nav nav-tabs">
     <li class="nav-item dropdown">
-      <a class="nav-link active" onclick="test(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+      <a class="nav-link active" onclick="navbar(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
     </li>
     <li>
-        <a class="nav-link" style="cursor: pointer" onclick="test(this)" id="createSelection">Add Staff</a>
+        <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="createSelection">Add Staff</a>
     </li>
 </ul>
 
@@ -41,17 +41,19 @@
           <tr>
             <th scope="col">Staff Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Rank</th>
+            <th scope="col">Group</th>
             <th scope="col">Manage Account</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Test</td>
-            <td>abcd@email.com</td>
-            <td>Staff</td>
-            <td><button class="btn btn-dark" onclick="displayAccount(this)">Manage</button</td>
-          </tr>
+          <% staffAccounts.forEach(function(account) { %>
+            <tr>
+              <td><%= account.name %></td>
+              <td><%= account.email %></td>
+              <td><%= account.group %></td>
+              <td><button class="btn btn-dark" data-items="<%= account._id %>|<%= account.name %>|<%= account.email %>|<%= account.group %>" id="<%= account._id %>" onclick="displayAccount(this)">Manage</button</td>
+            </tr>
+           <% }) %>
         </tbody>
       </table>
 </div>
@@ -67,22 +69,73 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <div style="margin-bottom: 10px;">
+          <text id="wp-admin-noreload-result" style="display: none;"></text>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Name</label>
+            <input class="form-control" id="wp-admin-id-field" placeholder="Name" hidden>
+            <input class="form-control" id="wp-admin-name-field" placeholder="Name" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Email</label>
+            <input type="email" class="form-control" id="wp-admin-email-field" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="selectBox form-group">
+          <label for="inputState">Group</label>
+          <select id="wp-admin-group-field" class="form-control" required>
+            <option val="staff">Staff</option>
+            <option val="admin">Admin</option>
+          </select>
+        </div>
+
+        <hr>
+
+
+        <div id="wp-admin-reset" class="collapse show">
+        <div id="wp-admin-reset-password" class="collapse" style="display:inline-block; overflow: hidden;">
+          <text style="color: #18BC9C; cursor: pointer" onclick="askResetPassword()">Reset Password</text>
+
+          <div class="row wp-admin-reset-password-confirm-div collapse" id="wp-admin-reset-password-confirm-picker" >
+
+            <div class="col wp-admin-reset-password-confirm-options" onclick="confirmResetPassword()" style="color: #18BC9C; cursor: pointer">Yes</div>
+            <div class="col wp-admin-reset-password-confirm-options" onclick="noResetPassword()"
+              style="color: #E74C3C; text-align: right; cursor: pointer">No</div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div id="wp-admin-reset-password-collapse-box" class="collapse">
+        <div  class="selectBox form-group">
+          <b><label for="inputState" id="wp-admin-check-copy">Click link to copy</label></b>
+          <input id="wp-admin-reset-password-copybox" class="form-control" spellcheck="false" onclick="copyURL(this)"
+            value="https://admin.worldplugs.net/password-reset/bDlsTWSfnvf8eDZqM7gKjpQ9tqTgi5EZvC2u5gEu16B9ZaJvK5A0HKaHUNTkXe3KtpEIqc"></input>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success">Save changes</button>
+
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Revoke Access</button>
+        <div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="save-changes" onclick="saveAccount()" class="btn btn-success">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
 <script>
-      function test(option) {
+
+      function navbar(option) {
+        
         var dropdown = document.getElementById("dropSelection")
         var other = document.getElementById("createSelection")
         var creationPage = document.getElementById('create')
@@ -105,10 +158,127 @@
     }
 
     function displayAccount(data) {
+
+
+     //Split data items via pipe 
+      var accountData = $("#" + data.id).data('items')
+      var accountData = accountData.split("|")
+
+      //Set fields
+      $("#wp-admin-id-field").val(accountData[0])
+      $("#wp-admin-name-field").val(accountData[1])
+      $("#wp-admin-email-field").val(accountData[2])
+      $("#wp-admin-group-field").val(accountData[3])
+      $('#wp-admin-group-field option[val="'+ accountData[3] +'"]').prop("selected", true);
+
+      //Show modal
       $("#accountModal").modal('show')
 
     }
 
 
+    function saveAccount() {
+
+      //Get modal data
+      accountID = $("#wp-admin-id-field").val()
+      nameField = $("#wp-admin-name-field").val()
+      emailField = $("#wp-admin-email-field").val()
+      groupField = $("#wp-admin-group-field").val()
+
+      $.ajax({
+        type: "POST",
+        url: "/updateStaffAccount",
+        data: {
+            id: accountID,
+            name: nameField,
+            email: emailField,
+            group: groupField
+        } 
+      }).done(data => {
+        console.log(data)
+        var noReload = $("#wp-admin-noreload-result")
+        if (data == "S") {
+            window.location.reload();
+          } else if (data == "N") {
+            noReload.text("Nothing to change in the database.")
+            noReload.css('color', '#18BC9C')
+            noReload.show()
+          } else if (data == "NA"){
+            noReload.text("A database error occured where no account was found.")
+            noReload.css('color', '#ff9966')
+            noReload.show()
+          } else if (data =="FC"){
+            noReload.text("Please make sure all fields are filled.")
+            noReload.css('color', '#e0455e')
+            noReload.show()
+          } else {
+            noReload.text("An internal database error occured")
+            noReload.css('color', '#E74C3C')
+            noReload.show()
+          }
+          
+      });
+
+    }
+
+    function askResetPassword() {
+      $("#wp-admin-reset-password-confirm-picker").collapse('show')
+
+    }
+
+    function noResetPassword() {
+      $("#wp-admin-reset-password-confirm-picker").collapse('hide')
+    }
+
+    function confirmResetPassword() {
+      $("#wp-admin-reset").collapse('hide').on('hidden.bs.collapse', function () {
+        $("#wp-admin-reset-password-collapse-box").collapse('show')
+      })
+    }
+
+    function copyURL(link) {
+      $('#' + link.id).select()
+      document.execCommand("copy")
+      $('#wp-admin-check-copy').text("Copied!")
+
+      accountID = $("#wp-admin-id-field").val()
+
+      $.ajax({
+        type: "POST",
+        url: "/createResetPassword",
+        data: {
+            id: accountID
+        } 
+      })
+
+    }
+
+
+
+
 
 </script>
+
+<style>
+
+  #wp-admin-reset-password-copybox {
+    border-radius: 0px !important;
+    border: 0px; 
+    border-bottom: 1px solid;
+    transition: border-bottom 0.6s ease;
+  }
+
+  #wp-admin-reset-password-copybox.form-control:focus {
+    border-bottom: 1px solid #00CED1;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  #wp-admin-reset-password {
+    height: auto;
+    transition: height 0.5s ease-in;
+  }
+
+
+
+</style>

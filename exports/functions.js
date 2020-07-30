@@ -112,7 +112,7 @@ var functions = {
     },
 
     errorHandler: function(res, message) {
-        res.render("error.ejs", {msg : message})
+        res.render("partials/error.ejs", {msg : message})
     },
 
     getTotal : function(result) {
@@ -125,25 +125,31 @@ var functions = {
         return total.toFixed(2);
     },
 
-    updateStock : function(results, items, callback) {
+    countStock : async function(id, name, callback) {
+        await accounts.countDocuments( {itemID : id, availability : "true" },
+        function(error, stock) {
+            if (error) {
+                console.log(error)
+            } else {
+                return callback(stock)
+            }
+        })
+    },
+
+
+    updateStock : async function(results, items, callback) {
         var temp = []
         for (let item in results) {
-            var id = results[item]._id
-            accounts.countDocuments( {itemID : id, availability : "true" },
-            function(error, stock) {
-                if (error) {
-                    console.log(error)
-                } else {
-                    var obj = results[item].toObject()
-                    obj.Stock = stock
-                    temp.push(obj)
-                    if (parseInt(item) + 1 == results.length) {
-                        return callback(temp)
-                    }
+            let id = results[item]._id
+            this.countStock(id, results[item].Title, function(stock) {
+                var obj = results[item].toObject()
+                obj.Stock = stock
+                temp.push(obj)
+                if (parseInt(item) + 1 == results.length) {
+                    return callback(temp)
                 }
             })
         }
-    
     },
 
     checkStock: function(session, accounts, callback) {
