@@ -11,5 +11,15 @@ module.exports = {
             res.redirect('/dashboard')
         }
         return next();
+    },
+    ensureAdmin: function(req, res, next) {
+        if (req.isAuthenticated()) {
+            if (req.user.group == "admin") {
+                return next();
+            }
+            res.redirect('/dashboard')
+            
+        }
+        
     }
 }

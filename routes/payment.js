@@ -154,15 +154,17 @@ router.post('/confirmPayment', async function (req, res, next) {
         } else {
             if (payment.state == 'approved'){
                 var ids = []
+                var orderLog = []
                 for(let item in req.session.order) {
                     req.session.order[item].push([])
-                    let itemData = req.session.order[item][0]
+                    let itemData = req.session.order[item][0] 
                     let quantity = req.session.order[item][1]
+
                     await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
                         for (i in data) {
                             if (i < quantity) {
                                 ids.push(data[i]._id)
-
+                                orderLog.push({"Title" : itemData.Title, "AccountID": data[i]._id})
 
                                 var email = functions.decrypt(data[i].email)
                                 var password = functions.decrypt(data[i].password)
@@ -204,7 +206,7 @@ router.post('/confirmPayment', async function (req, res, next) {
 
                 req.session.save()
 
-                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total}, function(error, result) {
+                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
                     if (error) {
                         console.log(error)
                     } else {

@@ -1,0 +1,35 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+
+<h1 class="mt-4">Dashboard</h1>
+<p class="lead mb-3">View all client data</p>
+
+<table class="table" id="example">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Order ID</th>
+        <th scope="col">Email</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% data.forEach(function(item) { %>
+      <tr>
+        <th scope="row"><%= item.Date %></th>
+        <td><%= item.OrderID %></td>
+        <td><%= item.Email %></td>
+        <td>£<%= item.Amount %></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            lengthChange: false
+        });
+    });
+</script>

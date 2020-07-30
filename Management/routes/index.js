@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     ensureAuthenticated,
+    ensureAdmin
 } = require('../config/auth');
 const {ECAKey} = require('../config/keys')
 const mongoose = require('mongoose');
@@ -15,6 +16,7 @@ const categories = require('../../models/categories')
 const products = require('../../models/products')
 const items = require('../../models/items')
 const accounts = require('../../models/accounts')
+const logs = require('../models/logs')
 const e = require('express');
 
 
@@ -30,18 +32,36 @@ function makeid(length) {
 
 
 //static routes for rendering pages
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
+router.get('/dashboard', ensureAuthenticated,  (req, res) => {
 
         const uid = req.user.uid
 
-
         res.render('dashboard', {
             name: req.user.name,
-        })   
+            rank: req.user.group
+        })
+
+
+          
     }
 )
 
-router.get('/banners', ensureAuthenticated, function(req, res) {
+
+router.get('/logs', ensureAuthenticated, function(req, res) {
+    logs.find({}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            res.render('data-logs.ejs', { data: result})
+        }
+    })
+})
+
+router.get('/staff', ensureAuthenticated, ensureAdmin, function(req, res){ 
+    res.render('staff.ejs')
+})
+
+router.get('/banners', ensureAuthenticated, ensureAdmin, function(req, res) {
     banners.find({}, function(error, result) {
         if (error) {
             console.log(error)
@@ -53,7 +73,7 @@ router.get('/banners', ensureAuthenticated, function(req, res) {
     })
 })
 
-router.get('/categories', ensureAuthenticated, async function(req, res) {
+router.get('/categories', ensureAuthenticated, ensureAdmin, async function(req, res) {
     var results = []
     await categories.find({}, function(error, result) {
         if (error) {
@@ -67,7 +87,7 @@ router.get('/categories', ensureAuthenticated, async function(req, res) {
     })
 })
 
-router.get('/products', ensureAuthenticated, async function(req, res) {
+router.get('/products', ensureAuthenticated, ensureAdmin, async function(req, res) {
     var results = []
     await categories.find({}, function(error, result) {
         if (error) {
@@ -81,7 +101,7 @@ router.get('/products', ensureAuthenticated, async function(req, res) {
     })
 })
 
-router.get('/browseProducts/:categoryKey', ensureAuthenticated, function(req, res) {
+router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, function(req, res) {
     var key = req.params.categoryKey.toString();
     products.find({ CategoryKey : key}, function(error, results) {
         if (error) {
@@ -92,7 +112,7 @@ router.get('/browseProducts/:categoryKey', ensureAuthenticated, function(req, re
     })
 })
 
-router.get('/browseItems/:productKey', ensureAuthenticated, function(req, res) {
+router.get('/browseItems/:productKey', ensureAuthenticated, ensureAdmin, function(req, res) {
     var key = req.params.productKey.toString()
     items.find({ ProductKey: key }, function(error, results) {
         if (error) {
@@ -103,7 +123,7 @@ router.get('/browseItems/:productKey', ensureAuthenticated, function(req, res) {
     })
 })
 
-router.get('/manageAccounts/:id', ensureAuthenticated, function(req, res) {
+router.get('/manageAccounts/:id', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = req.params.id.toString()
     accounts.find({itemID: id}, function(error, result) {
         if (error) {
@@ -115,13 +135,13 @@ router.get('/manageAccounts/:id', ensureAuthenticated, function(req, res) {
 })
 
 
-router.get('/admin', ensureAuthenticated, function(req, res) {
+router.get('/admin', ensureAuthenticated, ensureAdmin, function(req, res) {
     res.render('admin')
 })
 
 
 //category posts to update and change categories
-router.post('/updateCategory', ensureAuthenticated, function(req, res) {
+router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = req.body.id
     console.log(req.body.categoryKey, req.body.Image)
     categories.findOne({_id: id}, function(error, result) {
@@ -139,7 +159,7 @@ router.post('/updateCategory', ensureAuthenticated, function(req, res) {
     res.send('/categories')
 })
 
-router.post('/createCategory', ensureAuthenticated, function(req, res) {
+router.post('/createCategory', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = makeid(24)
     var obj = {
         CategoryKey: req.body.categoryKey,
@@ -155,7 +175,7 @@ router.post('/createCategory', ensureAuthenticated, function(req, res) {
     })
 })
 
-router.post('/deleteCategory', ensureAuthenticated, function(req, res) {
+router.post('/deleteCategory', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = req.body.id
     categories.deleteOne({_id: id}, function(error, result) {
         if (error) {
@@ -172,7 +192,7 @@ router.post('/deleteCategory', ensureAuthenticated, function(req, res) {
 
 
 //banner posts to update and change banners
-router.post('/createBanner', ensureAuthenticated, function(req, res) {
+router.post('/createBanner', ensureAuthenticated, ensureAdmin, function(req, res) {
     //console.log(req.body)
     var datetime = new Date();
     var date = datetime.toISOString().split("T", 1);
@@ -208,7 +228,7 @@ router.post('/createBanner', ensureAuthenticated, function(req, res) {
 
 
 //items posts to update and change items
-router.post('/updateItem', ensureAuthenticated, function(req, res) {
+router.post('/updateItem', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = req.body.id
     var obj = {
         Title: req.body.title,
@@ -230,7 +250,7 @@ router.post('/updateItem', ensureAuthenticated, function(req, res) {
 
 
 //products post to update a product
-router.post('/updateProduct', ensureAuthenticated, async function(req, res) {
+router.post('/updateProduct', ensureAuthenticated, ensureAdmin, async function(req, res) {
 
     var productId = req.body.id
     var title = req.body.title
@@ -269,7 +289,7 @@ router.post('/updateProduct', ensureAuthenticated, async function(req, res) {
 
 
 //count document to return stock to the user on click
-router.post('/getStock', ensureAuthenticated, function(req, res) {
+router.post('/getStock', ensureAuthenticated, ensureAdmin, function(req, res) {
     var id = req.body.id
     accounts.countDocuments( {itemID : id, availability : "true" }, function(error, stock) {
         if (error) {
@@ -285,7 +305,7 @@ router.post('/getStock', ensureAuthenticated, function(req, res) {
 
 
 //update the state of accounts
-router.post('/changeState', ensureAuthenticated, function(req, res) {
+router.post('/changeState', ensureAuthenticated, ensureAdmin, function(req, res) {
     const inverse = {
         "true" : "false",
         "false" : "true"
@@ -311,7 +331,7 @@ function encrypt(value) {
 
 
 //add accounts post route
-router.post('/addAccounts', ensureAuthenticated, function(req, res) {
+router.post('/addAccounts', ensureAuthenticated, ensureAdmin, function(req, res) {
     var accountsJson = JSON.parse(req.body.accounts);
     var id = req.body.id;
 
@@ -331,7 +351,7 @@ router.post('/addAccounts', ensureAuthenticated, function(req, res) {
     };
 })
 
-router.post('/sendShutdown', ensureAuthenticated, function(req, response) {
+router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function(req, response) {
 
     var data = JSON.stringify({key : req.body.shutdownKey.toString()})
     const options = {

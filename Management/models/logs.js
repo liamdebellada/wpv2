@@ -16,6 +16,10 @@ const logsSchema = new mongoose.Schema({
     Amount: {
         type: String, 
         required: true
+    },
+    Accounts: {
+        type: Array,
+        required: true
     }
 });
 
