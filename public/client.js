@@ -1,4 +1,5 @@
 function displayBasketContent(basketContent) {
+    console.log(basketContent)
     var basket = document.getElementById("modalBody")
     var total = 0;
     if (basketContent == "e") {
@@ -177,6 +178,7 @@ var prevScrollpos = window.pageYOffset;
 window.onscroll = function () {
     var currentScrollPos = window.pageYOffset;
     if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+        console.log("UP")
         document.getElementById("navbar").style.top = "-75px"; //up
         document.getElementById("fixed-navbar-row").style.top = "0";
         $(".dropdown-item").css("margin", "0.25rem 0 0");
@@ -184,9 +186,10 @@ window.onscroll = function () {
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").show();
 
     } else {
+        console.log("DOWN")
         document.getElementById("navbar").style.top = "0"; //down
         $(".dropdown-item").css("margin", "0.625rem 0 0");
-        document.getElementById("fixed-navbar-row").style.top = "70px";
+        document.getElementById("fixed-navbar-row").style.top = "0px";
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "30px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();
     }

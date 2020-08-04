@@ -27,11 +27,6 @@ var crypto = require("crypto")
 
 // Pages
 
-router.get('/404', function(req, res) {
-    functions.getPageLinks(function(links) {
-        res.render('404', {links: links})
-    })
-})
 
 router.get('/', (req, res) => {
     // Call searchQuery Function

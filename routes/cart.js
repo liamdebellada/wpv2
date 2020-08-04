@@ -21,6 +21,7 @@ router.post('/updateCart', (req, res) => {
         req.session.cart = []
     }
 
+
     checkId.then(function (result) {
         if (!result) { //if the value doesnt exist yet
             var check = functions.checkItem(cartItemId, items)
@@ -29,11 +30,11 @@ router.post('/updateCart', (req, res) => {
 
                     products.findOne({
                         ProductKey: result.ProductKey
-                    }, function (error, result) {
+                    }, function (error, resulttt) {
                         if (error) {
                             console.log(error)
                         } else {
-                            if (result.productState == "enabled") {
+                            if (resulttt.productState == "enabled") {
                                 var calculatePrice = functions.getPrice(result, quantity)
                                 if (calculatePrice !== undefined) { //checks if the price is above 1
                                     result.Price = calculatePrice
@@ -48,6 +49,7 @@ router.post('/updateCart', (req, res) => {
                                     } else {
                                         req.session.cart = [item]
                                     }
+                                    console.log(req.session.cart)
                                     var getBasket = functions.getBasket(req.session.cart, items, function (result) {
                                         res.send(result)
                                     })
