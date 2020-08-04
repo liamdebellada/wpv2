@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     ECAUID: {
         type: String,
-        required: true
+        required: false
     },
     name: {
         type: String,
@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     },
     uid: {
         type: Number,
-        required: true
+        required: false
     },
     email: {
         type: String,

@@ -11,11 +11,12 @@ window.addEventListener("load", function(){
             }
         }).done(data => {
             if (typeof(data) != "object") {
-                console.log("item already in basket")
                 document.getElementById("alertMsg").style.display = "block";
+                document.getElementById("alertMsg").innerText = data;
             } else {
                 displayBasketContent(data)
             }
         });
       });
   });
+

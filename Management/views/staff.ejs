@@ -10,19 +10,34 @@
 </ul>
 
 <div id="create" style="display: none;">
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Category key</label>
-    <input type="text" class="form-control" id="newCategoryKey" placeholder="Enter Category key">
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Image url</label>
-    <input type="text" class="form-control" id="newImageUrl" placeholder="Enter image url" onkeyup="updateImagePreview(this)">
-  </div>
-  <label for="exampleFormControlInput1">Image preview</label>
-  <div class="form-group" style="border: 1px solid grey;">
-    <img id="previewImageCreate" style="width: 50px;">
-  </div>
-  <a href="#" class="btn btn-primary" onclick="createNewCategory()">Create banner</a>
+  <div style="margin-top: 15px;">
+    <text id="wp-create-account-response"></text>
+    <div class="form-row">
+      <div  style="margin-bottom: 10px" class="col-md-6">
+        <label>Users Name</label>
+        <input id="wp-create-account-user-name" type="text" class="form-control" placeholder="Users Name">
+      </div>
+      <div style="margin-bottom: 10px" class="col-md-6">
+        <label>Users Email</label>
+        <input type="email" id="wp-create-account-user-email" class="form-control" placeholder="Users Email">
+      </div>
+    </div>
+    <div  class="form-group">
+      <label for="inputState">Group</label>
+      <select id="wp-create-account-select-group" class="form-control" required>
+        <option val="staff">Staff</option>
+        <option val="admin">Admin</option>
+      </select>
+    </div>
+    <button style="margin-bottom: 10px" onclick="addAccount()" class="btn btn-success ">Add Account and Generate Password Link</button>
+    <div id="wp-admin-reset-password-collapse-box" class="collapse">
+      <div  class="selectBox form-group">
+        <b><label for="inputState" id="wp-create-account-copy">Click link to copy</label></b>
+        <input id="wp-create-account-copybox" class="form-control wp-copybox" spellcheck="false" onclick="copyURL(this, 'wp-create-account-copy')"
+          value=""></input>
+      </div>
+    </div>
+    </div>
 </div>
 
 <style>
@@ -51,7 +66,7 @@
               <td><%= account.name %></td>
               <td><%= account.email %></td>
               <td><%= account.group %></td>
-              <td><button class="btn btn-dark" data-items="<%= account._id %>|<%= account.name %>|<%= account.email %>|<%= account.group %>" id="<%= account._id %>" onclick="displayAccount(this)">Manage</button</td>
+              <td><button class="btn btn-dark editbannerbutton" data-items="<%= account._id %>|<%= account.name %>|<%= account.email %>|<%= account.group %>" id="<%= account._id %>" onclick="displayAccount(this)">Manage</button</td>
             </tr>
            <% }) %>
         </tbody>
@@ -115,14 +130,14 @@
       <div id="wp-admin-reset-password-collapse-box" class="collapse">
         <div  class="selectBox form-group">
           <b><label for="inputState" id="wp-admin-check-copy">Click link to copy</label></b>
-          <input id="wp-admin-reset-password-copybox" class="form-control" spellcheck="false" onclick="copyURL(this)"
-            value="https://admin.worldplugs.net/password-reset/bDlsTWSfnvf8eDZqM7gKjpQ9tqTgi5EZvC2u5gEu16B9ZaJvK5A0HKaHUNTkXe3KtpEIqc"></input>
+          <input id="wp-admin-reset-password-copybox" class="form-control wp-copybox" spellcheck="false" onclick="copyURL(this, 'wp-admin-check-copy')"
+            value=""></input>
         </div>
       </div>
 
       </div>
       <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Revoke Access</button>
+        <button type="button" class="btn btn-danger" onclick="revokeAccess()" data-dismiss="modal">Revoke Access</button>
         <div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" id="save-changes" onclick="saveAccount()" class="btn btn-success">Save changes</button>
@@ -221,6 +236,19 @@
 
     }
 
+    function revokeAccess() {
+      accountID = $("#wp-admin-id-field").val()
+      $.ajax({
+        type: "POST",
+        url: "/revokeStaffAccount",
+        data: {
+            id: accountID
+        } 
+      }).done(data => {
+        window.location.reload();
+      })
+    }
+
     function askResetPassword() {
       $("#wp-admin-reset-password-confirm-picker").collapse('show')
 
@@ -232,25 +260,50 @@
 
     function confirmResetPassword() {
       $("#wp-admin-reset").collapse('hide').on('hidden.bs.collapse', function () {
-        $("#wp-admin-reset-password-collapse-box").collapse('show')
-      })
-    }
-
-    function copyURL(link) {
-      $('#' + link.id).select()
-      document.execCommand("copy")
-      $('#wp-admin-check-copy').text("Copied!")
-
-      accountID = $("#wp-admin-id-field").val()
-
-      $.ajax({
+        const accountID = $("#wp-admin-id-field").val()
+        $.ajax({
         type: "POST",
         url: "/createResetPassword",
         data: {
             id: accountID
         } 
+      }).done(data => {
+        $("#wp-admin-reset-password-collapse-box").collapse('show')
+        $("#wp-admin-reset-password-copybox").val(data)
+      });
+        
       })
+    }
 
+    function copyURL(link, copylocation) {
+      $('#' + link.id).select()
+      document.execCommand("copy")
+      $('#' + copylocation).text("Copied!")
+
+    }
+
+    function addAccount() {
+      newUserName = $("#wp-create-account-user-name").val()
+      newUserEmail = $("#wp-create-account-user-email").val()
+      newUserGroup = $("#wp-create-account-select-group").val()
+
+      if (newUserName && newUserEmail && newUserGroup ) {
+        $.ajax({
+        type: "POST",
+        url: "/createStaffAccount",
+        data: {
+            name: newUserName,
+            email: newUserEmail,
+            group: newUserGroup
+        } 
+      }).done(data => {
+        $("#wp-admin-reset-password-collapse-box").collapse('show')
+        $("#wp-create-account-copybox").val(data)
+      })
+      } else {
+        $("#wp-create-account-response").text("Please fill all fields")
+        $("#wp-create-account-response").css('color', 'red')
+      }
     }
 
 
@@ -261,14 +314,14 @@
 
 <style>
 
-  #wp-admin-reset-password-copybox {
+  .wp-copybox {
     border-radius: 0px !important;
     border: 0px; 
     border-bottom: 1px solid;
     transition: border-bottom 0.6s ease;
   }
 
-  #wp-admin-reset-password-copybox.form-control:focus {
+  .wp-copybox.form-control:focus {
     border-bottom: 1px solid #00CED1;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;

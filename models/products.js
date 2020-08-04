@@ -25,7 +25,11 @@ const productsScehma = new mongoose.Schema({
     Description: {
         type: String,
         required: true
-    }
+    },
+    productState: {
+        type: String,
+        required: true
+    },
 });
 
 productsScehma.plugin(mongoose_fuzzy_searching, {

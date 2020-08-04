@@ -3,11 +3,21 @@ const session = require("express-session")
 var crypto = require('crypto');
 const accounts = require('../models/accounts');
 const banners = require('../Management/models/banners')
+const links = require('../Management/models/links');
+const products = require("../models/products");
 var functions = {
 
     // Search Database With Arguments
 
-    searchQuery: function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.") {
+    searchQuery: async function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.") {
+        var pageLinks;
+        await links.find({}, function(error, result) {
+            if (error) {
+                res.redirect(fallbackRedirect)
+            } else {
+                pageLinks = result
+            }
+        })
 
         query = {}
         if (dbKey !== '') {
@@ -17,21 +27,32 @@ var functions = {
                 query
             ).then(result => {
                 if (pageRender == "items.ejs") {
-                    this.updateStock(result, modelName, function(stockResult) {
-                        if (result.length > 0) {
-                            functions.getBanners(function(banner) {
-                                res.render(pageRender, {
-                                    results: stockResult,
-                                    banner: banner
+                    products.findOne({ProductKey: userQuery}, function (error, product) {
+                        if (product.productState == "enabled") {
+                            functions.updateStock(result, modelName, false, function(stockResult) {
+                                if (result.length > 0) {
+                                    functions.getBanners(function(banner) {
+                                        res.render(pageRender, {
+                                            results: stockResult,
+                                            banner: banner,
+                                            links: pageLinks
+                                    })
+                                })}
                             })
-                        })}
-                    })
+                        } else {
+                            res.redirect(fallbackRedirect)
+                        }
+                    })    
                 }
+
+
+
                 else if (result.length > 0) {
                     this.getBanners(function(banner) {
                         res.render(pageRender, {
                             results: result,
-                            banner: banner
+                            banner: banner,
+                            links: pageLinks
                         })
                     })
                 } else {
@@ -111,8 +132,8 @@ var functions = {
         }
     },
 
-    errorHandler: function(res, message) {
-        res.render("partials/error.ejs", {msg : message})
+    errorHandler: function(res, message, Links) {
+        res.render("partials/error.ejs", {msg : message, links: Links})
     },
 
     getTotal : function(result) {
@@ -137,18 +158,35 @@ var functions = {
     },
 
 
-    updateStock : async function(results, items, callback) {
-        var temp = []
-        for (let item in results) {
-            let id = results[item]._id
-            this.countStock(id, results[item].Title, function(stock) {
-                var obj = results[item].toObject()
-                obj.Stock = stock
-                temp.push(obj)
-                if (parseInt(item) + 1 == results.length) {
-                    return callback(temp)
-                }
-            })
+    updateStock : async function(results, items, cartCheck, callback) {
+        if (cartCheck) {
+            var temp = []
+            for (let item in results) {
+                let id = results[item][0]._id
+                let quantity = results[item][1]
+                this.countStock(id, results[item].Title, function(stock) {
+                    var obj = results[item][0].toObject()
+                    obj.Stock = stock
+                    obj.Quantity = quantity
+                    temp.push(obj)
+                    if (parseInt(item) + 1 == results.length) {
+                        return callback(temp)
+                    }
+                })
+            }
+        } else {
+            var temp = []
+            for (let item in results) {
+                let id = results[item]._id
+                this.countStock(id, results[item].Title, function(stock) {
+                    var obj = results[item].toObject()
+                    obj.Stock = stock
+                    temp.push(obj)
+                    if (parseInt(item) + 1 == results.length) {
+                        return callback(temp)
+                    }
+                })
+            }
         }
     },
 
@@ -192,6 +230,23 @@ var functions = {
                 return callback(banner)
             }
         })
+    },
+    
+    getPageLinks: async function(callback) { //WorldPlugs 2020 proprietary link management
+        var obj = {}
+        var linkArr;
+        await links.find({}, function(error, links) {
+            if (error) {
+                console.log(error)
+            } else {
+                linkArr = links
+            }
+        })
+        linkArr.forEach(function(link) {
+            var key = link.key
+            obj[key] = link.link
+        })
+        return callback(obj)
     }
 
 }

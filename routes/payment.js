@@ -28,59 +28,57 @@ paypal.configure({
 router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
 
     if (!req.recaptcha.error) {
-        console.log("success")
-    } else {
-        console.log("error")
-    }
-
-    var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
-        if (result.includes(true)) {
-            //error
-            for (i in conflicts) {
-                req.session.cart.splice(conflicts[i], 1)
-            }
-            req.session.errorMsg = "Your quantity is greater than the current stock for that item."
-            res.redirect('/error')
-            //call function to draw error messages to the page
-        } else {
-            var paymentData = paymentDataConst
-
-            functions.getBasket(req.session.cart, items, function(result) {
-                req.session.order = result //use this to pass to email template
-                req.session.viewOrder = result
-                paymentData.transactions[0].item_list.items = []
-                var total = functions.getTotal(result)
-                for (item in result) {
-        
-                    var itemData = result[item][0] //Indivudal Item Data
-                    var quantity = result[item][1] //Indivudal Item Quantity
-        
-                    var itemObject =  {
-                        "name" : itemData.Title,
-                        "sku" : "1",
-                        "price" : itemData.Price,
-                        "currency" : "GBP",
-                        "quantity" : quantity
-                    }
-        
-                    paymentData.transactions[0].item_list.items.push(itemObject)
+        var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
+            if (result.includes(true)) {
+                //error
+                for (i in conflicts) {
+                    req.session.cart.splice(conflicts[i], 1)
                 }
-                paymentData.transactions[0].amount.total = total.toString()
-        
-        
-                paypal.payment.create(paymentData, function (error, payment) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        req.session.total = total.toString()
-                        res.send(payment.links[1].href);
+                req.session.errorMsg = "Your quantity is greater than the current stock for that item."
+                res.redirect('/error')
+                //call function to draw error messages to the page
+            } else {
+                var paymentData = paymentDataConst
+    
+                functions.getBasket(req.session.cart, items, function(result) {
+                    req.session.order = result //use this to pass to email template
+                    req.session.viewOrder = result
+                    paymentData.transactions[0].item_list.items = []
+                    var total = functions.getTotal(result)
+                    for (item in result) {
+            
+                        var itemData = result[item][0] //Indivudal Item Data
+                        var quantity = result[item][1] //Indivudal Item Quantity
+            
+                        var itemObject =  {
+                            "name" : itemData.Title,
+                            "sku" : "1",
+                            "price" : itemData.Price,
+                            "currency" : "GBP",
+                            "quantity" : quantity
+                        }
+            
+                        paymentData.transactions[0].item_list.items.push(itemObject)
                     }
-                });
-                
-                
-            })
-        }
-    })
+                    paymentData.transactions[0].amount.total = total.toString()
+            
+            
+                    paypal.payment.create(paymentData, function (error, payment) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            req.session.total = total.toString()
+                            res.redirect(payment.links[1].href);
+                        }
+                    });
+                    
+                    
+                })
+            }
+        })
+    } else {
+        res.redirect('/error')
+    }
     
 })
 

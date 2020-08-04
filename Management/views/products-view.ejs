@@ -1,120 +1,355 @@
 <h1>
     Manage Products
 </h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+        <a class="nav-link active" style="cursor: pointer" onclick="test(this)" href="#" role="button"
+            id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+    <li>
+        <a class="nav-link" style="cursor: pointer" onclick="test(this)" id="createSelection">Create New</a>
+    </li>
+    <li>
+        <a class="nav-link" style="cursor: pointer" onclick="test(this)" id="viewUnlisted">Unlisted</a>
+    </li>
+</ul>
 
-<style>
-    .editbutton {
-        padding-right: 2px;
-        padding-left: 2px;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-radius: 1px;
-    }
-</style>
-    <table class="table">
-        <thead>
-          <tr>
+<div id="create" style="display: none;">
+    <div style="margin-top: 15px;">
+        <text id="wp-create-product-response"></text>
+        <div class="form-row">
+            <div style="margin-bottom: 10px" class="col-md-6">
+                <label>Product Title</label>
+                <input id="wp-create-product-title" type="text" class="form-control" placeholder="Product Title">
+            </div>
+            <div style="margin-bottom: 10px" class="col-md-6">
+                <label>Product Key</label>
+                <input type="text" id="wp-create-product-key" class="form-control" placeholder="Product Key">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-6">
+                <label for="inputState">Image</label>
+                <input type="text" class="form-control" id="wp-create-product-image" onkeyup="updateImagePreview(this)"
+                    placeholder="Place Image Link Here">
+            </div>
+            <div class="col-6">
+                <label for="exampleFormControlInput1">Image preview</label>
+                <div class="form-group">
+                    <img id="previewImageCreate" style="width: 62.5px; height: 62.5px;">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Description &nbsp;</label><b
+                id="wp-create-product-check-text-length" style="color: #18BC9C; font-size: 0.8em">70</b><b
+                style="color: #18BC9C; font-size: 0.8em">/70</b>
+            <textarea class="form-control" id="wp-create-product-description" rows="3" maxlength="70"
+                onkeydown="checkTextLength(this, create)"></textarea>
+        </div>
+        <button style="margin-bottom: 10px" onclick="addProduct()" class="btn btn-success ">Add Product</button>
+    </div>
+</div>
+
+
+<table id="unlisted" class="table" style="display: none;">
+    <thead>
+        <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% products.forEach(function(product) { %>
+            <% if (product.productState == "disabled") { %>
+        <tr>
+            <td><%= product.Title %></td>
+            <td><button class="btn btn-dark" id="<%= product._id + "unlisted"%>" onclick="unlistedProductOptions(this)"
+                    type="button" data-toggle="modal" data-target="#unlistedModal">Manage Product</button></td>
+        </tr>
+            <% } %>
+        <% }) %>
+    </tbody>
+</table>
+
+
+<table id="dataTable" class="table">
+    <thead>
+        <tr>
             <th scope="col">Product</th>
             <th scope="col">Image</th>
             <th scope="col">Edit Product</th>
             <th scope="col">Manage Items</th>
-          </tr>
-        </thead>
-        <tbody>
-            <% products.forEach(function(product) { %>
-                <tr>
-                    <td><%= product.Title %></td>
-                    <td><img src="<%= product.Image %>" style="width: 30px;"></td>
-                    <td><button class="btn btn-dark editbutton" id="<%= product._id %>" onclick="drawModal(this)" data-items="<%= product.Title %>|<%= product.Description %>|<%= product.Image %>|<%= product.ProductKey %>"  type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
-                        <td><a href="/browseItems/<%=product.ProductKey %>" class="btn btn-dark editbutton">Browse</a></td>
-                </tr>
-            <% }) %> 
-        </tbody>
-      </table>
+        </tr>
+    </thead>
+    <tbody>
+        <% products.forEach(function(product) { %>
+            <% if (product.productState == "enabled") { %>
+        <tr>
+            <td><%= product.Title %></td>
+            <td><img src="<%= product.Image %>" style="width: 30px;"></td>
+            <td><button class="btn btn-dark editbutton" id="<%= product._id %>" onclick="drawModal(this)"
+                    data-items="<%= product.Title %>|<%= product.Description %>|<%= product.Image %>|<%= product.ProductKey %>"
+                    type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
+            <td><a href="/browseItems/<%=product.ProductKey %>" class="btn btn-dark editbutton">Browse</a></td>
+        </tr>
+    <% }%>
+        <% }) %>
+    </tbody>
+</table>
 
 
-<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content" style="border-radius: 0; border: none;">
-    <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text> category</h5>
-    </div>
-    <div class="modal-body" style="display: block;">
-        <div style="display: block;">
-        <div class="form-group">
-            <label for="formGroupExampleInput">Title</label>
-            <input id="title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 0; border: none;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text> category</h5>
+            </div>
+            <div class="modal-body" style="display: block;">
+                <div style="display: block;">
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">Title</label>
+                        <input id="title" type="text" class="form-control" id="formGroupExampleInput"
+                            placeholder="Example input">
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="formGroupExampleInput3">Product Key:</label>
+                        <input id="productKey" class="form-control" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput2">Image url</label>
+                        <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control"
+                            placeholder="Another input">
+                    </div>
+                    <text>Image preview:</text><img style="width: 50px" id="iconDisplay">
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="formGroupExampleInput3">Description:</label>
+                    <input id="description" class="form-control" value="">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="unlistProduct" onclick="unlistProduct(this)" class="btn btn-danger mr-auto">Unlist Product</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save
+                    changes</button>
+            </div>
         </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Product Key:</label>
-            <input id="productKey" class="form-control" value="">
-        </div>
-        <div class="form-group">
-            <label for="formGroupExampleInput2">Image url</label>
-            <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control" placeholder="Another input">
-        </div>
-        <text >Image preview:</text><img  style="width: 50px" id="iconDisplay">
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Description:</label>
-            <input id="description" class="form-control" value="">
-        </div>
-        
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save changes</button>
-    </div>
     </div>
 </div>
-</div>
+
+<div class="modal fade" id="unlistedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <input id="unlistedID" hidden>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 0; border: none;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Manage Unlisted Product: </h5>
+            </div>
+            <div class="modal-body" style="display: block;">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-6" style="text-align: center;">
+                            <button class="btn btn-success" onclick="renableProduct()">Renable Product</button>
+                        </div>
+                        <div class="col-6" style="text-align: center;">
+                            <button class="btn btn-danger" data-toggle="collapse" data-target="#confirmAlert">Perm.
+                                Delete</button>
+                            <div id="confirmAlert" class="collapse" style="margin-top: 5px;">
+                                This will <b>not</b> delete associated accounts
+
+                                <div>
+
+                                    <text 
+                                        style="color: #18BC9C; cursor: pointer; padding-right: 40px;">Yes</text>
+                                    <text data-toggle="collapse" data-target="#confirmAlert" onclick="confirmDelete()"
+                                        style="color: #E74C3C; text-align: right; cursor: pointer;">No</text>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-<script>
 
-function drawModal(item) {
-      var data = $("#" + item.id).data('items')
-      var dataArr = data.split("|")
-      dataArray = data.split("|")
 
-    console.log(dataArray)
 
-      var title = dataArray[0]
-      var description = dataArray[1]
-      var image = dataArray[2]
-      var productkey = dataArray[3]
+    <script>
+        var CategoryKey = `<%= CategoryKey %>`
 
-      console.log(productkey)
 
-      document.getElementById("title").value = title
-      document.getElementById("icon").value = image
-      document.getElementById("iconDisplay").src = image
-      document.getElementById("description").value = description
-      document.getElementById("productKey").value = productkey
-      document.getElementById("updateProduct").setAttribute("name", item.id)
-    }
+        function test(option) {
 
-    function updateImage(data) {
-        document.getElementById("iconDisplay").src = data.value
-    }
+            $("#dropSelection,#createSelection,#viewUnlisted").removeClass('active')
+            $("#create,#dataTable,#unlisted").css('display', 'none')
 
-    function updateProduct(data) {
-      $.ajax({
-        type: "POST",
-        url: "/updateProduct",
-        data: {
-            id: data.name,
-            title: document.getElementById("title").value,
-            image: document.getElementById("icon").value,
-            description: document.getElementById("description").value,
-            productkey: document.getElementById("productKey").value
-        } 
-      }).done(data => {
-          if (data == "e") {
-            window.location.reload();
-          }
-      });
-      
-    }
+            option.classList.add('active')
 
-</script>
+            if (option.id == "createSelection") {
+                $("#create").css('display', 'block')
+            } else if (option.id == "dropSelection") {
+                $("#dataTable").css('display', 'table')
+            } else if (option.id == "viewUnlisted") {
+                $("#unlisted").css('display', 'table')
+            }
+        }
+
+        function updateImagePreview(item) {
+            var icon = document.getElementById("previewImageCreate")
+            console.log("done!")
+            icon.src = item.value
+        }
+
+        function drawModal(item) {
+            console.log(item)
+
+
+            var data = $("#" + item.id).data('items')
+
+
+            var dataArr = data.split("|")
+            dataArray = data.split("|")
+
+            console.log(dataArray)
+
+            var title = dataArray[0]
+            var description = dataArray[1]
+            var image = dataArray[2]
+            var productkey = dataArray[3]
+
+            console.log(productkey)
+
+            document.getElementById("title").value = title
+            document.getElementById("icon").value = image
+            document.getElementById("iconDisplay").src = image
+            document.getElementById("description").value = description
+            document.getElementById("productKey").value = productkey
+            document.getElementById("updateProduct").setAttribute("name", item.id)
+            document.getElementById("unlistProduct").setAttribute("name", item.id)
+        }
+
+        function updateImage(data) {
+            document.getElementById("iconDisplay").src = data.value
+        }
+
+        function updateProduct(data) {
+            $.ajax({
+                type: "POST",
+                url: "/updateProduct",
+                data: {
+                    id: data.name,
+                    title: document.getElementById("title").value,
+                    image: document.getElementById("icon").value,
+                    description: document.getElementById("description").value,
+                    productkey: document.getElementById("productKey").value
+                }
+            }).done(data => {
+                if (data == "e") {
+                    window.location.reload();
+                }
+            });
+
+        }
+
+        function checkTextLength(data, outputLength) {
+            var textField = $("#" + data.id).val()
+
+            if (textField.length > 70) {
+                $("#" + data.id).val(textField.substring(0, 70))
+            } else {}
+
+        }
+
+        $("#wp-create-product-description").on("input", function () {
+            var maxlength = $(this).attr("maxlength");
+            var currentLength = $(this).val().length;
+
+            if (currentLength >= maxlength) {
+                $("#wp-create-product-check-text-length").text("0")
+                $("#wp-create-product-check-text-length").css("color", "#E74C3C")
+
+            } else {
+                $("#wp-create-product-check-text-length").text(maxlength - currentLength)
+                $("#wp-create-product-check-text-length").css("color", "#18BC9C")
+            }
+        });
+
+        function addProduct() {
+
+            var title = $("#wp-create-product-title").val()
+            var productKey = $("#wp-create-product-key").val()
+            var imageURL = $("#wp-create-product-image").val()
+            var description = $("#wp-create-product-description").val()
+
+            if (title && productKey && imageURL && description) {
+                $.ajax({
+                    type: "POST",
+                    url: "/addProduct",
+                    data: {
+                        CategoryKey: CategoryKey,
+                        title: title,
+                        productKey: productKey,
+                        imageURL: imageURL,
+                        description: description,
+                    }
+                })
+            } else {
+                $("#wp-create-product-response").text("Please ensure you fill out all boxes..")
+                $("#wp-create-product-response").css("color", "#E74C3C")
+            }
+
+
+        }
+
+
+        function unlistedProductOptions(product) {
+            productID = product.id.split("unlisted")[0]
+            $("#unlistedID").val(productID)
+        }
+
+        function unlistProduct(product) {
+            productID = product.name
+            $.ajax({
+                    type: "POST",
+                    url: "/unlistProduct",
+                    data: {
+                        productID: productID
+                    }
+                }).done(data => {
+                if (data == "e") {
+                    window.location.reload();
+                }
+            });
+        }
+
+        function renableProduct() {
+            productID = $("#unlistedID").val();
+            $.ajax({
+                    type: "POST",
+                    url: "/renableProduct",
+                    data: {
+                        productID: productID
+                    }
+                }).done(data => {
+                if (data == "e") {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .editbutton {
+            padding-right: 2px;
+            padding-left: 2px;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-radius: 1px;
+        }
+    </style>

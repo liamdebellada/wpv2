@@ -27,6 +27,12 @@ var crypto = require("crypto")
 
 // Pages
 
+router.get('/404', function(req, res) {
+    functions.getPageLinks(function(links) {
+        res.render('404', {links: links})
+    })
+})
+
 router.get('/', (req, res) => {
     // Call searchQuery Function
     req.session.errorMsg = ""
@@ -88,28 +94,34 @@ router.get('/products/:product/items/:items', function (req, res) {
 })
 
 router.get('/cart', function(req, res) {
-    if (req.session.cart === undefined) {
-        functions.errorHandler(res, "Please visit the store before viewing the basket")
-    } else {
-        if (req.session.cart.length < 1) {
-            functions.errorHandler(res, "Your basket is empty")
+    functions.getPageLinks(function(links) {
+        if (req.session.cart === undefined) {
+            functions.errorHandler(res, "Please visit the store before viewing the basket", links)
+        } else {
+            if (req.session.cart.length < 1) {
+                functions.errorHandler(res, "Your basket is empty", links)
+            }
+            functions.getBasket(req.session.cart, items, function(result) {
+                functions.updateStock(result, items, true, function(stockResult) {
+                    var total = functions.getTotal(result)
+                    res.render('basket.ejs', {
+                        items: stockResult,
+                        total: total
+                    })
+                })
+            }) 
         }
-        functions.getBasket(req.session.cart, items, function(result) {
-            var total = functions.getTotal(result)
-            res.render('basket.ejs', {
-                items: result,
-                total: total
-            })
-        }) 
-    }
+    })
 })
 
 
 
 //error handler using sessions
 router.get('/error', function(req, res) {
-    functions.errorHandler(res, req.session.errorMsg)
-    req.session.errorMsg = ""
+    functions.getPageLinks(function(links) {
+        functions.errorHandler(res, req.session.errorMsg, links)
+        req.session.errorMsg = ""
+    })
 })
 
 

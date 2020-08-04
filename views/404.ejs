@@ -1,7 +1,7 @@
 <div class="content-box-span confirmation-box-span">
     <div class="content-box confirmation-box" style="text-align: center;">
-        <img class="confirmed-purchase-image" src="https://cdn.worldplugs.net/error.svg" width="20%">
-      <p class="confirmed-purchase-header">An error has occured!</p>
+        <img class="confirmed-purchase-image" src="https://cdn.worldplugs.net/link.svg" width="20%">
+      <p class="confirmed-purchase-header">404!</p>
 
     <hr style="background-color: #ffffff5c;">
 
@@ -9,7 +9,7 @@
         <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 5px;" width="100%">
 
             <p style="color: white; max-width: 350px; margin: 0 auto;" id="errorMsg">
-                <%= msg %>
+                The requested page was not found. Please ensure that you entered the correct url.
             </p>
 
         </table>
@@ -32,12 +32,6 @@
 
 
 </div>
-
-<script>
-    if (document.getElementById("errorMsg").innerText.length == 0) {
-        window.location.href = "/"
-    }
-</script>
 
 <style>
 

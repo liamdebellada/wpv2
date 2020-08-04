@@ -42,6 +42,7 @@ function displayBasketContent(basketContent) {
 
 }
 
+
 function confirmPayment() {
     $('.circle-loader').css("display", "inline-block")
     $('#confirmation-button').toggle()
@@ -80,22 +81,27 @@ window.addEventListener("load", function () {
     }).done(data => {
         displayBasketContent(data)
     });
-    var stock = document.getElementsByClassName("itemStock")
-    for (item in stock) {
-        if (stock[item].innerText == "0") {
-            stock[item].style.color = "#ea6464"
-            stock[item].innerText = "Out of stock"
+    try {
+        var stock = document.getElementsByClassName("itemStock")
+        for (item in stock) {
+            if (stock[item].innerText == "0") {
+                stock[item].style.color = "#ea6464"
+                stock[item].innerText = "Out of stock"
+            }
         }
+    
+        var buttons = document.getElementsByClassName("0")
+        for (item in buttons) {
+            buttons[item].disabled = true;
+            buttons[item].classList.remove("wp-button-default-hover");
+            //buttons[item].style.backgroundColor = "#ea6464"
+            buttons[item].innerText = "Unavaliable"
+            buttons[item].cssText = "border-image-slice: 0;"
+        }
+    } catch{
+        console.log("ok")
     }
-
-    var buttons = document.getElementsByClassName("0")
-    for (item in buttons) {
-        buttons[item].disabled = true;
-        buttons[item].classList.remove("wp-button-default-hover");
-        //buttons[item].style.backgroundColor = "#ea6464"
-        buttons[item].innerText = "Unavaliable"
-        buttons[item].cssText = "border-image-slice: 0;"
-    }
+    
 });
 
 function removeItemCart(item) {
@@ -173,11 +179,13 @@ window.onscroll = function () {
     if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
         document.getElementById("navbar").style.top = "-75px"; //up
         document.getElementById("fixed-navbar-row").style.top = "0";
+        $(".dropdown-item").css("margin", "0.25rem 0 0");
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "58px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").show();
 
     } else {
         document.getElementById("navbar").style.top = "0"; //down
+        $(".dropdown-item").css("margin", "0.625rem 0 0");
         document.getElementById("fixed-navbar-row").style.top = "70px";
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "30px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();

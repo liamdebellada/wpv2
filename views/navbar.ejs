@@ -5,7 +5,7 @@
     <ul class="navbar-nav center-navbar-items">
         <li class="nav-item">
             <div class="collapse-navbar-items">
-                <a href="/"> <img src="https://cdn.worldplugs.net/wplogo.svg" style="width:80px;" alt="logo"></a>
+                <a href="/"> <img src="https://cdn.worldplugs.net/wplogo.svg" style="width:60px;" alt="logo"></a>
                 <text class="title" style="font-weight: 500;">WorldPlugs</text>
             </div>
         </li>
@@ -13,11 +13,13 @@
     <div class="collapse-navbar-icons" id="navbar8">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item" data-toggle="modal" data-target="#search-toggle">
-                <img class="wp-nav-button" src="https://cdn.worldplugs.net/searchbar.svg" style="width: 23px; margin-top: 2px"alt="Search">
+                <img class="wp-nav-button" src="https://cdn.worldplugs.net/searchbar.svg"
+                    style="width: 23px; margin-top: 2px" alt="Search">
             </li>
             <li class="nav-item" data-toggle="modal" data-target="#shopping-basket-toggle">
                 <div class="collapse-shopping-basket-container" style="max-width: 40px;">
-                    <img class="wp-nav-button mobile-content-margin" src="https://cdn.worldplugs.net/basket.svg" style="margin-left: 15px; width: 25px;" alt="Basket">
+                    <img class="wp-nav-button mobile-content-margin" src="https://cdn.worldplugs.net/basket.svg"
+                        style="margin-left: 15px; width: 25px;" alt="Basket">
                     <span style="position: absolute; right: 10px;" class="wp-nav-button basket-items-quantity"></span>
                 </div>
             </li>
@@ -30,22 +32,43 @@
 <div class="fixed-navbar" id="fixed-navbar-row">
     <div class="fixed-navbar-content">
         <ul class="center-navbar-items" style="white-space: nowrap; padding: 0;">
-            <a href="/">
-                <li class="fixed-navbar-content-items" id="fixed-navbar-content-items-toggle" style="display: inline; line-height: 30px;">Home</li>
-            </a>
-            <a href="/">
-                <li class="fixed-navbar-content-items" style="display: inline;" href="/">Store</li>
-            </a>
-            <a href="/cart">
-                <li class="fixed-navbar-content-items" style="display: inline;" href="#home">Basket</li>
-            </a>
+            
+                <li class="fixed-navbar-content-items wp-navbar-items"  style="display: inline; line-height: 30px;" id="fixed-navbar-content-items-toggle">
+                    <a href="/">Home</a>
+                </li>
+
+                <li class="fixed-navbar-content-items dropdown show" style="display: inline; line-height: 30px;">
+                    <a class="dropdown-toggle" href="#" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="wp-navbar-dropdown-primary">Shop</span>
+                    </a>
+                  
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/products/Food">Food</a>
+                      <a class="dropdown-item" href="/products/Cinema">Cinema</a>
+                      <a class="dropdown-item" href="/products/Music">Music</a>
+                    </div>
+                </li>
+
+                <li class="fixed-navbar-content-items wp-navbar-items"  style="display: inline; line-height: 30px;">
+                    <a href="/cart">Cart</a>
+                </li>
+                   
+                    
+            
         </ul>
         <div class="fixed-navbar-content-right" style="margin: 15px;">
             <div class="fixed-navbar-content-icons-container" style="max-width: 66.83px;">
-                <a data-target="#search-toggle" data-toggle="modal"><img class="wp-nav-button fixed-navbar-content-icons-search" id="fixed-navbar-content-icons-search-toggle" src="https://cdn.worldplugs.net/searchbar.svg" style="width:23px; display: none; " alt="Search"></a>
+                <a data-target="#search-toggle" data-toggle="modal"><img
+                        class="wp-nav-button fixed-navbar-content-icons-search"
+                        id="fixed-navbar-content-icons-search-toggle" src="https://cdn.worldplugs.net/searchbar.svg"
+                        style="width:23px; display: none; " alt="Search"></a>
                 <a data-toggle="modal" data-target="#shopping-basket-toggle" style="max-width: 40px;">
-                    <img class="wp-nav-button fixed-navbar-content-icons-basket mobile-content-margin" id="fixed-navbar-content-icons-basket-toggle" src="https://cdn.worldplugs.net/basket.svg" alt="Basket">
-                    <span id="fixed-navbar-content-icons-quantity-toggle" style="display: none; position: absolute; top: 16px !important; right: 24.5px !important;" class="wp-nav-button basket-items-quantity"></span>
+                    <img class="wp-nav-button fixed-navbar-content-icons-basket mobile-content-margin"
+                        id="fixed-navbar-content-icons-basket-toggle" src="https://cdn.worldplugs.net/basket.svg"
+                        alt="Basket">
+                    <span id="fixed-navbar-content-icons-quantity-toggle"
+                        style="display: none; position: absolute; top: 16px !important; right: 24.5px !important;"
+                        class="wp-nav-button basket-items-quantity"></span>
                 </a>
             </div>
         </div>
@@ -56,7 +79,8 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <!-- RIGHT SIDE SHOPPING BASKET -->
-<div class="modal right fade" id="shopping-basket-toggle" tabindex="-1" role="dialog" aria-labelledby="shopping-basket-label">
+<div class="modal right fade" id="shopping-basket-toggle" tabindex="-1" role="dialog"
+    aria-labelledby="shopping-basket-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -70,10 +94,13 @@
             <div class="modal-footer" style="padding: 0; overflow: hidden;">
 
                 <form action="/executePayment" method="POST" style="padding: 6.5px;">
-                    <div class="g-recaptcha" data-callback="checkComplete" data-sitekey="6LfdtbQZAAAAAC4NjPgwi65r22ed3WR-fGiBosfD"></div>
-                    <br/>
-                    <button class="btn wp-button wp-button-default-hover">View Basket</button>
-                    <input id="captchaSubmission" class="btn wp-button wp-button-gradient wp-button-checkout wp-captcha-button" type="submit" value="Express Checkout" disabled>
+                    <div class="g-recaptcha" data-callback="checkComplete"
+                        data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_"></div>
+                    <br />
+                    <a class="btn wp-button wp-button-default-hover" href="/cart">View Basket</a>
+                    <input id="captchaSubmission"
+                        class="btn wp-button wp-button-gradient wp-button-checkout wp-captcha-button" type="submit"
+                        value="Express Checkout" disabled>
                     <!--<button class="btn wp-button wp-button-gradient wp-button-checkout">Express Checkout</button>-->
                 </form>
             </div>
@@ -120,6 +147,16 @@
     function checkComplete() {
         document.getElementById("captchaSubmission").disabled = false
     }
+    window.addEventListener("load", function () {
+      // Add slideDown animation to Bootstrap dropdown when expanding.
+  $('.dropdown').on('show.bs.dropdown', function() {
+    $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+  });
+
+  // Add slideUp animation to Bootstrap dropdown when collapsing.
+  $('.dropdown').on('hide.bs.dropdown', function() {
+    $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+  });
+})
 
 </script>
-

@@ -1,0 +1,95 @@
+<h1 class="mt-4">HyperLinks</h1>
+
+<script>
+    var dataArray = []
+    function updateModal(data) {
+        dataArray = data.dataset.items
+        dataArray = dataArray.split(',')
+
+        document.getElementById("link-title").value = dataArray[0]
+        document.getElementById("link-url").value = dataArray[1]
+        if (dataArray[1].includes("@")){
+            document.getElementById("testlink").href = "#"
+            document.getElementById("testlink").disabled = true
+            document.getElementById("testlink").style.color = "#CA0B00"
+            document.getElementById("testlink").innerText = "Link preview is disabled for emails"
+        } else {
+            document.getElementById("testlink").innerText = "tap me"
+            document.getElementById("testlink").disabled = false
+            document.getElementById("testlink").style.color = "#18BC9C"
+            document.getElementById("testlink").href = dataArray[1]
+        }
+    }
+</script>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Link</th>
+        <th scope="col">Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% items.forEach(function(item) { %>
+
+            <tr>
+                <td scope="row"><%= item.title %></td>
+                <td><%=item.link %></td>
+                <td><button class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-items="<%= item.title %>,<%= item.link %>,<%= item._id %>" onclick="updateModal(this)">Edit</td>
+            </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <div style="display: block;">
+                <div class="form-group">
+                  <label for="formGroupExampleInput">Title</label>
+                  <input type="text" class="form-control" id="link-title" placeholder="Example input">
+                </div>
+                <div class="form-group">
+                  <label for="formGroupExampleInput2">url</label>
+                  <input type="text" class="form-control" id="link-url" placeholder="Another input">
+                </div>
+                <text>Test link:</text> <a id="testlink">tap me</a>
+              </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button class="btn btn-primary" style="background-color: #74cc6e; border: none;" onclick="update()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    function update() {
+        var title = document.getElementById("link-title").value
+        var url = document.getElementById("link-url").value
+        console.log(dataArray[2])
+        $.ajax({
+        type: "POST",
+        url: "/updateLink",
+        data: {
+            Title: title,
+            Url: url,
+            id: dataArray[2]
+        }
+        }).done(data => {
+            window.location.href = data;
+        });
+    }
+</script>

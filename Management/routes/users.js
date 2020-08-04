@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
-const { ensureAuthenticated, ensureNotAuthenticated } = require('../config/auth');
+const { ensureAuthenticated, ensureNotAuthenticated, ensureAdmin } = require('../config/auth');
 var crypto = require("crypto");
 
 
@@ -13,10 +13,9 @@ const User = require('../models/User')
 router.get('/', ensureNotAuthenticated, (req, res) => res.render('login'))
 
 // User Register
-router.get('/register', ensureNotAuthenticated, (req, res) => res.render('register'))
 
 // Register Handle
-router.post('/register', ensureNotAuthenticated, (req, res) => {
+router.post('/register', ensureNotAuthenticated, ensureAdmin, (req, res) => {
 
 
 
