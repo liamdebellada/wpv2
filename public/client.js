@@ -187,9 +187,9 @@ window.onscroll = function () {
 
     } else {
         console.log("DOWN")
-        document.getElementById("navbar").style.top = "0"; //down
+        document.getElementById("navbar").style.top = "0"; //down (defualt view)
         $(".dropdown-item").css("margin", "0.625rem 0 0");
-        document.getElementById("fixed-navbar-row").style.top = "0px";
+        document.getElementById("fixed-navbar-row").style.top = "0";
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "30px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();
     }

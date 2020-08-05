@@ -213,6 +213,10 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 15px 15px 80px;
 }
 
+.dropdown-item:hover {
+    background-color: #2f3758;
+}
+
 /*Right*/
 .modal.right.fade .modal-dialog {
     right: -320px;
