@@ -35,7 +35,7 @@
         <% for (item in data) { %>
           <% for (i in data[item]) { %>
           <tr>
-            <td><%=data[item][i].CategoryKey %></td>
+            <td style="text-transform: capitalize;"><%=data[item][i].CategoryKey %></td>
                 <input type="hidden" class*="categoryKey" name="CategoryKey" value="<%=data[item][i].CategoryKey %>">
                 <td><a href="/browseProducts/<%= data[item][i].CategoryKey %>" class="btn btn-dark editbannerbutton"  style="margin: 0;" type="submit">Browse Products</button></a>
           </tr>

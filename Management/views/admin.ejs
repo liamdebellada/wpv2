@@ -13,9 +13,9 @@
     <div class="col-sm-6">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Toggle Maintanence Mode</h5>
-          <p class="card-text">Make the server unacccessible to customers, for development features</p>
-          <a href="/categories" class="btn btn-warning">Toggle Maintanence</a>
+          <h5 class="card-title">Create service announcement</h5>
+          <p class="card-text">Create a discord alert containing a custom messaaage</p>
+          <a onclick="$('#discordAlert').modal('show')" class="btn btn-warning">Setup alert</a>
         </div>
       </div>
     </div>
@@ -42,6 +42,36 @@
 
 </div>
 
+<div class="modal fade" id="discordAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content" style="border-radius: 0; border: none;">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create alert</h5>
+          </div>
+          <div class="modal-body" style="display: block; text-align: center;">
+            <div class="form-group">
+              <div>
+                <label for="desc" style="float: left;">Example select<span class="badge badge-secondary" style="margin-left: 5px;">Specifies alert formatting</span></label>
+              </div>
+              <select class="form-control" id="alertType">
+                <option>Shutdown Alert</option>
+                <option>Update</option>
+                <option>General</option>
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput" style="float: left;">Message</label>
+                <textarea id="messageContent" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer" style="justify-content: center !important;">
+              <button onclick="sendAlert()" class="btn btn-success" style="color: white !important;">Post alert</button>
+          </div>
+      </div>
+  </div>
+
+</div>
+
 <script>
 
 
@@ -64,4 +94,21 @@
           response.innerText = data;
         });
   }
+
+  function sendAlert() {
+    var type = document.getElementById("alertType").value
+    var messageContent = document.getElementById("messageContent").value
+    console.log(type, messageContent)
+    $.ajax({
+          type: "POST",
+          url: "/sendAlert",
+          data: {
+              type: type,
+              message: messageContent
+          }
+        }).done(data => {
+          console.log(data)
+        });
+  }
+
 </script>

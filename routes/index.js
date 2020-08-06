@@ -89,7 +89,7 @@ router.get('/products/:product/items/:items', async function (req, res) {
             console.error(error)
         } else {
             if (data == null) {
-                res.redirect(fallbackRedirect)
+                res.redirect('/404')
             } else {
                 functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
             }
@@ -138,11 +138,15 @@ router.get('/error', function(req, res) {
 
 //Terms and policies page renders
 router.get('/terms', function(req, res) {
-    res.render('terms')
+    functions.getPageLinks(function(Links) { 
+        res.render('terms', {links: Links}) 
+    })
 })
 
 router.get('/payment-policy', function(req, res) {
-    res.render('payment-policies')
+    functions.getPageLinks(function(Links) {
+        res.render('payment-policies', {links: Links})
+    })
 })
 
 // Export back to app.js

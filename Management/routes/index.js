@@ -545,28 +545,31 @@ router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function (req, 
         if (error) {
             console.log(error)
         } else {
-            products.update({CategoryKey: results.CategoryKey}, {CategoryKey : req.body.categoryKey}, function(error) {
+            products.updateMany({CategoryKey: result.CategoryKey}, {CategoryKey : req.body.categoryKey}, function(error, resulttt) {
                 if (error) {
                     console.log(error)
+                } else {
+                    console.log(resulttt)
+                    categories.updateOne({
+                        _id: id
+                    }, {
+                        $set: {
+                            CategoryKey: req.body.categoryKey,
+                            Image: req.body.Image
+                        }
+                    }, {
+                        upsert: true
+                    }, function (error, res) {
+                        if (error) {
+                            console.log(error)
+                        }
+                    })
+                    res.send('/categories')
                 }
             })
         }
     })
-    categories.updateOne({
-        _id: id
-    }, {
-        $set: {
-            CategoryKey: req.body.categoryKey,
-            Image: req.body.Image
-        }
-    }, {
-        upsert: true
-    }, function (error, res) {
-        if (error) {
-            console.log(error)
-        }
-    })
-    res.send('/categories')
+    
 })
 
 router.post('/createCategory', ensureAuthenticated, ensureAdmin, function (req, res) {
@@ -838,7 +841,17 @@ router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function (req, re
     request.end()
 })
 
+router.post('/sendAlert', ensureAuthenticated, ensureAdmin, function(req, res) {
+    var icons = {
+        "Shutdown Alert": ":red_circle:",
+        "Update": ":blue_circle:",
+        "General": ":white_circle:"
+    }
 
+    var type = req.body.type
+    var message = req.body.message
+    createDiscordAnnouncement(`-@here\n__**${type}:**__ ${icons[type]}\n***${message}***`, "740961097267544077")
+}) 
 
 
 ///secureShutdown
