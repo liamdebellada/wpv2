@@ -1,0 +1,71 @@
+<div class="content-box-span confirmation-box-span">
+    <div class="content-box confirmation-box" style="text-align: center;">
+        <img class="confirmed-purchase-image" src="https://cdn.worldplugs.net/link.svg" width="20%">
+      <p class="confirmed-purchase-header" style="font-weight: 600;">404!</p>
+
+
+    <div class="confirmed-purchase-contents">
+        <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 5px;" width="100%">
+
+            <p style="color: white; max-width: 350px; margin: 0 auto;" id="errorMsg">
+                The requested page was not found.
+            </p>
+
+        </table>
+    
+    </div>
+    <hr style="background-color: #ffffff5c; width: 50%">
+        <text style="color: white;">
+            If this is a mistake please contact us at <%= links["support-email"] %>
+        </text>
+        <p style="color: white;">
+            Or report the error in our #errors channel on <a id="wp-discord" href='<%= links["discord-invite"] %>'>discord</a>.
+        </p>
+        <a href="/" style="color: white;" class="btn wp-button wp-button-gradient">Return to the store</a>
+
+    </div>
+
+
+
+</div>
+
+
+<style>
+
+@media(min-width:992px) {
+    .confirmation-box-span {
+        max-width: 30% !important
+    }
+}
+
+.confirmed-purchase-header {
+    color: white !important;
+    font-size: 1.5rem;
+}
+
+.confirmed-purchase-image {
+    margin: 30px 0px 30px;
+}
+
+.access-purchase-symbol {
+    margin: 0px 5px 20px 5px
+}
+
+.access-purchase-text {
+    color: white !important;
+}
+
+.access-purchase-email {
+    font-size: 1rem;
+}
+
+.confirmed-purchase-text {
+    font-size: 0.85rem;
+    color: white;
+}
+
+.access-purchase-confirmation {
+    font-size: 0.75rem;
+}
+    
+</style>

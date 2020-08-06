@@ -1,37 +1,49 @@
 <div class="content-box-span">
   <div class="content-box">
 
-    <% items.forEach(function(result) { %>
+    <% if(locals.items) { %>
+      <% items.forEach(function(result) { %>
 
 
-      <div class="card product-content" style="border: none;">
-        <div class="row">
-          <div class="col-md-8">
-            <div class="card-body" style="color: white; margin-bottom: 30px;">
-              <div>
-                <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result.Image%>"></h1>
+        <div class="card product-content" style="border: none;">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="card-body" style="color: white; margin-bottom: 30px;">
+                <div>
+                  <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result.Image%>"></h1>
+                </div>
+                  <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
+                  <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
               </div>
-                <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
-                <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
+            </div>
+            <div class="col-md-4 align-self-center">
+              <button class="addToCart btn wp-button wp-button-remove-hover" id=<%= result._id %> onclick="removeItemCart(this)">Remove</button>
             </div>
           </div>
-          <div class="col-md-4 align-self-center">
-            <button class="addToCart btn wp-button wp-button-remove-hover" id=<%= result._id %> onclick="removeItemCart(this)">Remove</button>
-          </div>
         </div>
-      </div>
-  
-      
-      <% if(items[items.length -1] !== result) { %>
-      <hr class="horizontalSep"/>
-      <% } %>
-  
-  
-      <%})%>
+    
+        
+        <% if(items[items.length -1] !== result) { %>
+        <hr class="horizontalSep"/>
+        <% } %>
+          
+    
+        <%})%>
+    <% } %><% if (!locals.items) { %>
+      <img src="https://cdn.worldplugs.net/shopping-cart-empty.svg" style="width: 13vh;">
+      <hr class="horizontalSep" style="width: 50%">
+      <h3 style="color: white; font-weight: 300">Your basket is empty!</h3>
+      <h6 style="color: white; font-weight: 300">Please add an item to your basket from our store beforehand.</h6>
+    <% } %>
+    
+
+    
 
   </div>
 </div>
 
+
+<% if (locals.items) { %>
 <div class="itemCard paymentSec">
   <div style="margin: 20px;" class="mobilecaptcha">
 
@@ -60,6 +72,8 @@
     </table>  
   </div>
 </div>
+
+<% } %>
 
 <script>
     function checkComplete() {

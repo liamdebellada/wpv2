@@ -27,26 +27,35 @@ var functions = {
                 query
             ).then(result => {
                 if (pageRender == "items.ejs") {
-                    products.findOne({ProductKey: userQuery}, function (error, product) {
-                        if (product.productState == "enabled") {
-                            functions.updateStock(result, modelName, false, function(stockResult) {
-                                if (result.length > 0) {
-                                    functions.getBanners(function(banner) {
-                                        res.render(pageRender, {
-                                            results: stockResult,
-                                            banner: banner,
-                                            links: pageLinks
-                                    })
-                                })}
-                            })
-                        } else {
-                            res.redirect(fallbackRedirect)
-                        }
-                    })    
+                    try {
+                        products.findOne({ProductKey: userQuery}, function (error, product) {
+                            if (error) {
+                                console.log(error)
+                            } else {
+                                try {
+                                    if (product.productState == "enabled") {
+                                        functions.updateStock(result, modelName, false, function(stockResult) {
+                                            if (result.length > 0) {
+                                                functions.getBanners(function(banner) {
+                                                    res.render(pageRender, {
+                                                        results: stockResult,
+                                                        banner: banner,
+                                                        links: pageLinks
+                                                })
+                                            })}
+                                        })
+                                    } else {
+                                        res.redirect(fallbackRedirect)
+                                    }
+                                } catch {
+                                    res.redirect(fallbackRedirect)
+                                }
+                            }
+                        })   
+                    } catch {
+                        res.redirect(fallbackRedirect)
+                    }    
                 }
-
-
-
                 else if (result.length > 0) {
                     this.getBanners(function(banner) {
                         res.render(pageRender, {

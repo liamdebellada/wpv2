@@ -4,10 +4,9 @@
 
 <div class="content-box-span">
   <div class="content-box">
-
+  <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
     <h1 id="itemHeader"><%= results[0].ProductKey %> Accounts</h1>
-    <% results.forEach(function(result) { %>
-
+    <% filtered.forEach(function(result) { %>
 
     <div class="card product-content" style="border: none;">
       <div class="row">
@@ -26,11 +25,10 @@
         </div>
       </div>
     </div>
-
     
-    <% if(results[results.length -1] !== result) { %>
-    <hr class="horizontalSep"/>
-    <% } %>
+      <% if(filtered[filtered.length -1] !== result) { %>
+        <hr class="horizontalSep"/>
+      <% } %>
 
 
     <%})%>

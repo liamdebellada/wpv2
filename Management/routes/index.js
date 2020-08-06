@@ -28,7 +28,15 @@ const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
 
+//discord config
 
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+client.once('ready', () => {
+    console.log('Ready!');
+});
+client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
 
 
@@ -42,6 +50,9 @@ function makeid(length) {
     return result;
 }
 
+function createDiscordAnnouncement(message, channelID) {
+    client.channels.cache.get(channelID).send(message);
+}
 
 //static routes for rendering pages
 router.get('/dashboard', ensureAuthenticated, (req, res) => {
@@ -52,11 +63,8 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
         name: req.user.name,
         rank: req.user.group
     })
-
-
-
+    
 })
-
 
 router.get('/logs', ensureAuthenticated, function (req, res) {
     logs.find({}, function (error, result) {
@@ -106,6 +114,68 @@ router.post('/updateLink', ensureAuthenticated, ensureAdmin, async function(req,
         }
     })
     res.send(result)
+})
+
+
+router.post('/createItem', ensureAuthenticated, ensureAdmin, async function(req, res) {
+    var categorykey = ""
+    await products.findOne({ProductKey: req.body.productkey}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            categorykey = result.CategoryKey
+        }
+    })
+    if (req.body.announce == "true") {
+        createDiscordAnnouncement(`@everyone A new item has been added to the ${req.body.productkey} Store: ${req.body.title}. https://worldplugs.net/products/${categorykey}/items/${req.body.productkey}`, "740961097267544077")
+    } else {
+        console.log("no announce")
+    }
+
+    var empty = []
+    console.log(req.params)
+    for (item in req.body) {
+        if (req.body[item] == "") {
+            empty.push(item)
+        }
+    }
+    if (empty.length > 0) {
+        res.send(`${empty.join()} Field is empty`)
+    } else {
+        items.create(
+            {
+            _id: makeid(24), 
+            Title: req.body.title,
+            Image: req.body.image,
+            Price: req.body.price,
+            Description: req.body.description, ProductKey: req.body.productkey, productState: "enabled"}, function(err, result) {
+                if(err) {
+                    console.error(err)
+                } else {
+                    res.send('s')
+                }
+            })
+    }
+})
+
+router.post('/unlistItem', ensureAuthenticated, ensureAdmin, function(req, res) {
+    items.updateOne({_id : req.body.id}, {productState: "disabled"}, function(err, data) {
+        if(err) {
+            console.log(err)
+        } else {
+            res.send('s')
+        }
+    })
+})
+
+router.post('/listItem', ensureAuthenticated, ensureAdmin, function(req, res) {
+    items.updateOne({_id : req.body.id}, {productState: "enabled"}, function(err, data) {
+        if(err) {
+            console.log(err)
+        } else {
+            res.send('s')
+        }
+    })
 })
 
 router.post('/updateStaffAccount', ensureAuthenticated, ensureAdmin, function (req, res) {
@@ -355,6 +425,12 @@ router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, fun
 })
 
 router.post('/addProduct', ensureAuthenticated, ensureAdmin, function (req, res) {
+    if (req.body.announce == "true") {
+        createDiscordAnnouncement(`@everyone A new product has been added to the ${req.body.CategoryKey} Category: ${req.body.title}. Access the products page here: __https://worldplugs.net/products/${req.body.CategoryKey}__`, "740961097267544077")
+    } else {
+        console.log("no announce")
+    }
+
     var categorykey = req.body.CategoryKey
     var title = req.body.title
     var productkey = req.body.productKey
@@ -382,7 +458,7 @@ router.post('/addProduct', ensureAuthenticated, ensureAdmin, function (req, res)
                         res.status(403).end()
                     } else {
                         console.log(result)
-                        res.status(200).end()
+                        res.send("e")
                     }
                 })
                 
@@ -420,13 +496,19 @@ router.post('/unlistProduct', ensureAuthenticated, ensureAdmin, function (req, r
 router.get('/browseItems/:productKey', ensureAuthenticated, ensureAdmin, function (req, res) {
     var key = req.params.productKey.toString()
     items.find({
-        ProductKey: key
+        ProductKey: key,
+        productState: "enabled"
     }, function (error, results) {
         if (error) {
             console.error(error)
         } else {
-            res.render('items-view', {
-                items: results
+            items.find({ProductKey: key,
+                productState: "disabled"
+            }, function(err, listResult) {
+                res.render('items-view', {
+                    items: results,
+                    unlisted: listResult
+                })
             })
         }
     })
@@ -463,7 +545,11 @@ router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function (req, 
         if (error) {
             console.log(error)
         } else {
-            console.log(result)
+            products.update({CategoryKey: results.CategoryKey}, {CategoryKey : req.body.categoryKey}, function(error) {
+                if (error) {
+                    console.log(error)
+                }
+            })
         }
     })
     categories.updateOne({
@@ -490,6 +576,7 @@ router.post('/createCategory', ensureAuthenticated, ensureAdmin, function (req, 
         Image: req.body.Image,
         _id: id
     }
+
     categories.create(obj, function (error, result) {
         if (error) {
             console.log(error)
@@ -564,7 +651,8 @@ router.post('/updateItem', ensureAuthenticated, ensureAdmin, function (req, res)
         Title: req.body.title,
         Image: req.body.image,
         Price: req.body.price,
-        Description: req.body.description
+        Description: req.body.description,
+        productState: "enabled"
     }
     items.updateOne({
         _id: id
@@ -572,7 +660,7 @@ router.post('/updateItem', ensureAuthenticated, ensureAdmin, function (req, res)
         $set: obj
     }, function (error, result) {
         if (error) {
-            console.error("blue fuck off")
+            console.error(error)
         } else {
             res.send("e")
         }

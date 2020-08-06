@@ -47,6 +47,10 @@
             <textarea class="form-control" id="wp-create-product-description" rows="3" maxlength="70"
                 onkeydown="checkTextLength(this, create)"></textarea>
         </div>
+        <div class="form-check" style="margin-bottom: 10px;">
+            <input type="checkbox" class="form-check-input" id="discordAlert">
+            <label class="form-check-label" for="exampleCheck1">Create discord alert on creation</label>
+        </div>
         <button style="margin-bottom: 10px" onclick="addProduct()" class="btn btn-success ">Add Product</button>
     </div>
 </div>
@@ -181,6 +185,16 @@
 
 
     <script>
+        var active = false;
+        $("#discordAlert").click(function(){
+            var check = $(this).prop('checked');
+            if(check == true) {
+                active = true;
+            } else {
+                active = false;
+            }
+        });
+        
         var CategoryKey = `<%= CategoryKey %>`
 
 
@@ -292,13 +306,18 @@
                     type: "POST",
                     url: "/addProduct",
                     data: {
+                        announce: active,
                         CategoryKey: CategoryKey,
                         title: title,
                         productKey: productKey,
                         imageURL: imageURL,
                         description: description,
                     }
-                })
+                }).done(data => {
+                if (data == "e") {
+                    window.location.reload();
+                }
+            });
             } else {
                 $("#wp-create-product-response").text("Please ensure you fill out all boxes..")
                 $("#wp-create-product-response").css("color", "#E74C3C")

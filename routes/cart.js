@@ -4,6 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 
 // Export Models
 const items = require('../models/items');
@@ -11,7 +12,17 @@ const functions = require('../exports/functions');
 const session = require('../models/sessionTable');
 const products = require('../models/products');
 
-router.post('/updateCart', (req, res) => {
+
+
+const limitRequests = rateLimit({
+    windowMS: 1000,
+    max: 5,
+    message:
+    "You are sending too many requests to the server."
+});
+
+
+router.post('/updateCart', limitRequests, (req, res) => {
     var cartItemId = req.body.items
     var quantity = req.body.quantity
 
@@ -78,7 +89,7 @@ router.post('/updateCart', (req, res) => {
 
 })
 
-router.post('/removeCart', function (req, res) {
+router.post('/removeCart', limitRequests, function (req, res) {
     var deletionId = req.body.id
     var userCart = req.session.cart
     var index = userCart.findIndex(x => x.id === deletionId)
@@ -97,7 +108,7 @@ router.post('/removeCart', function (req, res) {
     }
 })
 
-router.post('/updateQuantity', function (req, res) {
+router.post('/updateQuantity', limitRequests, function (req, res) {
     var index = req.session.cart.findIndex(x => x.id === req.body.id)
     var obj = {
         id: req.body.id,

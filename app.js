@@ -10,6 +10,7 @@ const bcrypt = require('bcrypt')
 //sessions
 const session = require("express-session");
 const nodemon = require('nodemon');
+const functions = require('./exports/functions');
 var MongoDBStore = require('connect-mongodb-session')(session);
 
 var store = new MongoDBStore({
@@ -71,7 +72,17 @@ app.use('/', require('./routes/index'));
 app.use('/', require('./routes/payment'));
 app.use('/', require('./routes/cart'));
 
-
+app.use(function(req, res, next){
+    res.status(404);
+  
+    // respond with html page
+    if (req.accepts('html')) {
+        functions.getPageLinks(function(links) {
+            res.render('404', { links: links });
+            return;
+        }) 
+    }
+});
 
 // Server Shutdown
 app.post('/secureShutdown', function(req, res) {

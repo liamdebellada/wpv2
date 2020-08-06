@@ -2,7 +2,17 @@
     Manage Items
 </h1>
 
-
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+      <a class="nav-link active" onclick="test(this)" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+    <li>
+        <a class="nav-link" onclick="test(this)" id="createSelection">Create new</a>
+    </li>
+    <li>
+        <a class="nav-link" onclick="test(this)" id="unlistSelection">Unlisted</a>
+    </li>
+</ul>
 
 
 <style>
@@ -14,6 +24,58 @@
         border-radius: 1px;
     }
 </style>
+
+<div id="create" style="display: none;">
+    <div style="display: block;">
+        <div class="form-group">
+            <label for="formGroupExampleInput">Title</label>
+            <input id="create-title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Price:</label>
+            <input id="create-price" class="form-control" value="">
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Image url</label>
+            <input onkeyup="create_updateImage(this)" id="create-icon" type="text" class="form-control" placeholder="Another input">
+        </div>
+        <text >Image preview:</text><img  style="width: 50px" id="create-iconDisplay">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="formGroupExampleInput3">Description:</label>
+            <input id="create-description" class="form-control" value="">
+        </div>
+        <div class="form-check" style="margin-bottom: 10px;">
+            <input type="checkbox" class="form-check-input" id="discordAlert">
+            <label class="form-check-label" for="exampleCheck1">Create discord alert on creation</label>
+        </div>
+    <button class="btn btn-dark" onclick="createItem()">Create</button>
+</div>
+
+<div id="unlisted" style="display: none;">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Image</th>
+            <th scope="col">Manage Item</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% unlisted.forEach(function(item) { %>
+                <tr>
+                    <td><%= item.Title %></td>
+                    <td>£<%= item.Price %></td>
+                    <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
+                    <td><button class="btn btn-dark editbutton" id="<%= item._id %>" type="button" onclick="reList(this)">Re list</button></td>
+                </tr>
+            <% }) %> 
+        </tbody>
+    </table>
+</div>
+
+<div id="dataTable" style="display: block;">
     <table class="table">
         <thead>
           <tr>
@@ -33,7 +95,8 @@
                 </tr>
             <% }) %> 
         </tbody>
-      </table>
+    </table>
+</div>
       
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 <div class="modal-dialog" role="document">
@@ -65,12 +128,10 @@
             <label for="formGroupExampleInput3">Description:</label>
             <input id="description" class="form-control" value="">
         </div>
-        
     </div>
     <div class="modal-footer">
-
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteProduct" onclick="deleteItem(this)">Unlist</button>
             <a id="manageButton" href="" class="btn btn-secondary">Manage accounts</a>
-
 
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save changes</button>
@@ -80,7 +141,60 @@
 </div>
 
 
+
 <script>
+var active = false;
+$("#discordAlert").click(function(){
+    var check = $(this).prop('checked');
+    if(check == true) {
+        active = true;
+    } else {
+        active = false;
+    }
+});
+
+function create_updateImage(data) {
+    document.getElementById("create-iconDisplay").src = data.value
+}
+
+function test(option) {
+        var dropdown = document.getElementById("dropSelection")
+        var other = document.getElementById("createSelection")
+        var creationPage = document.getElementById('create')
+        var table = document.getElementById('dataTable')
+        var listTable = document.getElementById("unlistSelection")
+        var listTableContent = document.getElementById("unlisted")
+        if (option.id == "createSelection") {
+            option.classList.add('active')
+            option.disabled = false;
+            dropdown.disabled = true;
+            dropdown.classList.remove('active')
+            creationPage.style.display = "block"
+            table.style.display = "none"
+            listTable.classList.remove('active')
+            listTable.disabled = true
+            listTableContent.style.display = "none"
+        } else if (option.id == "dropSelection") {
+            dropdown.disabled = false;
+            other.classList.remove('active')
+            other.disabled = true;
+            dropdown.classList.add('active')
+            table.style.display = "block"
+            creationPage.style.display = "none"
+            listTable.classList.remove('active')
+            listTable.disabled = true
+            listTableContent.style.display = "none"
+        } else {
+            dropdown.disabled = true;
+            other.classList.remove('active')
+            other.disabled = true;
+            dropdown.classList.remove('active')
+            table.style.display = "none"
+            creationPage.style.display = "none"
+            listTable.classList.add('active')
+            listTableContent.style.display = "block"
+        }
+    }
 
 function drawModal(item) {
       var data = $("#" + item.id).data('items')
@@ -103,6 +217,7 @@ function drawModal(item) {
       document.getElementById("price").value = parseFloat(price).toFixed(2)
       document.getElementById("")
       document.getElementById("updateProduct").setAttribute("name", item.id)
+      document.getElementById("deleteProduct").setAttribute("name", item.id)
       document.getElementById("manageButton").href = '/manageAccounts/' + item.id 
       
 
@@ -140,6 +255,57 @@ function drawModal(item) {
           }
       });
       
+    }
+
+
+    function createItem(data) {
+        $.ajax({
+        type: "POST",
+        url: "/createItem",
+        data: {
+            announce: active,
+            title: document.getElementById("create-title").value,
+            image: document.getElementById("create-icon").value,
+            price: document.getElementById("create-price").value,
+            description: document.getElementById("create-description").value,
+            productkey: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+        } 
+      }).done(data => {
+          if (data == "s") {
+              window.location.reload()
+          }
+        console.log(data)
+      });
+    }
+
+    function deleteItem(data) {
+        $.ajax({
+        type: "POST",
+        url: "/unlistItem",
+        data: {
+            id: data.name
+        } 
+      }).done(data => {
+        console.log(data)
+        if (data == "s") {
+            window.location.reload()
+        }
+       });
+    }
+
+
+    function reList(data) {
+        $.ajax({
+        type: "POST",
+        url: "/listItem",
+        data: {
+            id: data.id
+        } 
+      }).done(data => {
+        if (data == "s") {
+            window.location.reload()
+        }
+      });
     }
 
 </script>

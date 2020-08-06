@@ -79,32 +79,45 @@ router.get('/success', function(req, res) {
 })
 
 
-router.get('/products/:product/items/:items', function (req, res) {
+router.get('/products/:product/items/:items', async function (req, res) {
     var item = req.params.items.toString();
+    var category = req.params.product.toString();
     var fallbackRedirect = '/products/' + req.params.product.toString();
 
+    await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) {
+        if (error) {
+            console.error(error)
+        } else {
+            if (data == null) {
+                res.redirect(fallbackRedirect)
+            } else {
+                functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
+            }
+        }
+    })
     // Call searchQuery Function
-    functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
 
 })
 
 router.get('/cart', function(req, res) {
     functions.getPageLinks(function(links) {
         if (req.session.cart === undefined) {
-            functions.errorHandler(res, "Please visit the store before viewing the basket", links)
+            res.render('basket.ejs')
         } else {
             if (req.session.cart.length < 1) {
-                functions.errorHandler(res, "Your basket is empty", links)
-            }
-            functions.getBasket(req.session.cart, items, function(result) {
-                functions.updateStock(result, items, true, function(stockResult) {
-                    var total = functions.getTotal(result)
-                    res.render('basket.ejs', {
-                        items: stockResult,
-                        total: total
+                res.render('basket.ejs')
+            } else {
+                functions.getBasket(req.session.cart, items, function(result) {
+                    functions.updateStock(result, items, true, function(stockResult) {
+                        var total = functions.getTotal(result)
+                        res.render('basket.ejs', {
+                            items: stockResult,
+                            total: total
+                        })
                     })
-                })
-            }) 
+                }) 
+            }
+            
         }
     })
 })

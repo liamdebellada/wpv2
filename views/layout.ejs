@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.worldplugs.net/bootstrap.min.css">
     
-    <script src="https://kit.fontawesome.com/e145c5f059.js" crossorigin="anonymous"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
@@ -28,7 +27,10 @@
 </style>
 
 <body style="background: #020024;
-background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family: 'Raleway', sans-serif;">
+background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family: 'Raleway', sans-serif;   position: relative;
+  margin: 0;
+  padding-bottom: 6rem;
+  min-height: 100%;">
 
 
     <%- include('navbar.ejs') %>       
@@ -45,9 +47,10 @@ background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
     </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
-    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js"
+    integrity="sha512-+VS2+Nl1Qit71a/lbncmVsWOZ0BmPDkopw5sXAS2W+OfeceCEd9OGTQWjgVgP5QaMV4ddqOIW9XLW7UVFzkMAw=="
+    crossorigin="anonymous"></script>
     <script src ="/client.js"></script>
 
 
@@ -299,14 +302,46 @@ background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family
   padding-bottom: 20px;
 }
 
+.wp-horizontal-separator-gradient {
+  background: linear-gradient(to left, #743ad5, #d53a9d);
+}
+
+.wp-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
+  color: #ffffff8a;
+  padding-top: 50px;
+}
+
+.wp-footer p {
+  font-size: 11px;
+}
+.wp-footer p a {
+  color: white;
+}
+
+html {
+  height: 100%;
+}
+
+
 </style>
 
 
 
 
 
+<div class="wp-footer">  
+    <text>© WorldPlugs 2020</text>
+    <p><a href="https://worldplugs.net/terms">Terms</a> and <a href="https://worldplugs.net/payment-policy">Payment Policy</a></p>
+</div>
 
 </body>
+
 <!--You do realise-->
 <!--Styling acomplished by GloriaStyleSheets (.gss)-->
 </html>

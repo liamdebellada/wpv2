@@ -1,51 +1,58 @@
-<%- include('banner.ejs', {banner: banner}) %> 
+<%- include('banner.ejs', {banner: banner}) %>
 <h1 class="titleText" style="padding: 30px; font-weight: 200;">
   Welcome to <text style="
   background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(39,193,230,1) 0%, rgba(194,117,233,1) 50%, rgba(242,81,93,1) 100%);   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent; font-weight: 400;">WorldPlugs</text>
 </h1>
 
-<section class="jumbotron">
-  <div class="container">
+
+
+<section class="wp-homepage-hero" >
+
+    <img src="https://cdn.worldplugs.net/hero/launch-sale-text.svg" class="img-fluid" style="height: 95%"></img>
     
-    </div>
-  </section>
+
+  
+</section>
+
+
+
 
 
 
 <div class="container">
   <div class="row justify-content-center">
-  <% results.forEach(function(result) { %>
+    <% results.forEach(function(result) { %>
     <div class="col-sm-12 col-md-6 col-lg-4">
-  <a style="display: block; height: 100%; text-decoration: none; color: #212529;"
-    href="/products/<%= result.CategoryKey %>">
-    <div class="card itemCard homeCard" style="text-align: center;">
-      <div class="card-header">
-        <h1 style="color: white; font-size: 2em;"><%= result.CategoryKey %></h1>
-        <img style="width:250px;" class="img-fluid" src="<%= result.Image %>"></img>
-      </div>
+      <a style="display: block; height: 100%; text-decoration: none; color: #212529;"
+        href="/products/<%= result.CategoryKey %>">
+        <div class="card itemCard homeCard" style="text-align: center;">
+          <div class="card-header">
+            <h1 style="color: white; font-size: 2em;"><%= result.CategoryKey %></h1>
+            <img style="width:250px;" class="img-fluid" src="<%= result.Image %>"></img>
+          </div>
+        </div>
+      </a>
     </div>
-  </a>
+    <% }); %>
+  </div>
 </div>
-  <% }); %>
-</div>
-</div>
-
 
 <style>
-.jumbotron{
-background-image: url("https://cdn.worldplugs.net/hero-element.svg");
-background-color: #1d1b28;
-height: 500px;
-background-position: center;
-background-repeat: no-repeat;
-position: relative;
-}
-
-
-@media (max-width: 992px) {
-  .jumbotron {
-  background-size: cover;
+  .wp-homepage-hero {
+  background-image: url("https://cdn.worldplugs.net/hero-element3.svg");
+  background-color: #1d1b28;
+  height: 50vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  }
+@media (max-width: 700px) {
+  .wp-homepage-hero {
+  background-image: none;
   }
 }
+
+
+
 </style>

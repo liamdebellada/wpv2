@@ -24,6 +24,10 @@ const itemSchema = new mongoose.Schema({
     Image: {
         type: String,
         required: true
+    },
+    productState: {
+        type: String,
+        required: true
     }
 });
 

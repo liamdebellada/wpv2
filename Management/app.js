@@ -17,6 +17,8 @@ app.use(session({
     resave: true
 }));
 
+app.set('trust proxy', 1);
+
 // Passport Config
 require('./config/passport')(passport)
 
@@ -64,7 +66,6 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/users'));
-
 
 
 
