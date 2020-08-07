@@ -12,7 +12,11 @@ const categoryScehma = new mongoose.Schema({
     Image: {
         type: String,
         required: true
-    }
+    },
+    DisplayPopular: {
+        type: String,
+        required: true
+    },
 });
 
 const category = mongoose.model('categories', categoryScehma);

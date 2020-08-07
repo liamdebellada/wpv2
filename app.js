@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 var bodyParser = require('body-parser');
 var EV = require('dotenv').config() 
 const bcrypt = require('bcrypt')
+var helmet = require('helmet')
 
 
 //sessions
@@ -25,6 +26,21 @@ store.on('error', function(error) {
 // Use Express Framework
 const app = express();
 
+//disable headers
+app.disable('x-powered-by')
+
+//setup helmet headers
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.expectCt());
+app.use(helmet.frameguard());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.hsts());
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
+
 app.use(function(req, res, next) {
     res.locals.session = req.session;
     next()
@@ -37,6 +53,7 @@ app.use(require('express-session')({
       maxAge: 1000 * 60 * 60 // 1h
     },
     store: store,
+    secure: true,
     resave: true,
     saveUninitialized: true
 }));

@@ -17,7 +17,7 @@
             </div>
               <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
               <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
-              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
+              <input style="display: none;" type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
           </div>
         </div>
         <div class="col-md-4 align-self-center">

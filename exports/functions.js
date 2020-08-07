@@ -5,6 +5,7 @@ const accounts = require('../models/accounts');
 const banners = require('../Management/models/banners')
 const links = require('../Management/models/links');
 const products = require("../models/products");
+const errorlog = require('../Management/models/errorLogs.js')
 var functions = {
 
     // Search Database With Arguments
@@ -256,6 +257,23 @@ var functions = {
             obj[key] = link.link
         })
         return callback(obj)
+    },
+
+    createErrorLog: function(message, address) {
+        var dt = new Date();
+        var errorObject = {
+            Date: dt,
+            Message: message,
+            Address: address
+        }
+        console.log(errorObject)
+        errorlog.create(errorObject, function(error, result) {
+            if (error) {
+                console.error(error)
+            } else {
+                console.log(result)
+            }
+        }) 
     }
 
 }

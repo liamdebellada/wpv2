@@ -1,0 +1,151 @@
+<div id="alertCollapse" class="alert alert-warning alert-dismissible fade hide" role="alert">
+test
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+
+<a href="/dashboard"><- Back</a>
+<h1>Homepage Management</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+      <text class="nav-link active" onclick="navbar(this)"  role="button" id="managePopularSelection" style="color: #2C3E50;">View</text>
+    </li>
+    <li>
+        <text class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="modifyBannerSelection">Add New Banner</text>
+    </li>
+</ul>
+<script src="https://cdn.jsdelivr.net/gh/RubaXa/Sortable/Sortable.min.js"></script>
+
+
+
+
+<div style="margin-top: 15px ;">
+
+    <h4>Popular Categories</h4>
+
+    
+
+    <ul id="popularList" class="list-group" >
+        <% categories.forEach(function (category) { %>
+            <% if (category.DisplayPopular == "true") { %>
+                <li id="<%= category.id %>" class="list-group-item"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1) %><text onclick="removeFromPopular(this)" style="float: right; color: #D9534F; cursor: pointer;">Remove</li>
+            <% } %>
+        <% }) %>
+        
+    </ul>
+
+    <br />
+    <br />
+
+    <h5>All Categories</h5>
+
+    <ul id="sortable" class="list-group">
+        <% categories.forEach(function (category) {  %>
+            <li id="<%= category.id %>" class="list-group-item collapse show"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1)%><text onclick="addToPopular(this)" style="float: right; color: #5CB85C; cursor: pointer; font-size: 2">Add</li>
+        <% }) %>
+    </ul>
+
+
+</div>
+
+
+
+
+
+
+<table style="display: none;">
+
+       
+</table>
+
+
+
+<script>
+
+
+    
+
+    function navbar(option) {
+
+    $("#managePopularSelection,#modifyBannerSelection").removeClass('active')
+        $("#create,#dataTable,#unlisted").css('display', 'none')
+
+        option.classList.add('active')
+
+        if (option.id == "managePopularSelection") {
+            $("#create").css('display', 'block')
+        } else if (option.id == "dropSelection") {
+            $("#dataTable").css('display', 'table')
+        } else if (option.id == "modifyBannerSelection") {
+            $("#unlisted").css('display', 'table')
+        }
+    }
+
+    function addToPopular(category) {
+        if ($("#popularList").children().length < 3 ) {
+            categoryID = $(category).parent().attr('id')
+            $.ajax({
+                type: "POST",
+                url: "/addToPopular",
+                data: {
+                    categoryID : categoryID
+                }
+            }).done(data => {
+                if (data == "EU") {
+                    alert("Error Updating")
+                } else if (data == "US") {
+                    window.location.href = "/manage-homepage"
+                } else if (data == "NU") {
+                    alert("Product already exists in popular category")
+                } else if (data == "UUS") {
+                    alert("Update Unsuccessful")
+                } else if (data == "MD") {
+                    alert("Maximum Displayable Popular Products Reached")
+                }
+            });
+        }
+        else {
+            alert("Maximum Displayable Popular Products Reached")
+        }
+        
+    }
+
+
+    function removeFromPopular(category) {
+        if ($("#popularList").children().length > 0 ) {
+            categoryID = $(category).parent().attr('id')
+            $.ajax({
+                type: "POST",
+                url: "/removeFromPopular",
+                data: {
+                    categoryID : categoryID
+                }
+            }).done(data => {
+                if (data == "EU") {
+                    alert("Error Updating")
+                } else if (data == "US") {
+                    window.location.href = "/manage-homepage"
+                } else if (data == "US") {
+                    alert("Product already exists in popular category")
+                } else if (data == "UUS") {
+                    alert("Update Unsuccessful")
+                } else if (data == "MD") {
+                    alert("Maximum Displayable Popular Products Reached")
+                }
+            });
+        }
+        else {
+            alert("No items in Popular List!")
+        }
+        
+    }
+
+
+
+
+
+
+
+</script>

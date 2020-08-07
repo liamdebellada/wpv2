@@ -83,12 +83,13 @@ router.get('/products/:product/items/:items', async function (req, res) {
     var item = req.params.items.toString();
     var category = req.params.product.toString();
     var fallbackRedirect = '/products/' + req.params.product.toString();
-
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) {
         if (error) {
             console.error(error)
         } else {
             if (data == null) {
+                functions.createErrorLog("User tried to reach an invalid product page but the ProductKey was not found in the database.", ip)
                 res.redirect('/404')
             } else {
                 functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);

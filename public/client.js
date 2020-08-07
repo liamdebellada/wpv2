@@ -23,7 +23,7 @@ function displayBasketContent(basketContent) {
             <div>
             <text>${item.Title}</text>
             <div class="propertyContainer" style="float:right;">
-            <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="itemQuantity" onchange="updateQuantity(this)" style="width: 50px;"></input>
+            <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="itemQuantity" onchange="updateQuantity(this)" style="width: 50px; display: none;"></input>
             <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;"></div>
             </div>
             </div>
@@ -94,7 +94,7 @@ window.addEventListener("load", function () {
             buttons[item].disabled = true;
             buttons[item].classList.remove("wp-button-default-hover");
             //buttons[item].style.backgroundColor = "#ea6464"
-            buttons[item].innerText = "Unavaliable"
+            buttons[item].innerText = "Unavailable"
             buttons[item].cssText = "border-image-slice: 0;"
         }
     } catch{

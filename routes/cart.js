@@ -12,14 +12,42 @@ const functions = require('../exports/functions');
 const session = require('../models/sessionTable');
 const products = require('../models/products');
 
+const https = require('https')
 
+
+//discord logging stuff
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+
+client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
+
+//rate limiter
 
 const limitRequests = rateLimit({
     windowMS: 1000,
-    max: 5,
+    max: 100,
     message:
-    "You are sending too many requests to the server."
-});
+    "You are sending too many requests to the server.",
+    onLimitReached: function(req) {
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        https.get(`https://api.ipgeolocation.io/ipgeo?apiKey=cefdbd6742ab46a09c460ddd81ee0e9e&ip=${ip}&fields=geo&include=security`, function(resp) {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+            
+            resp.on('end', async () => {
+                var datares = "\n```json\n" + JSON.stringify(JSON.parse(data),null,2) + "```"
+                await client.channels.cache.get('741352723693174905').send("", {files: ['https://thumbs.gfycat.com/CostlyDopeyAcornwoodpecker-size_restricted.gif']})
+                client.channels.cache.get('741352723693174905').send(datares);
+            });
+        }).on("error", (err) => {
+            console.log("Error: " + err.message);
+        });
+    }
+})
 
 
 router.post('/updateCart', limitRequests, (req, res) => {
@@ -60,7 +88,6 @@ router.post('/updateCart', limitRequests, (req, res) => {
                                     } else {
                                         req.session.cart = [item]
                                     }
-                                    console.log(req.session.cart)
                                     var getBasket = functions.getBasket(req.session.cart, items, function (result) {
                                         res.send(result)
                                     })

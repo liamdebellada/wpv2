@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
-    ensureAuthenticated,
+    ensureAuthenticated, 
     ensureAdmin
 } = require('../config/auth');
 const {
@@ -33,9 +33,7 @@ var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPT
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-client.once('ready', () => {
-    console.log('Ready!');
-});
+
 client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
 
@@ -53,6 +51,8 @@ function makeid(length) {
 function createDiscordAnnouncement(message, channelID) {
     client.channels.cache.get(channelID).send(message);
 }
+
+
 
 //static routes for rendering pages
 router.get('/dashboard', ensureAuthenticated, (req, res) => {
@@ -114,6 +114,77 @@ router.post('/updateLink', ensureAuthenticated, ensureAdmin, async function(req,
         }
     })
     res.send(result)
+})
+
+router.get('/manage-homepage', ensureAuthenticated, ensureAdmin, function(req, res) {
+    categories.find({}, function(error, result) {
+        if (error) {
+            console.error(error)
+        } else {
+            res.render('manage-homepage.ejs', {categories: result})
+        }
+    })
+    
+})
+
+router.post('/addToPopular', ensureAuthenticated, ensureAdmin, function(req, res) {
+    categories.countDocuments({ DisplayPopular : "true"}, function(error, result) {
+        if (error) {
+            console.error(error)
+        } else {
+            if (result < 3) {
+                categories.updateOne({ _id: req.body.categoryID}, { DisplayPopular: "true"}, function(notUpdated, updated) {
+                    if (notUpdated) {
+                        res.send('EU').end() //Error Updating
+                    } else {
+                        if (updated.nModified == 1) {
+                            res.send('US').end() //Update Successful
+                        }
+                        else if (updated.nModified == 0) {
+                            res.send('NU').end() //No update needed.
+                        }
+                        else {
+                            res.send('UUS').end() //Update Unsuccessful
+                        }
+                    }
+                    
+                })
+
+            } else {
+                res.send('MD').end() //You have reached the maximum displayable products.
+            }
+        }
+    })
+})
+
+router.post('/removeFromPopular', ensureAuthenticated, ensureAdmin, function(req, res) {
+    categories.countDocuments({ DisplayPopular : "true"}, function(error, result) {
+        if (error) {
+            console.error(error)
+        } else {
+            if (result > 0) {
+                categories.updateOne({ _id: req.body.categoryID}, { DisplayPopular: "false"}, function(notUpdated, updated) {
+                    if (notUpdated) {
+                        res.send('EU').end() //Error Updating
+                    } else {
+                        if (updated.nModified == 1) {
+                            res.send('US').end() //Update Successful
+                        }
+                        else if (updated.nModified == 0) {
+                            res.send('NU').end() //No update needed.
+                        }
+                        else {
+                            res.send('UUS').end() //Update Unsuccessful
+                        }
+                    }
+                    
+                })
+
+            } else {
+                res.send('ND').end() //You have reached the maximum displayable products.
+            }
+        }
+    })
 })
 
 
@@ -597,6 +668,7 @@ router.post('/deleteCategory', ensureAuthenticated, ensureAdmin, function (req, 
         if (error) {
             console.log(error)
         } else {
+            console.log(result)
             res.send('/categories')
         }
     })

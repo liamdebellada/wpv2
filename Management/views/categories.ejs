@@ -50,7 +50,7 @@
           <tr>
             <td><%=data[item][i].CategoryKey %></td>
             <td><image style="width: 20px;" src="<%= data[item][i].Image %>"></image></td>
-            <td><button onclick="drawModal(this)" class="btn btn-dark editbannerbutton" id="<%= data[item][i]._id %>" data-items="<%=data[item][i].CategoryKey %>,<%= data[item][i].Image %>,<%= data[item][i]._id %>" style="margin: 0;" type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
+            <td><button onclick="drawModal(this)" class="btn btn-dark editbannerbutton" id="<%= data[item][i]._id %>" data-items="<%=data[item][i].CategoryKey %>|<%= data[item][i].Image %>|<%= data[item][i]._id %>" style="margin: 0;" type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
           </tr>
           <% } %>
         <% } %>
@@ -135,8 +135,8 @@
       var iconUrl = document.getElementById("icon")
 
       var data = $("#" + item.id).data('items')
-      var dataArr = data.split(",")
-      dataArray = data.split(",")
+      var dataArr = data.split("|")
+      dataArray = data.split("|")
       modalTitle.innerText = dataArr[0]
       title.value = dataArr[0]
       iconUrl.value = dataArr[1]
