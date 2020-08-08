@@ -35,6 +35,11 @@ router.get('/', (req, res) => {
 
 })
 
+router.get('/products', (req, res) => {
+    req.session.errorMsg = ""
+    functions.searchQuery(res, category, '', '', 'allproducts.ejs');
+})
+
 router.get('/products/:product', function (req, res) {
 
     // Incl data sanitization here
