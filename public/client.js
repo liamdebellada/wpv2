@@ -3,14 +3,14 @@ function displayBasketContent(basketContent) {
     var total = 0;
     if (basketContent == "e") {
         basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
-        // document.getElementById("basket-items-quantity").innerText = ""
         $(".basket-items-quantity").text("")
         $("#captchaSubmission").hide()
         $(".g-recaptcha").hide()
+        $("#modalBodyPrice").hide()
 
     } else {
+        $("#modalBodyPrice").show()
         basket.innerHTML = ""
-        // document.getElementById("basket-items-quantity").innerText = basketContent.length
         $(".basket-items-quantity").text(basketContent.length)
         $("#captchaSubmission").show()
         $(".g-recaptcha").show()
@@ -35,8 +35,15 @@ function displayBasketContent(basketContent) {
 
             basket.append(basketRow)
         });
-        var totalText = document.createElement("text").innerText = "Total: £" + total.toFixed(2)
-        basket.append(totalText)
+
+        fee = parseFloat((total / 100 * 2.9 + 0.30).toFixed(2))
+
+
+        $("#fee").text("Fee: £" + fee.toFixed(2))
+        $("#total").text("Total: £" + (total + fee).toFixed(2))
+
+        // feeText.innerText = "Fee: £" + (total / 100 * 0.29 + 0.30).toFixed(2)
+        // totalText.innerText = 
     }
 
 }
@@ -115,8 +122,6 @@ function removeItemCart(item) {
 }
 
 function removeItem(item) {
-    //console.log(item.id) //id for specific item to be removed
-
     $.ajax({
         type: "POST",
         url: "/removeCart",
@@ -129,7 +134,6 @@ function removeItem(item) {
             window.location.href = "/cart"
         }
     });
-    //reload to update page. Could use Ajax, however it wouldnt work with ejs since we render the page statically.
 }
 
 function updateQuantity(item) {
@@ -171,6 +175,10 @@ function executePayment() {
     });
 }
 
+window.onload = function() {
+    $('[data-toggle="tooltip"]').tooltip();   
+}
+
 var prevScrollpos = window.pageYOffset;
 window.onscroll = function () {
     var currentScrollPos = window.pageYOffset;
@@ -180,13 +188,20 @@ window.onscroll = function () {
         $(".dropdown-item").css("margin", "0.25rem 0 0");
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "58px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").show();
-
+        try {
+            document.getElementById("fixed-alert").style.position = "fixed"
+            document.getElementById("fixed-alert").style.top = "45px"
+        } catch {}
     } else {
         document.getElementById("navbar").style.top = "0"; //down (defualt view)
         $(".dropdown-item").css("margin", "0.625rem 0 0");
         document.getElementById("fixed-navbar-row").style.top = "0";
         document.getElementById("fixed-navbar-content-items-toggle").style.lineHeight = "30px";
         $("#fixed-navbar-content-icons-search-toggle, #fixed-navbar-content-icons-basket-toggle, #fixed-navbar-content-icons-quantity-toggle").hide();
+        try {
+            document.getElementById("fixed-alert").style.position = "relative"
+            document.getElementById("fixed-alert").style.top = "0"
+        } catch {}
     }
     prevScrollpos = currentScrollPos;
 }

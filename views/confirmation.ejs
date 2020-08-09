@@ -5,6 +5,7 @@
 
 
 <div class="content-box-span confirmation-box-span">
+    <text style="color: white;">Please review your order before tapping confirm:</text>
     <div class="content-box confirmation-box" style="text-align: center;">
       <% items.forEach(function(result) { %>
         <div style="margin: 10px;">
@@ -15,7 +16,13 @@
         </div>
         <hr class="horizontalSep"/>
       <%})%>
-      <text style="font-size: 8px; color: white;">By clicking confirm you accept our <a href="https://worldplugs.net/payment-policy">payment policy</a>and <a href="https://worldplugs.net/terms">Terms of service</a></text>
+      <% noFeeTotal = total - fee %>
+      <text class="wp-small-confirm-data">Fee: £<%= fee %></text>
+      <text class="wp-small-confirm-data">Total without fee: £<%= noFeeTotal.toFixed(2) %></text>
+      <br>
+      <text style="color: white;">Total including fee: <text style="color: #4BB543">£<%= total %></text></text>
+      <br>
+      <text style="font-size: 10px; color: white;">By clicking confirm you accept our <a href="https://worldplugs.net/payment-policy">payment policy</a>and <a href="https://worldplugs.net/terms">Terms of service</a></text>
       <div style="padding-top: 10px;">
         <button class="btn wp-button wp-button-gradient wp-button-checkout" id="confirmation-button" onclick="confirmPayment()">Confirm</button>
       </div>
@@ -26,7 +33,7 @@
       <div class="checkmark draw"></div>
     </div>
 
-
+<!--Have you got a nectar card?-->
 </div>
 
 
@@ -38,6 +45,10 @@
     }
 }
 
+.wp-small-confirm-data {
+  color: white;
+  font-size: 11px;
+}
 
 
 .circle-loader {

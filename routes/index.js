@@ -31,13 +31,15 @@ var crypto = require("crypto")
 router.get('/', (req, res) => {
     // Call searchQuery Function
     req.session.errorMsg = ""
-    functions.searchQuery(res, category, '', '', 'homepage.ejs');
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    functions.searchQuery(res, category, '', '', 'homepage.ejs', ip);
 
 })
 
 router.get('/products', (req, res) => {
     req.session.errorMsg = ""
-    functions.searchQuery(res, category, '', '', 'allproducts.ejs');
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    functions.searchQuery(res, category, '', '', 'allproducts.ejs', ip);
 })
 
 router.get('/products/:product', function (req, res) {
@@ -46,7 +48,8 @@ router.get('/products/:product', function (req, res) {
     var product = req.params.product.toString();
 
     // Call searchQuery Function
-    functions.searchQuery(res, products, 'CategoryKey', product, 'products.ejs');
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    functions.searchQuery(res, products, 'CategoryKey', product, 'products.ejs', ip);
 
 
 })
@@ -73,11 +76,13 @@ router.post('/searchData', function(req, res) {
 })
 
 router.get('/success', function(req, res) {
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     try {
         if (req.session.viewOrder[0] && req.session.userInfo) {
             res.render('success.ejs', {purchaseContents: req.session.viewOrder, addressContents: req.session.userInfo})
         }
     } catch {
+        functions.createErrorLog("User tried to reach /success without a valid order.", ip)
         res.redirect('/')
     }
     
@@ -116,9 +121,11 @@ router.get('/cart', function(req, res) {
                 functions.getBasket(req.session.cart, items, function(result) {
                     functions.updateStock(result, items, true, function(stockResult) {
                         var total = functions.getTotal(result)
+                        var fee = functions.calculateFee(result)
                         res.render('basket.ejs', {
                             items: stockResult,
-                            total: total
+                            total: total,
+                            fee: fee
                         })
                     })
                 }) 

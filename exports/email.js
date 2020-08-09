@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'support@worldplugs.net', // your domain email address
-      pass: 'i8pqjk$dw42tog16y1G8G$Zf' // your password
+      user: 'no-reply@worldplugs.net', // your domain email address
+      pass: 'DGggFCu$K9HkZrxQ' // your password
     },
     tls: {
         // do not fail on invalid certs
@@ -25,8 +25,8 @@ var mailFunction  = {
                 console.error(error)
             } else {
                 const mailOptions = {
-                    from: 'support@worldplugs.net',
-                    bcc: 'worldplugsofficial@gmail.com',
+                    from: 'no-reply@worldplugs.net',
+                    // bcc: 'worldplugsofficial@gmail.com',
                     to: emailAddress,
                     subject: 'Thank you for your order!',
                     html: data

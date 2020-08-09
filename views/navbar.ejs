@@ -31,7 +31,7 @@
                         C5.4,1.9,6.3,0.9,7.5,0.9z M11.2,14.1H3.8c-0.8,0-1.4-0.5-1.4-1.1l0.8-9.1h1.4V5c0,0.2,0.2,0.4,0.4,0.4S5.4,5.3,5.4,5V3.8h4.2V5
                         c0,0.2,0.2,0.4,0.4,0.4s0.4-0.2,0.4-0.4V3.8h1.4l0.8,9.1C12.6,13.6,12,14.1,11.2,14.1z"/>
                     <rect y="5" class="st1" width="15" height="6.7"/>
-                    <text y="75%" x="50%" style="text-anchor: middle" class="st0 st2 st3 basket-items-quantity"></text>
+                    <text y="75%" x="50%" style="text-anchor: middle; cursor: pointer;" class="st0 st2 st3 basket-items-quantity"></text>
                     </svg>
 
 
@@ -91,7 +91,7 @@
                         C5.4,1.9,6.3,0.9,7.5,0.9z M11.2,14.1H3.8c-0.8,0-1.4-0.5-1.4-1.1l0.8-9.1h1.4V5c0,0.2,0.2,0.4,0.4,0.4S5.4,5.3,5.4,5V3.8h4.2V5
                         c0,0.2,0.2,0.4,0.4,0.4s0.4-0.2,0.4-0.4V3.8h1.4l0.8,9.1C12.6,13.6,12,14.1,11.2,14.1z"/>
                     <rect y="5" class="st1" width="15" height="6.7"/>
-                    <text y="75%" x="50%" style="text-anchor: middle" class="st0 st2 st3 basket-items-quantity"></text>
+                    <text y="75%" x="50%" style="text-anchor: middle; cursor: pointer;" class="st0 st2 st3 basket-items-quantity"></text>
                     </svg>
                 </a>
             </div>
@@ -112,8 +112,19 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;"><span
                         aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- BASKET ITEMS -->
+            <div class="modal-body">
+                <div id="modalBody">
+                    
+                </div>
+                <div id="modalBodyPrice">
+                    <div>
+                    <text id="fee" style="font-size: 0.75rem"></text> <a href="/payment-policy" data-placement="right" data-toggle="tooltip" title="We add a small fee to cover paypal charges."><svg id="fee-tooltip" width="0.75rem" height="0.75rem" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="#C8C8C8" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
+                      </svg></a>
+                      <hr align="left" style="background-color: white; width: 10%; margin-top: 0.5rem; margin-bottom: 0.5rem">
+                    </div>
+                    <text id="total"></text>
+                </div>
             </div>
             <div class="modal-footer" style="padding: 0; overflow: hidden;">
 
@@ -147,7 +158,7 @@
                     <input id="searched" class="wp-search" placeholder="Search for a product here">
                 </div>
                 <div id="search-results">
-
+                    
                 </div>
             </div>
             <div class="modal-footer">
@@ -160,14 +171,6 @@
 
 
 
-<div>
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;" id="alertMsg">
-        Item is already in your basket.
-        <button type="button" class="close" onclick="document.getElementById('alertMsg').style.display = 'none'">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
 
 <script>
     function checkComplete() {
@@ -184,5 +187,6 @@
     $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
   });
 })
+
 
 </script>

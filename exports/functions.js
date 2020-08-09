@@ -6,11 +6,16 @@ const banners = require('../Management/models/banners')
 const links = require('../Management/models/links');
 const products = require("../models/products");
 const errorlog = require('../Management/models/errorLogs.js')
+
+const Discord = require('discord.js');
+const client = new Discord.Client();
+client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
+
 var functions = {
 
     // Search Database With Arguments
 
-    searchQuery: async function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.") {
+    searchQuery: async function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.", ip) {
         var pageLinks;
         await links.find({}, function(error, result) {
             if (error) {
@@ -46,7 +51,7 @@ var functions = {
                                             })}
                                         })
                                     } else {
-                                        res.redirect(fallbackRedirect)
+                                        //falls back to catch
                                     }
                                 } catch {
                                     res.redirect(fallbackRedirect)
@@ -146,14 +151,32 @@ var functions = {
         res.render("partials/error.ejs", {msg : message, links: Links})
     },
 
-    getTotal : function(result) {
+    getTotal : function(result, payment = "false") {
         var total = 0;
         result.forEach(function(row) {
             var item = row[0]
             var quantity = row[1]
             total = total + parseFloat(item.Price) * parseInt(quantity)
         })
+        if (payment == "true") {
+            total += total / 100 * 2.9
+            total += 0.30
+        }
         return total.toFixed(2);
+    },
+
+    calculateFee : function(result) {
+        var total = 0;
+        var fee = 0;
+        result.forEach(function(row) {
+            var item = row[0]
+            var quantity = row[1]
+            total = total + parseFloat(item.Price) * parseInt(quantity)
+        })
+        total = total / 100 * 2.9
+        total += 0.30
+        fee = total
+        return fee.toFixed(2);
     },
 
     countStock : async function(id, name, callback) {
@@ -266,14 +289,9 @@ var functions = {
             Message: message,
             Address: address
         }
-        console.log(errorObject)
-        errorlog.create(errorObject, function(error, result) {
-            if (error) {
-                console.error(error)
-            } else {
-                console.log(result)
-            }
-        }) 
+        var prettyObj = JSON.stringify(errorObject,null,2)
+        var msg = "@Dev\n```json\n" + prettyObj + "```"
+        client.channels.cache.get("741734136728911913").send(msg.toString());
     }
 
 }

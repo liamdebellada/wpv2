@@ -19,6 +19,7 @@ app.use(session({
 
 app.set('trust proxy', 1);
 
+
 // Passport Config
 require('./config/passport')(passport)
 

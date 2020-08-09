@@ -10,7 +10,7 @@ const User = require('../models/User')
 
 
 // User Login
-router.get('/', ensureNotAuthenticated, (req, res) => res.render('login'))
+router.get('/', ensureNotAuthenticated, (req, res) => res.render('login', {layout: "layout.ejs"}))
 
 // User Register
 

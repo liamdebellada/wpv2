@@ -1,4 +1,7 @@
 <%- include('banner.ejs', {banner: banner}) %>
+
+
+
 <h1 class="titleText" style="padding: 30px; font-weight: 200;">
   Welcome to <text style="
   background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(39,193,230,1) 0%, rgba(194,117,233,1) 50%, rgba(242,81,93,1) 100%);   -webkit-background-clip: text;
@@ -7,12 +10,12 @@
 
 
 
-<section class="wp-homepage-hero"style="margin-bottom: 30px;" >
+<section class="wp-homepage-hero" style="margin-bottom: 30px;">
 
-    <img src="https://cdn.worldplugs.net/hero/launch-sale-text.svg" class="img-fluid" style="height: 95%"></img>
-    
+  <img src="https://cdn.worldplugs.net/hero/launch-sale-text.svg" class="img-fluid" style="height: 95%"></img>
 
-  
+
+
 </section>
 
 
@@ -22,44 +25,43 @@
 <div class="container">
   <div class="row justify-content-center">
     <% results.forEach(function(result) { %>
-      <% if (result.DisplayPopular == "true") { %>
+    <% if (result.DisplayPopular == "true") { %>
     <div class="col-sm-12 col-md-6 col-lg-4">
-      <a style="display: block; height: 100%; text-decoration: none; color: #212529;"
-        href="/products/<%= result.CategoryKey %>">
-        <div class="card itemCard homeCard" style="text-align: center;">
+      <div class="card itemCard homeCard" style="text-align: center;">
+        <a style="display: block; height: 100%; text-decoration: none; color: #212529;"
+          href="/products/<%= result.CategoryKey %>">
           <div class="card-header">
             <h1 style="color: white; font-size: 2em; text-transform: capitalize;"><%= result.CategoryKey %></h1>
             <img style="width:250px;" class="img-fluid" src="<%= result.Image %>"></img>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
     </div>
-      <% } %>
+    <% } %>
     <% }) %>
   </div>
 </div>
 
 <div style="margin: 30px;">
-  <a href="/products" class="btn wp-button wp-button-gradient wp-button-default-hover" style="cursor: pointer;">View All Products</a>
+  <a href="/products" class="btn wp-button wp-button-gradient wp-button-default-hover" style="cursor: pointer;">View All
+    Products</a>
 </div>
 
 
 
 <style>
   .wp-homepage-hero {
-  background-image: url("https://cdn.worldplugs.net/hero-element3.svg");
-  background-color: #1d1b28;
-  height: 50vh;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
+    background-image: url("https://cdn.worldplugs.net/hero-element3.svg");
+    background-color: #1d1b28;
+    height: 50vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
   }
-@media (max-width: 700px) {
-  .wp-homepage-hero {
-  background-image: none;
+
+  @media (max-width: 700px) {
+    .wp-homepage-hero {
+      background-image: none;
+    }
   }
-}
-
-
-
 </style>

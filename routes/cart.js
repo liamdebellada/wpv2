@@ -108,9 +108,9 @@ router.post('/updateCart', limitRequests, (req, res) => {
 
             })
         } else {
-            // Socket Error
-            console.log(result)
-            res.send("Item already in basket").end()
+            functions.getBasket([{id:cartItemId, quantity: "1"}], items, function(errorItem) {
+                res.send(`${errorItem[0][0].Title} is already in your basket`).end()  
+            })
         }
     })
 

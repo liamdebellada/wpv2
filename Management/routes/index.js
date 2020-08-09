@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+router
 const {
     ensureAuthenticated, 
     ensureAdmin
@@ -38,6 +39,7 @@ client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
 
 
+
 function makeid(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -60,6 +62,7 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
     const uid = req.user.uid
 
     res.render('dashboard', {
+        layout: "authenticated-layout.ejs",
         name: req.user.name,
         rank: req.user.group
     })

@@ -2,6 +2,12 @@
 
 <script src="/addCart.js"></script>
 
+<div style="margin: 0 auto; width: 20rem; position: relative; z-index: 99999;" class="collapse" id="alertMsg">
+  <div class="info-msg" id="fixed-alert" style="top: 0; width: 20rem;">
+      <i class="fa fa-info-circle" id="alert-content"></i>
+  </div>
+</div>
+
 <div class="content-box-span">
   <div class="content-box">
   <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
@@ -34,4 +40,9 @@
     <%})%>
 
   </div>
+</div>
+
+<div id="watch1" style="height: 20px">
+  <div><text id="valueAfter" style="color: white;"></text></div>
+  <div><text id="valueBefore" style="color: white;"> </text></div>
 </div>
