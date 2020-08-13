@@ -11,32 +11,53 @@
 
 <body style="font-family: 'Raleway', sans-serif">
 
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #212525 !important; padding: 0.5rem !important">
-        <a class="navbar-brand" href="#">
-           <img src="https://cdn.worldplugs.net/wplogo.svg" width="30rem"> <text style="font-size: rem">Staff Portal</text>
-          </a>
-      </nav> -->
-      <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style="background-color: #212525 !important; padding: 0.5rem !important">
-        <a class="navbar-brand" href="#">
-            <img src="https://cdn.worldplugs.net/wplogo.svg" width="30rem"> <text style="font-size: rem">Staff Portal</text>
-           </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-          </ul>
-          <span class="navbar ml-auto">
-            <text style="color: white">Test</text>
-            <text style="color: white">Test</text>
-            <text style="color: white">Test</text>
-            <text style="color: white">Test</text>
-            <text style="color: white">Test</text>
-            <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">Logout</button></a>
-          </span>
-        </div>
-      </nav>
+  <nav class="navbar navbar-dark bg-dark navbar-expand-sm" style="padding: 0.5rem 1rem; background-color: #212525 !important;">
+    <a class="navbar-brand" href="https://admin.worldplugs.net/dashboard">
+      <img src="https://cdn.worldplugs.net/wplogo.svg" width="30" height="30" alt="logo">
+      <text href="https://admin.worldplugs.net/dashboard" style="padding-left:5px;">WorldPlugs Management</text>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-list-2">
+      <ul class="navbar-nav ml-auto" style="text-align: right;">
+
+        <% if (rank == "Admin") { %>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Blog</a>
+        </li>
+
+      <% } %>
+
+      <% if (rank == "Staff") { %>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Blog</a>
+        </li>
+
+      <% } %>
+
+      <li>
+        <a class="wp-navbar-logout-button btn btn-success" href="/logout">Logout</a>
+      </li>
+
+
+      </ul>
+    </div>
+  </nav>
 
 
 
@@ -65,3 +86,22 @@
 </body>
 
 </html>
+
+
+<style>
+
+@media (max-width: 576px) {
+    .wp-navbar-logout-button {
+      margin-top: 10px;
+  }
+}
+
+@media (min-width: 577px) {
+    .wp-navbar-logout-button {
+      margin-left: 15px;
+  }
+}
+
+ 
+  
+</style>

@@ -167,8 +167,8 @@
                                 <div>
 
                                     <text 
-                                        style="color: #18BC9C; cursor: pointer; padding-right: 40px;">Yes</text>
-                                    <text data-toggle="collapse" data-target="#confirmAlert" onclick="confirmDelete()"
+                                        style="color: #18BC9C; cursor: pointer; padding-right: 40px;" onclick="deleteProduct()">Yes</text>
+                                    <text data-toggle="collapse" data-target="#confirmAlert"
                                         style="color: #E74C3C; text-align: right; cursor: pointer;">No</text>
 
                                 </div>
@@ -352,6 +352,21 @@
             $.ajax({
                     type: "POST",
                     url: "/renableProduct",
+                    data: {
+                        productID: productID
+                    }
+                }).done(data => {
+                if (data == "e") {
+                    window.location.reload();
+                }
+            });
+        }
+
+        function deleteProduct () {
+            productID = $("#unlistedID").val();
+            $.ajax({
+                    type: "POST",
+                    url: "/deleteProduct",
                     data: {
                         productID: productID
                     }

@@ -24,6 +24,7 @@ const logs = require('../models/logs')
 const users = require('../models/User')
 const links = require('../models/links')
 const e = require('express');
+const grouplinks = require('../models/groupLinks')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -37,7 +38,13 @@ const client = new Discord.Client();
 
 client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
-
+client.on('message', msg => {
+    if (msg.channel.id === '739138331266383902') {
+        if (msg != "t!open") {
+            msg.delete()
+        }
+    }
+});
 
 
 function makeid(length) {
@@ -86,9 +93,20 @@ router.get('/staff', ensureAuthenticated, ensureAdmin, function (req, res) {
         if (error) {
             console.log(error)
         } else {
-            res.render('staff.ejs', {
-                staffAccounts: result
+
+            grouplinks.find({}, function(error2, grouplinks) {
+                if (error2) {
+                    console.log(error2)
+                } else {
+                    res.render('staff.ejs', {
+                        groupLinks: grouplinks,
+                        staffAccounts: result
+                    })
+                }
+
             })
+
+            
         }
     })
 
@@ -746,7 +764,16 @@ router.post('/updateItem', ensureAuthenticated, ensureAdmin, function (req, res)
 })
 
 
-
+router.post('/deleteProduct', ensureAuthenticated, ensureAdmin, function(req, res) {
+    var id = req.body.productID
+    products.deleteOne({_id : id}, function(error, data) {
+        if (error) {
+            console.log(error)
+        } else {
+            res.send("e")
+        }
+    })
+}) 
 
 
 //products post to update a product

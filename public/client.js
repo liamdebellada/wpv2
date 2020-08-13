@@ -22,7 +22,10 @@ function displayBasketContent(basketContent) {
             var rowContent = `
             <div>
             <text>${item.Title}</text>
-            <div class="propertyContainer" style="float:right;">
+            <br>
+            <text>£${item.Price}</text>
+            <div class="propertyContainer" style="float:right; -webkit-transform: translate(-50%, -50%);  
+            transform: translate(-50%, -50%);   ">
             <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="itemQuantity" onchange="updateQuantity(this)" style="width: 50px; display: none;"></input>
             <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;"></div>
             </div>
@@ -38,7 +41,7 @@ function displayBasketContent(basketContent) {
 
         fee = parseFloat((total / 100 * 2.9 + 0.30).toFixed(2))
 
-
+        $("#subtotal").text("Subtotal: £" + total.toFixed(2))
         $("#fee").text("Fee: £" + fee.toFixed(2))
         $("#total").text("Total: £" + (total + fee).toFixed(2))
 

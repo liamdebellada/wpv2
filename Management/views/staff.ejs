@@ -7,7 +7,11 @@
     <li>
         <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="createSelection">Add Staff</a>
     </li>
+    <li>
+      <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="groupManagement">Group Permissions</a>
+  </li>
 </ul>
+
 
 <div id="create" style="display: none;">
   <div style="margin-top: 15px;">
@@ -71,6 +75,36 @@
            <% }) %>
         </tbody>
       </table>
+</div>
+
+<div id="groupPermissions" style="display: none; margin-top: 10px;">
+  <form>
+    <div class="form-group">
+      <label for="group">Group</label>
+      <select class="form-control" id="wp-group-permissions-groups">
+        <option selected>Admin</option>
+        <option>Staff</option>
+      </select>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Link</th>
+          <th scope="col" style="text-align: center;">Enabled</th>
+        </tr>
+      </thead>
+      <tbody id="wp-group-permissions-body">
+        <% groupLinks.forEach(function(groupLink) { %>
+          <tr id="<%= groupLink._id %>" data-items="<%= groupLink.Ranks %>">
+            <td><%= groupLink.Title %></td>
+            <td><%= groupLink.URL %></td>
+            <td align="center"><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </form>
 </div>
 
 
@@ -150,27 +184,33 @@
 <script>
 
       function navbar(option) {
-        
-        var dropdown = document.getElementById("dropSelection")
-        var other = document.getElementById("createSelection")
-        var creationPage = document.getElementById('create')
-        var table = document.getElementById('dataTable')
-        if (option.id == "createSelection") {
+      
+
+        $("#dropSelection,#createSelection,#groupManagement ").removeClass('active')
+            $("#create,#dataTable,#groupPermissions").css('display', 'none')
+
             option.classList.add('active')
-            option.disabled = false;
-            dropdown.disabled = true;
-            dropdown.classList.remove('active')
-            creationPage.style.display = "block"
-            table.style.display = "none"
-        } else {
-            dropdown.disabled = false;
-            other.classList.remove('active')
-            other.disabled = true;
-            dropdown.classList.add('active')
-            table.style.display = "block"
-            creationPage.style.display = "none"
-        }
+
+            if (option.id == "createSelection") {
+                $("#create").css('display', 'block')
+            } else if (option.id == "dropSelection") {
+                $("#dataTable").css('display', 'block')
+            } else if (option.id == "groupManagement") {
+                $("#groupPermissions").css('display', 'block')
+            }
+
+
     }
+
+    function checkEnabled() {
+      selectedGroup = $('#wp-group-permissions-groups option:selected').val()
+      $('#wp-group-permissions-body tr').each(function() {
+        $(this).children(':nth-child(3)').click()
+      })
+    }
+
+    checkEnabled() 
+
 
     function displayAccount(data) {
 

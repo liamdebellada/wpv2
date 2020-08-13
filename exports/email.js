@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'no-reply@worldplugs.net', // your domain email address
-      pass: 'DGggFCu$K9HkZrxQ' // your password
+      user: 'no-reply@worldplugs.net',
+      pass: 'DGggFCu$K9HkZrxQ' 
     },
     tls: {
         // do not fail on invalid certs
