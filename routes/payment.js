@@ -1,6 +1,7 @@
 // Index Modules
 const express= require('express');
 const router = express.Router();
+const expressQueue = require('express-queue');
 var paypal = require('paypal-rest-sdk');
 
 //exports
@@ -125,12 +126,11 @@ router.get('/checkout', function (req, res, next) {
 
 })
 
+var sem = require('semaphore')(3);
+router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}), async function (req, res, next) {
 
-let paymentProcessing = false
-router.post('/confirmPayment', function (req, res, next) {
-    async function payment () {
+        console.log("ENTERING SESSION")
         var stockResult = []
-        paymentProcessing = true
 
         try {
             var paymentId = req.body.paymentId
@@ -155,6 +155,7 @@ router.post('/confirmPayment', function (req, res, next) {
                 if (error) {
                     console.log("Error checking stock on payement execute", error)
                 } else {
+                    console.log(result)
                     if (previousQuantity > result) {
                         stockResult.push(true)
                     }
@@ -174,12 +175,13 @@ router.post('/confirmPayment', function (req, res, next) {
             }]
         }
         if (stockResult.includes(true)) {
-
             req.session.errorMsg = "One or more of your items has already been purchased during the checkout process."
             try {
+                console.log("Leaving Session Due To Items Left Error")
                 res.send('/error').end()
             } catch {
-                res.end()
+                console.log("Leaving Session Due To Items Left Error In Catch")
+                res.send('/error').end()
             }
         } else {
 
@@ -227,64 +229,47 @@ router.post('/confirmPayment', function (req, res, next) {
                             
                         }
                         for (id in ids) {
-                            accounts.updateOne(
+                            await accounts.updateOne(
                                 {_id : ids[id]},
                                 {availability : "false"},
                                 function(error, success) {
                                     if (error) {
                                         console.log(error)
-                                    } else {}
+                                    } else {
+                                        console.log(success)
+                                    }
                             })
                         }
                         purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
         
-                        emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID)
-        
-        
-                        req.session.total = "empty"
-                        req.session.cart = []
-        
-                        req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
-        
-                        req.session.save()
-        
-                        logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
-                            if (error) {
-                                console.log(error)
+                        emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID, function (status) {
+                            if (status) {
+                                req.session.total = "empty"
+                                req.session.cart = []
+                
+                                req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
+                
+                                req.session.save()
+                
+                                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
+                                    if (error) {
+                                        console.log(error)
+                                    }
+                                })
+                                console.log("LEAVING SESSION")
+                                res.send('/success').status(200).end()
                             }
                         })
-                        paymentProcessing = false
-                        clearInterval(waiting)
-                        res.send('/success').status(200).end()
+        
+        
+                        
                     } else {
                         res.send('/').status(400).end();
                     }
                 }
             });
         }
-        
-    
-    }
-
-    if (!paymentProcessing) {
-        paymentProcessing = true
-        payment()
-    } else {
-        //var executionCounter = 0
-        console.log("entering wait stage.")
-        var waiting = setInterval(function() {
-            // executionCounter += 1
-            // if (executionCounter > 1) {
-            //     clearInterval(waiting)
-            // }
-
-            if (!paymentProcessing) {
-                payment()
-            }
-            
-        }, 2000)
-
-    }
+  
 })
 
 
