@@ -1,81 +1,19 @@
 <h1 class="mt-4">Dashboard</h1>
 <p class="lead mb-3">Welcome <%= name %></p>
 
+<div class="row">
+<% dashboardLinks.forEach(function(link) { %>
 
-
-  <div class="row">
-    <% if (rank == "Admin") {%>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Banner management</h5>
-            <p class="card-text">Create or remove banners displayed on the website</p>
-            <a href="/banners" class="btn btn-primary">Manage Banners</a>
-          </div>
-        </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><%= link.Title %></h5>
+        <p class="card-text"><%= link.Description %></p>
+        <a href="<%= link.URL %>" class="btn btn-primary"><%= link.Title %></a>
       </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Homepage Management</h5>
-            <p class="card-text">Manage the homepage of WorldPlugs</p>
-            <a href="/manage-homepage" class="btn btn-primary">Manage Homepage</a>
-          </div>
-        </div>
-    </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Category management</h5>
-            <p class="card-text">Update categories displayed on the website</p>
-            <a href="/categories" class="btn btn-primary">Manage Categories</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Product management</h5>
-              <p class="card-text">Update information for each product on the page</p>
-              <a href="/products" class="btn btn-primary">Manage Products</a>
-            </div>
-          </div>
-      </div>
-      <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Administration</h5>
-              <p class="card-text">Enable developer mode, stop the site, etc-</p>
-              <a href="/admin" class="btn btn-primary">Manage Server</a>
-            </div>
-          </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Manage links</h5>
-            <p class="card-text">Update page hyperlinks (discord, emails, ect-)</p>
-            <a href="/link-manager" class="btn btn-primary">Manage Links</a>
-          </div>
-        </div>
-    </div>
-      <% }%>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Staff Management</h5>
-            <p class="card-text">Manage WorldPlugs staff</p>
-            <a href="/staff" class="btn btn-primary">Manage Staff</a>
-          </div>
-        </div>
-    </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">User Purchase Logs</h5>
-            <p class="card-text">See all user purchases for staff to manage</p>
-            <a href="/logs" class="btn btn-primary">Manage Purchases</a>
-          </div>
-        </div>
     </div>
   </div>
+
+<% }) %>
+
+</div>

@@ -8,10 +8,9 @@
         <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="createSelection">Add Staff</a>
     </li>
     <li>
-      <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="groupManagement">Group Permissions</a>
+      <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="groupManagement">Group Management</a>
   </li>
 </ul>
-
 
 <div id="create" style="display: none;">
   <div style="margin-top: 15px;">
@@ -34,7 +33,7 @@
       </select>
     </div>
     <button style="margin-bottom: 10px" onclick="addAccount()" class="btn btn-success ">Add Account and Generate Password Link</button>
-    <div id="wp-admin-reset-password-collapse-box" class="collapse">
+    <div id="wp-admin-create-password-collapse-box" class="collapse">
       <div  class="selectBox form-group">
         <b><label for="inputState" id="wp-create-account-copy">Click link to copy</label></b>
         <input id="wp-create-account-copybox" class="form-control wp-copybox" spellcheck="false" onclick="copyURL(this, 'wp-create-account-copy')"
@@ -52,14 +51,18 @@
         padding-bottom: 0;
         border-radius: 0;
     }
+
+    td {
+      word-break: break-all;
+    }
 </style>
 
 <div id="dataTable" style="display: block;">
-    <table class="table">
+    <table class="table" style="table-layout: fixed;">
         <thead>
-          <tr>
-            <th scope="col">Staff Name</th>
-            <th scope="col">Email</th>
+          <tr >
+            <th style="width: 20%;" scope="col">Staff Name</th>
+            <th scope="col" >Email</th>
             <th scope="col">Group</th>
             <th scope="col">Manage Account</th>
           </tr>
@@ -78,12 +81,18 @@
 </div>
 
 <div id="groupPermissions" style="display: none; margin-top: 10px;">
-  <form>
+
+  
+
+  
+
+  <form> 
+    <h4>Group Permissions</h4>
     <div class="form-group">
       <label for="group">Group</label>
       <select class="form-control" id="wp-group-permissions-groups">
-        <option selected>Admin</option>
-        <option>Staff</option>
+        <option>Admin</option>
+        <option selected>Staff</option>
       </select>
     </div>
     <table class="table">
@@ -97,14 +106,52 @@
       <tbody id="wp-group-permissions-body">
         <% groupLinks.forEach(function(groupLink) { %>
           <tr id="<%= groupLink._id %>" data-items="<%= groupLink.Ranks %>">
-            <td><%= groupLink.Title %></td>
-            <td><%= groupLink.URL %></td>
-            <td align="center"><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></td>
+            <td ><%= groupLink.Title %></td>
+            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px; font-size: 0.75rem"><%= groupLink.URL %></td>
+            <td align="right"><input class="form-check-input" type="radio" value=""></td>
           </tr>
         <% }) %>
       </tbody>
     </table>
+    
   </form>
+  <button class="btn btn-success" onclick="updateGroupPermissions()">Update Group Permissions</button>
+  
+  <hr>
+  
+  <form class="collapse show" id="aaaa">
+    <h4>Manage Groups</h4>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="newGroup">Add New Group</label>
+          <input class="form-control" name="newGroup" placeholder="E.g Developer" type="text">
+        </div>
+        <button class="btn btn-secondary" style="margin-bottom: 15px;">Add Group</button>
+      </form>
+      </div>
+
+      <div class="col-md-6">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Group</th>
+              <th scope="col" style="text-align: right;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% groups.forEach(function(group) { %>
+              <tr>
+                <td><%= group.Name %></td>
+                <td align="right"><button class="btn btn-danger" data-items="<%= group._id %>">Remove</button></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+
 </div>
 
 
@@ -202,14 +249,27 @@
 
     }
 
-    function checkEnabled() {
-      selectedGroup = $('#wp-group-permissions-groups option:selected').val()
+
+
+    function checkEnabled(selectedGroup) {
+      console.log(selectedGroup)
       $('#wp-group-permissions-body tr').each(function() {
-        $(this).children(':nth-child(3)').click()
+
+        $(this).children(':nth-child(3)').find('input').prop('checked', false)
+
+        if ($(this).data("items").includes(selectedGroup)) {
+          $(this).children(':nth-child(3)').find('input').prop('checked', true)
+        }
+        
       })
     }
 
-    checkEnabled() 
+    $('#wp-group-permissions-groups').on('change', function () {
+      checkEnabled($(this).val()) 
+    })
+    
+
+    checkEnabled($('#wp-group-permissions-groups').val())
 
 
     function displayAccount(data) {
@@ -308,8 +368,16 @@
             id: accountID
         } 
       }).done(data => {
-        $("#wp-admin-reset-password-collapse-box").collapse('show')
-        $("#wp-admin-reset-password-copybox").val(data)
+
+        if ($('#create').css('display') == 'block') {
+          $("#wp-admin-create-password-collapse-box").collapse('show')
+          $("#wp-create-account-copybox").val(data)
+        } else {
+          $("#wp-admin-reset-password-collapse-box").collapse('show')
+          $("#wp-admin-reset-password-copybox").val(data)
+        }
+
+        
       });
         
       })
@@ -344,6 +412,61 @@
         $("#wp-create-account-response").text("Please fill all fields")
         $("#wp-create-account-response").css('color', 'red')
       }
+    }
+
+    function updateGroupPermissions() {
+      var constructGroupUpdates = []
+      var groupAccessUpdate
+      var selectedGroup = $('#wp-group-permissions-groups').val()
+      $('#wp-group-permissions-body tr').each(function() {
+
+        if ($(this).children(':nth-child(3)').find('input').prop('checked')) {
+          if ($(this).data("items").includes(selectedGroup) == false) {
+            console.log("doesnt exist. needs adding!")
+            updateGroups = $(this).data("items").split(",")
+            updateGroups.push(selectedGroup)
+            constructGroupUpdates.push({urlID: this.id , ranks:  updateGroups })
+          }
+
+        } else {
+          if ($(this).data("items").includes(selectedGroup)) {
+
+            console.log("needs removing!")
+
+            updateGroupURL = $(this).data("items").split(",")
+            
+            var index = $.inArray(selectedGroup, updateGroupURL);
+            if (index >= 0) {
+              updateGroupURL.splice(index, 1);
+            }
+
+
+            constructGroupUpdates.push({urlID: this.id , ranks: updateGroupURL })
+
+        }
+      }
+        
+      })
+
+
+      if (constructGroupUpdates.length > 0) {
+
+        console.log(constructGroupUpdates)
+
+        $.ajax({
+        type: "POST",
+        url: "/updateRequestedPermissions",
+        data: {
+          constructGroupUpdates: JSON.stringify(constructGroupUpdates),
+        } 
+      }).done(data => { 
+        window.location.reload();
+      })
+        
+      } else {
+        console.log("no need to update.")
+      }
+
     }
 
 

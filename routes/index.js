@@ -22,8 +22,37 @@ const functions = require('../exports/functions');
 
 var crypto = require("crypto")
 
+//rate limiter
+const rateLimit = require('express-rate-limit');
 
-//encryptData() to encrypt accounts table
+const limitRequests = rateLimit({
+    windowMS: 1000,
+    max: 500,
+    message:
+    "You are sending too many requests to the server.",
+    onLimitReached: function(req) {
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        https.get(`https://api.ipgeolocation.io/ipgeo?apiKey=cefdbd6742ab46a09c460ddd81ee0e9e&ip=${ip}&fields=geo&include=security`, function(resp) {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+            
+            resp.on('end', async () => {
+                var datares = "\n```json\n" + JSON.stringify(JSON.parse(data),null,2) + "```"
+                await client.channels.cache.get('741352723693174905').send("", {files: ['https://thumbs.gfycat.com/CostlyDopeyAcornwoodpecker-size_restricted.gif']})
+                client.channels.cache.get('741352723693174905').send(datares);
+            });
+        }).on("error", (err) => {
+            console.log("Error: " + err.message);
+        });
+    }
+})
+
+
+
+
 
 // Pages
 
@@ -55,19 +84,24 @@ router.get('/products/:product', function (req, res) {
 })
 
 
-router.post('/searchData', function(req, res) {
+router.post('/searchData', limitRequests, function(req, res) {
     var query = sanitize(req.body.searchQuery)
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if (query == "") {
         res.send("Cant find what your looking for? Request an item in our discord!")
     } else {
         products.fuzzySearch(query, function(err, results) {
             if (err) {
+                functions.createErrorLog("Search error, fuzzy search returned **err**", ip)
                 console.error(err);
             } else {
                 if (results.length < 1) {
                     res.send("WorldPlugs couldnt find what you are looking for :(")
                 } else {
-                    res.send(results)
+                    var filtered = results.filter(function(filteredResult) {
+                        return filteredResult.productState == "enabled"
+                    })
+                    res.send(filtered)
                 }
             }
         });

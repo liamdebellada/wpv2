@@ -74,15 +74,17 @@
             <th scope="col">Date created</th>
             <th scope="col">Color</th>
             <th scope="col">Status</th>
+            <th scope="col>">Remove</th>
           </tr>
         </thead>
         <tbody>
             <% data.forEach(function(row) {%>
-          <tr>
+          <tr id="<%= row._id %>">
             <td><%=row.title%></td>
             <td><%=row.date%></td>
             <td><div style="margin-left: 20px; height: 20px; width: 20px; background-color: <%=row.color%>"></div></td>
-            <td><%=row.active%></td>
+            <td style="cursor:pointer" onclick="enableBanner(this)"><%=row.active%></td>
+            <td onclick="deleteBanner(this)"><button style="padding: 0.275rem 0.25rem" class="btn btn-danger">Delete</button></td>
           </tr>
           <% }) %>
         </tbody>
@@ -190,6 +192,35 @@
             }).done(data => {
                 window.location.href = data;
         });
+    }
+
+    function enableBanner(banner) {
+        $.ajax({
+            type: "POST",
+            url: "/toggleBanner",
+            data: { 
+                id: $(banner).parent().attr('id'),
+                state: banner.innerText
+            }
+        }).done(data => {
+            if (data == "e") {
+                window.location.reload()
+            }
+        })
+    }
+
+    function deleteBanner(banner) {
+        $.ajax({
+            type: "POST",
+            url: "/removeBanner",
+            data: { 
+                id: $(banner).parent().attr('id')
+            }
+        }).done(data => {
+            if (data == "e") {
+                window.location.reload()
+            }
+        })
     }
  
 </script>

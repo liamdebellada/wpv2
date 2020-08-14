@@ -128,9 +128,9 @@ router.get('/checkout', function (req, res, next) {
 
 let paymentProcessing = false
 router.post('/confirmPayment', function (req, res, next) {
-    console.log(paymentProcessing)
     async function payment () {
         var stockResult = []
+        paymentProcessing = true
 
         try {
             var paymentId = req.body.paymentId
@@ -160,6 +160,7 @@ router.post('/confirmPayment', function (req, res, next) {
                     }
                 }
             })
+        }
     
         
     
@@ -181,8 +182,11 @@ router.post('/confirmPayment', function (req, res, next) {
                 res.end()
             }
         } else {
-    
+
+
             paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
+                
+
     
                 if(error){
                     res.send('/').status(400).end();
@@ -247,17 +251,18 @@ router.post('/confirmPayment', function (req, res, next) {
                         logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
                             if (error) {
                                 console.log(error)
-                            } else {}
+                            }
                         })
-                        res.send('/success').status(200).end()
                         paymentProcessing = false
+                        clearInterval(waiting)
+                        res.send('/success').status(200).end()
                     } else {
                         res.send('/').status(400).end();
                     }
                 }
             });
         }
-        }
+        
     
     }
 
@@ -265,18 +270,19 @@ router.post('/confirmPayment', function (req, res, next) {
         paymentProcessing = true
         payment()
     } else {
-        var executionCounter = 0
+        //var executionCounter = 0
+        console.log("entering wait stage.")
         var waiting = setInterval(function() {
-            executionCounter += 1
-            if (executionCounter > 1) {
-                clearInterval(waiting)
-            }
+            // executionCounter += 1
+            // if (executionCounter > 1) {
+            //     clearInterval(waiting)
+            // }
 
             if (!paymentProcessing) {
                 payment()
             }
             
-        }, 1500)
+        }, 2000)
 
     }
 })

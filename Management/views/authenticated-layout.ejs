@@ -11,53 +11,44 @@
 
 <body style="font-family: 'Raleway', sans-serif">
 
-  <nav class="navbar navbar-dark bg-dark navbar-expand-sm" style="padding: 0.5rem 1rem; background-color: #212525 !important;">
+  <nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-sm" style="padding: 0.5rem 1rem; background-color: #212525 !important;">
     <a class="navbar-brand" href="https://admin.worldplugs.net/dashboard">
       <img src="https://cdn.worldplugs.net/wplogo.svg" width="30" height="30" alt="logo">
       <text href="https://admin.worldplugs.net/dashboard" style="padding-left:5px;">WorldPlugs Management</text>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbar-list-2">
-      <ul class="navbar-nav ml-auto" style="text-align: right;">
-
-        <% if (rank == "Admin") { %>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Blog</a>
-        </li>
-
-      <% } %>
-
-      <% if (rank == "Staff") { %>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Blog</a>
-        </li>
-
-      <% } %>
-
-      <li>
-        <a class="wp-navbar-logout-button btn btn-success" href="/logout">Logout</a>
-      </li>
+    <a id="hamburger" style="z-index: 2000;" data-toggle="modal" data-target="#navbar-side"><span></span></a>
 
 
-      </ul>
-    </div>
+
+   
   </nav>
+
+  <div class="modal right fade" id="navbar-side" tabindex="-1" role="dialog" aria-labelledby="navbar-side">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+              <% for (link in dashboardLinks) { %>
+                <div>
+                  <a href="<%= dashboardLinks[link].URL %>" style="font-size: 1rem; color: rgb(185, 185, 185); "><%= dashboardLinks[link].Title %></a>
+                </div>
+
+                <% if (link < dashboardLinks.length - 1) { %>
+                  <hr align="left" style="background-color: rgb(26, 26, 26); width: 10%">
+                <% } %> 
+                
+              <% } %>
+                
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -88,7 +79,26 @@
 </html>
 
 
+
+
 <style>
+
+::-webkit-scrollbar-track
+{ 
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #666B7A;
+}
+
+::-webkit-scrollbar
+{
+  width: 6px;
+ 
+}
+::-webkit-scrollbar-thumb
+{
+	background-color: #1E2338;
+}
+
 
 @media (max-width: 576px) {
     .wp-navbar-logout-button {
@@ -101,6 +111,96 @@
       margin-left: 15px;
   }
 }
+
+.modal-header {
+    background-color: #111313 !important;
+    border: none;
+    color: white;
+    border-radius: 0;
+}
+
+.modal-body {
+    background-color: #111313 !important;
+    color: white
+}
+
+
+.modal-footer {
+    background-color: #111313;
+    border: none;
+    border-radius: 0;
+}
+
+.modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    width: 220px;
+    height: 100%;
+    -webkit-transform: translate3d(0%, 0, 0);
+    -ms-transform: translate3d(0%, 0, 0);
+    -o-transform: translate3d(0%, 0, 0);
+    transform: translate3d(0%, 0, 0);
+}
+
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+.modal.right .modal-body {
+    padding: 15px 15px 80px;
+}
+
+.dropdown-item:hover {
+    background-color: #2f3758;
+}
+
+/*Right*/
+.modal.right.fade .modal-dialog {
+    right: -220px;
+    -webkit-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    -moz-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    -o-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+}
+
+.modal.right.fade.show .modal-dialog {
+    right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.modal-content {
+    border-radius: 0;
+    border: none;
+}
+
+.modal-header {
+    border-bottom-color: #EEEEEE;
+    background-color: #FAFAFA;
+}
+
+
+#hamburger { position: absolute; right: 5%; }
+
+#hamburger { cursor: pointer; padding: 10px 35px 16px 0px; }
+#hamburger span, #hamburger span:before, #hamburger span:after {
+  cursor: pointer;
+  border-radius: 1px;
+  height: 3px;
+  width: 35px;
+  background: #fff;
+  position: absolute;
+  display: inline-block;
+  content: '';
+}
+#hamburger span:before {
+  top: -10px; 
+}
+#hamburger span:after {
+  bottom: -10px;
+}
+
 
  
   

@@ -3,7 +3,9 @@ const router = express.Router();
 router
 const {
     ensureAuthenticated, 
-    ensureAdmin
+    ensureAdmin,
+    ensurePermissions,
+    getLinks
 } = require('../config/auth');
 const {
     ECAKey
@@ -25,6 +27,7 @@ const users = require('../models/User')
 const links = require('../models/links')
 const e = require('express');
 const grouplinks = require('../models/groupLinks')
+const groups = require('../models/groups')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -68,40 +71,69 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
 
     const uid = req.user.uid
 
-    res.render('dashboard', {
-        layout: "authenticated-layout.ejs",
-        name: req.user.name,
-        rank: req.user.group
+    grouplinks.find({ Ranks: { $all: [req.user.group] }}, function (error, dashboardLinks) {
+        if (error) {
+            console.log(error)
+        } else {
+            getLinks(req.user.group, function(links) {
+                res.render('dashboard', {
+                    layout: "authenticated-layout.ejs",
+                    name: req.user.name,
+                    rank: req.user.group,
+                    dashboardLinks: links
+                })
+            })
+        }
     })
+
+    
     
 })
 
-router.get('/logs', ensureAuthenticated, function (req, res) {
+router.get('/logs', ensureAuthenticated, ensurePermissions('/logs'), function (req, res) {
     logs.find({}, function (error, result) {
         if (error) {
             console.log(error)
         } else {
+            getLinks(req.user.group, function(links) {
             res.render('data-logs.ejs', {
-                data: result
+                layout: "authenticated-layout.ejs",
+                data: result,
+                dashboardLinks: links
             })
+        })
         }
     })
 })
 
 router.get('/staff', ensureAuthenticated, ensureAdmin, function (req, res) {
-    users.find({}, 'name email group', function (error, result) {
-        if (error) {
-            console.log(error)
+    users.find({}, 'name email group', function (usersError, usersResult) {
+        if (usersError) {
+            console.log(usersError)
         } else {
 
-            grouplinks.find({}, function(error2, grouplinks) {
-                if (error2) {
-                    console.log(error2)
+            grouplinks.find({}, function(groupLinksError, groupLinksResult) {
+                if (groupLinksError) {
+                    console.log(groupLinksError)
                 } else {
-                    res.render('staff.ejs', {
-                        groupLinks: grouplinks,
-                        staffAccounts: result
+
+                    groups.find({}, function(groupsError, groupsResult) {
+                        if (groupsError) {
+                            console.log(groupsError)
+                        } else {
+                            getLinks(req.user.group, function(links) { 
+                                res.render('staff.ejs', {
+                                    layout: "authenticated-layout.ejs",
+                                    staffAccounts: usersResult,
+                                    groupLinks: groupLinksResult,
+                                    groups: groupsResult,
+                                    dashboardLinks: links
+                                })
+                            })
+                        }
                     })
+
+                    
                 }
 
             })
@@ -112,13 +144,37 @@ router.get('/staff', ensureAuthenticated, ensureAdmin, function (req, res) {
 
 })
 
-router.get('/link-manager', ensureAuthenticated, ensureAdmin, function(req, res) {
+router.post('/updateRequestedPermissions', ensureAuthenticated, ensureAdmin, async function (req, res) {
+    try {
+        groupUpdates = JSON.parse(req.body.constructGroupUpdates)
+        await groupUpdates.forEach(async function(group) {
+            await grouplinks.updateOne({_id: group.urlID}, {Ranks: group.ranks}, function(error, result) {
+                if(error) {
+                    console.log(error)
+                }
+            })
+        })
+        res.status(200).end()
+        
+    }
+    catch {
+        res.status(400).end()
+    }
+})
+
+router.get('/link-manager', ensureAuthenticated, ensurePermissions('/link-manager'), function(req, res) {
     links.find({}, function(error, result) {
         if(error) {
             console.log(error)
         } else {
             console.log(result)
-            res.render('links', {items: result})
+            getLinks(req.user.group, function(links) {
+            res.render('links', {
+                layout: "authenticated-layout.ejs",
+                items: result,
+                dashboardLinks: links
+            })
+            })
         }
     })
 })
@@ -137,12 +193,18 @@ router.post('/updateLink', ensureAuthenticated, ensureAdmin, async function(req,
     res.send(result)
 })
 
-router.get('/manage-homepage', ensureAuthenticated, ensureAdmin, function(req, res) {
+router.get('/manage-homepage', ensureAuthenticated, ensurePermissions('/manage-homepage'), function(req, res) {
     categories.find({}, function(error, result) {
         if (error) {
             console.error(error)
         } else {
-            res.render('manage-homepage.ejs', {categories: result})
+            getLinks(req.user.group, function(links) {
+            res.render('manage-homepage.ejs', {
+                layout: "authenticated-layout.ejs",
+                categories: result,
+                dashboardLinks: links
+            })
+            })
         }
     })
     
@@ -420,7 +482,7 @@ router.get('/create-password/:createURL', function (req, res) {
                     header: "Welcome to the WorldPlugs staff team!",
                     subheader: "Please enter a new password to continue to the management page.",
                     buttonText: "Create Password"
-                })
+            })
             }
         }
     })
@@ -460,14 +522,18 @@ router.post('/password-update', recaptcha.middleware.verify, function (req, res)
     }
 })
 
-router.get('/banners', ensureAuthenticated, ensureAdmin, function (req, res) {
+router.get('/banners', ensureAuthenticated, ensurePermissions('/banners'), function (req, res) {
     banners.find({}, function (error, result) {
         if (error) {
             console.log(error)
         } else {
+            getLinks(req.user.group, function(links) {
             res.render('banners.ejs', {
-                data: result
+                layout: "authenticated-layout.ejs",
+                data: result,
+                dashboardLinks: links
             })
+        })
         }
     })
 })
@@ -481,8 +547,12 @@ router.get('/categories', ensureAuthenticated, ensureAdmin, async function (req,
             results.push(result)
         }
     })
+    getLinks(req.user.group, function(links) {
     res.render('categories.ejs', {
-        data: results
+        layout: "authenticated-layout.ejs",
+        data: results,
+        dashboardLinks: links
+    })
     })
 })
 
@@ -495,9 +565,13 @@ router.get('/products', ensureAuthenticated, ensureAdmin, async function (req, r
             results.push(result)
         }
     })
+    getLinks(req.user.group, function(links) {
     res.render('products.ejs', {
-        data: results
+        layout: "authenticated-layout.ejs",
+        data: results,
+        dashboardLinks: links
     })
+})
 })
 
 router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, function (req, res) {
@@ -508,10 +582,15 @@ router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, fun
         if (error) {
             console.log(error)
         } else {
-            res.render('products-view', {
-                products: results,
-                CategoryKey: key
-            })
+            getLinks(req.user.group, function(links) { 
+                res.render('products-view', {
+                    layout: "authenticated-layout.ejs",
+                    products: results,
+                    CategoryKey: key,
+                    dashboardLinks: links
+                })
+             })
+            
         }
     })
 })
@@ -597,10 +676,15 @@ router.get('/browseItems/:productKey', ensureAuthenticated, ensureAdmin, functio
             items.find({ProductKey: key,
                 productState: "disabled"
             }, function(err, listResult) {
-                res.render('items-view', {
-                    items: results,
-                    unlisted: listResult
+                getLinks(req.user.group, function(links) {  
+                    res.render('items-view', {
+                        layout: "authenticated-layout.ejs",
+                        items: results,
+                        unlisted: listResult,
+                        dashboardLinks: links
+                    })
                 })
+                
             })
         }
     })
@@ -614,16 +698,24 @@ router.get('/manageAccounts/:id', ensureAuthenticated, ensureAdmin, function (re
         if (error) {
             console.error(error)
         } else {
-            res.render('accounts-view', {
-                accounts: result
+            getLinks(req.user.group, function(links) { 
+                res.render('accounts-view', {
+                layout: "authenticated-layout.ejs",
+                accounts: result,
+                dashboardLinks: links
             })
+             })
+            
         }
     })
 })
 
 
-router.get('/admin', ensureAuthenticated, ensureAdmin, function (req, res) {
-    res.render('admin')
+router.get('/admin', ensureAuthenticated, ensurePermissions('/admin'), function (req, res) {
+    getLinks(req.user.group, function(links) { 
+        res.render('admin', {layout: "authenticated-layout.ejs", dashboardLinks: links})
+    })
+   
 })
 
 
@@ -734,10 +826,41 @@ router.post('/createBanner', ensureAuthenticated, ensureAdmin, function (req, re
     })
 
 })
+router.post('/toggleBanner', ensureAuthenticated, ensurePermissions('/banners'), function(req, res) {
+    var id = req.body.id
+    var obj = {
+        "true" : false,
+        "false" : true
+    }
+    var flipped = obj[req.body.state]
+    banners.updateMany({}, {$set: {active: false}}, function(error, result) {
+        if (error) {
+            console.log(error)   
+        }
+    })
+    banners.updateOne({_id : id}, {$set: {active: flipped}}, function(error, data) {
+        if (error) {
+            console.error(error)
+        } else {
+            res.send("e")
+        }
+    })
+})
 
+router.post('/removeBanner', ensureAuthenticated, ensurePermissions('/banners'), function (req, res) {
+    var id = req.body.id
 
+    console.log(id)
 
-
+    banners.deleteOne({_id: id}, function (error, result) {
+        if (error) {
+            console.error(error)
+            res.status(400).end()
+        } else {
+            res.send("e").end()
+        }
+    })
+})
 
 
 //items posts to update and change items
