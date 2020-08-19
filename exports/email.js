@@ -26,9 +26,10 @@ var mailFunction  = {
             } else {
                 const mailOptions = {
                     from: 'no-reply@worldplugs.net',
-                    // bcc: 'worldplugsofficial@gmail.com',
+                    bcc: 'worldplugsofficial@gmail.com',
                     to: emailAddress,
                     subject: 'Thank you for your order!',
+                    text: "WorldPlugs order success!",
                     html: data
                 };
 
@@ -36,7 +37,6 @@ var mailFunction  = {
                     if (error) {
                         console.error(error)
                     } else {
-                        console.log("Success sending email")
                         callback(true)
                     }
                 })

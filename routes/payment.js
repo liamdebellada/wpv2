@@ -3,6 +3,7 @@ const express= require('express');
 const router = express.Router();
 const expressQueue = require('express-queue');
 var paypal = require('paypal-rest-sdk');
+var sanitizer = require('sanitize')();
 
 //exports
 const paymentDataConst = require('../exports/payment-data');
@@ -102,10 +103,11 @@ router.get('/checkout', function (req, res, next) {
         res.redirect('/cart')
     }
     
-
     try {
-        var paymentId = req.query.paymentId;
-        var payerId = req.query.PayerID;
+        const paymentId = functions.santizeString(req.query.paymentId)
+        const payerId = functions.santizeString(req.query.PayerID)
+        req.session.paymentId = paymentId;
+        req.session.payerId = payerId; 
         if (paymentId === undefined || payerId === undefined) {
             res.redirect('/cart')
         }
@@ -114,8 +116,6 @@ router.get('/checkout', function (req, res, next) {
         } else {
             res.render('confirmation.ejs', {
                 items: req.session.viewOrder,
-                paymentId: paymentId,
-                payerId: payerId,
                 total: req.session.total,
                 fee: req.session.fee
             })
@@ -123,25 +123,28 @@ router.get('/checkout', function (req, res, next) {
     } catch {
         res.redirect('/cart')
     }
+        
 
 })
 
-var sem = require('semaphore')(3);
+var sem = require('semaphore')(1);
 router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}), async function (req, res, next) {
 
-        console.log("ENTERING SESSION")
+    sem.take(async function() {
         var stockResult = []
 
         try {
-            var paymentId = req.body.paymentId
-            var payerId = req.body.payerId
+            var paymentId = functions.santizeString(req.session.paymentId)
+            var payerId = functions.santizeString(req.session.payerId)
             var total = req.session.total
     
             if (total == undefined || total == "empty") {
-                res.send('/cart').status(418).end()
+                sem.leave();
+                return res.send('/cart').status(418).end()
             }
         } catch {
-            res.send('/cart').status(418).end()
+            sem.leave();
+            return res.send('/cart').status(418).end()
         }
     
     
@@ -153,9 +156,9 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
             var previousQuantity = req.session.order[item][1]
             await accounts.countDocuments({itemID: id, availability: "true"}, function(error, result) {
                 if (error) {
+                    sem.leave();
                     console.log("Error checking stock on payement execute", error)
                 } else {
-                    console.log(result)
                     if (previousQuantity > result) {
                         stockResult.push(true)
                     }
@@ -175,12 +178,11 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
             }]
         }
         if (stockResult.includes(true)) {
+            sem.leave();
             req.session.errorMsg = "One or more of your items has already been purchased during the checkout process."
             try {
-                console.log("Leaving Session Due To Items Left Error")
                 res.send('/error').end()
             } catch {
-                console.log("Leaving Session Due To Items Left Error In Catch")
                 res.send('/error').end()
             }
         } else {
@@ -191,6 +193,7 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
 
     
                 if(error){
+                    sem.leave();
                     res.send('/').status(400).end();
                 } else {
     
@@ -204,8 +207,10 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
                             req.session.order[item].push([])
                             let itemData = req.session.order[item][0] 
                             let quantity = req.session.order[item][1]
-        
                             await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
+                                if (error) {
+                                    console.error(error)
+                                }
                                 if (data.length < 1) {
                                     stockResult = true
                                 } else {
@@ -228,6 +233,10 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
                             })
                             
                         }
+                        if (ids.length == 0) {
+                            console.log("\n\n No IDs were found")
+                            console.log(req.session.order)
+                        }
                         for (id in ids) {
                             await accounts.updateOne(
                                 {_id : ids[id]},
@@ -235,13 +244,11 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
                                 function(error, success) {
                                     if (error) {
                                         console.log(error)
-                                    } else {
-                                        console.log(success)
                                     }
                             })
                         }
                         purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
-        
+
                         emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID, function (status) {
                             if (status) {
                                 req.session.total = "empty"
@@ -256,7 +263,7 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
                                         console.log(error)
                                     }
                                 })
-                                console.log("LEAVING SESSION")
+                                sem.leave();
                                 res.send('/success').status(200).end()
                             }
                         })
@@ -264,12 +271,13 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
         
                         
                     } else {
+                        sem.leave();
                         res.send('/').status(400).end();
                     }
                 }
             });
         }
-  
+    })   
 })
 
 

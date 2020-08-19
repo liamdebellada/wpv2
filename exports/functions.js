@@ -51,7 +51,7 @@ var functions = {
                                             })}
                                         })
                                     } else {
-                                        //falls back to catch
+                                        res.redirect(fallbackRedirect)
                                     }
                                 } catch {
                                     res.redirect(fallbackRedirect)
@@ -71,12 +71,10 @@ var functions = {
                         })
                     })
                 } else {
-                    // Liam include socket.io response here
                     res.redirect(fallbackRedirect)
                 }
             })
             .catch(categories => {
-                // Liam include socket.io response here
                 res.redirect(fallbackRedirect)
             })
 
@@ -197,7 +195,7 @@ var functions = {
             for (let item in results) {
                 let id = results[item][0]._id
                 let quantity = results[item][1]
-                this.countStock(id, results[item].Title, function(stock) {
+                await this.countStock(id, results[item].Title, function(stock) {
                     var obj = results[item][0].toObject()
                     obj.Stock = stock
                     obj.Quantity = quantity
@@ -211,7 +209,7 @@ var functions = {
             var temp = []
             for (let item in results) {
                 let id = results[item]._id
-                this.countStock(id, results[item].Title, function(stock) {
+                await this.countStock(id, results[item].Title, function(stock) {
                     var obj = results[item].toObject()
                     obj.Stock = stock
                     temp.push(obj)
@@ -275,7 +273,7 @@ var functions = {
                 linkArr = links
             }
         })
-        linkArr.forEach(function(link) {
+        await linkArr.forEach(function(link) {
             var key = link.key
             obj[key] = link.link
         })
@@ -292,6 +290,10 @@ var functions = {
         var prettyObj = JSON.stringify(errorObject,null,2)
         var msg = "@Dev\n```json\n" + prettyObj + "```"
         client.channels.cache.get("741734136728911913").send(msg.toString());
+    },
+
+    santizeString: function(string) {
+        return string.replace(/[^0-9a-zA-Z-]/g, '')
     }
 
 }

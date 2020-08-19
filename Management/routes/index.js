@@ -15,7 +15,7 @@ const crypto = require('crypto');
 const assert = require('assert');
 const bcrypt = require('bcrypt')
 
-var http = require('http');
+var http = require('https');
 
 const banners = require('../models/banners');
 const categories = require('../../models/categories')
@@ -80,7 +80,8 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
                     layout: "authenticated-layout.ejs",
                     name: req.user.name,
                     rank: req.user.group,
-                    dashboardLinks: links
+                    dashboardLinks: links,
+                    dashboard: 'true'
                 })
             })
         }
@@ -167,7 +168,6 @@ router.get('/link-manager', ensureAuthenticated, ensurePermissions('/link-manage
         if(error) {
             console.log(error)
         } else {
-            console.log(result)
             getLinks(req.user.group, function(links) {
             res.render('links', {
                 layout: "authenticated-layout.ejs",
@@ -287,7 +287,6 @@ router.post('/createItem', ensureAuthenticated, ensureAdmin, async function(req,
     }
 
     var empty = []
-    console.log(req.params)
     for (item in req.body) {
         if (req.body[item] == "") {
             empty.push(item)
@@ -722,7 +721,6 @@ router.get('/admin', ensureAuthenticated, ensurePermissions('/admin'), function 
 //category posts to update and change categories
 router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function (req, res) {
     var id = req.body.id
-    console.log(req.body.categoryKey, req.body.Image)
     categories.findOne({
         _id: id
     }, function (error, result) {
@@ -733,11 +731,11 @@ router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function (req, 
                 if (error) {
                     console.log(error)
                 } else {
-                    console.log(resulttt)
                     categories.updateOne({
                         _id: id
                     }, {
                         $set: {
+                            Title: req.body.Title,
                             CategoryKey: req.body.categoryKey,
                             Image: req.body.Image
                         }
@@ -759,9 +757,11 @@ router.post('/updateCategory', ensureAuthenticated, ensureAdmin, function (req, 
 router.post('/createCategory', ensureAuthenticated, ensureAdmin, function (req, res) {
     var id = makeid(24)
     var obj = {
+        Title: req.body.Title,
         CategoryKey: req.body.categoryKey,
         Image: req.body.Image,
-        _id: id
+        _id: id,
+        DisplayPopular: "false"
     }
 
     categories.create(obj, function (error, result) {
@@ -850,7 +850,6 @@ router.post('/toggleBanner', ensureAuthenticated, ensurePermissions('/banners'),
 router.post('/removeBanner', ensureAuthenticated, ensurePermissions('/banners'), function (req, res) {
     var id = req.body.id
 
-    console.log(id)
 
     banners.deleteOne({_id: id}, function (error, result) {
         if (error) {
@@ -1037,7 +1036,7 @@ router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function (req, re
     })
     const options = {
         hostname: 'worldplugs.net',
-        port: 80,
+        port: 443,
         path: '/secureShutdown',
         method: 'POST',
         headers: {
@@ -1047,10 +1046,12 @@ router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function (req, re
     }
 
     const request = http.request(options, (res) => {
-        console.log(`statusCode: ${res.statusCode}`)
         res.on('data', (d) => {
             if (d.toString() == "e") {
                 response.send('Incorrect Password')
+            } 
+            if (res.statusCode == 502) {
+                response.send("Success! Server Shutdown Succeeded")
             }
         })
     })

@@ -102,25 +102,6 @@ app.use(function(req, res, next){
     }
 });
 
-// Server Shutdown
-app.post('/secureShutdown', function(req, res) {
-    
-    var pass = req.body.key
-    bcrypt.compare(pass, process.env.SPASS, function(err, result) {
-        if(err) {
-            console.error(err)
-        } else{
-            if (result) {
-                process.on('exit', function() {
-                    res.send('s')
-                })
-                process.exit()
-            } else {
-                res.send('e')
-            }
-        }
-    });
-})
 
 // Start server
 var server = app.listen(443, process.env.ADDRESS)

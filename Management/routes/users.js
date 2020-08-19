@@ -56,7 +56,6 @@ router.post('/register', ensureNotAuthenticated, ensureAdmin, (req, res) => {
         })
     }
 
-    console.log(errors)
 
     if (errors.length > 0) {
         res.render('register', {

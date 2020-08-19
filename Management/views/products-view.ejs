@@ -216,12 +216,11 @@
 
         function updateImagePreview(item) {
             var icon = document.getElementById("previewImageCreate")
-            console.log("done!")
             icon.src = item.value
         }
 
         function drawModal(item) {
-            console.log(item)
+
 
 
             var data = $("#" + item.id).data('items')
@@ -230,14 +229,12 @@
             var dataArr = data.split("|")
             dataArray = data.split("|")
 
-            console.log(dataArray)
 
             var title = dataArray[0]
             var description = dataArray[1]
             var image = dataArray[2]
             var productkey = dataArray[3]
 
-            console.log(productkey)
 
             document.getElementById("title").value = title
             document.getElementById("icon").value = image

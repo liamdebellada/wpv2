@@ -17,6 +17,9 @@ const banners = require('../Management/models/banners')
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
+
+const bcrypt = require('bcrypt')
+
 // Export Functions
 const functions = require('../exports/functions');
 
@@ -52,7 +55,23 @@ const limitRequests = rateLimit({
 
 
 
-
+router.post('/secureShutdown', function(req, res) {
+    var pass = req.body.key
+    bcrypt.compare(pass, process.env.SPASS, function(err, result) {
+        if(err) {
+            console.error(err)
+        } else{
+            if (result) {
+                process.on('exit', function() {
+                    res.send('s')
+                })
+                process.exit()
+            } else {
+                res.send('e')
+            }
+        }
+    });
+})
 
 // Pages
 
@@ -78,7 +97,7 @@ router.get('/products/:product', function (req, res) {
 
     // Call searchQuery Function
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    functions.searchQuery(res, products, 'CategoryKey', product, 'products.ejs', ip);
+    functions.searchQuery(res, products, 'CategoryKey', product, 'products.ejs', '/products');
 
 
 })
@@ -128,12 +147,12 @@ router.get('/products/:product/items/:items', async function (req, res) {
     var category = req.params.product.toString();
     var fallbackRedirect = '/products/' + req.params.product.toString();
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) {
+    await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) { // I think this is potentially unnecessary? 
         if (error) {
             console.error(error)
         } else {
             if (data == null) {
-                functions.createErrorLog("User tried to reach an invalid product page but the ProductKey was not found in the database.", ip)
+                functions.createErrorLog("User tried to reach an invalid product page but the ProductKey was not found in the database.", ip) //Change this to be a parameter inside of our searchQuery function
                 res.redirect('/404')
             } else {
                 functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
@@ -145,7 +164,6 @@ router.get('/products/:product/items/:items', async function (req, res) {
 })
 
 router.get('/cart', function(req, res) {
-    functions.getPageLinks(function(links) {
         if (req.session.cart === undefined) {
             res.render('basket.ejs')
         } else {
@@ -166,7 +184,6 @@ router.get('/cart', function(req, res) {
             }
             
         }
-    })
 })
 
 

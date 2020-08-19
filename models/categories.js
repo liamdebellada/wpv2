@@ -5,6 +5,10 @@ const categoryScehma = new mongoose.Schema({
         type: String,
         required: false
     },
+    Title: {
+        type: String,
+        required: true
+    },
     CategoryKey: {
         type: String,
         required: true

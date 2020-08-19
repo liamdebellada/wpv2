@@ -5,7 +5,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Server Shutdown</h5>
-          <p class="card-text">Stop the main servers proccess immediately</p>
+          <p class="card-text">Stop the main servers process immediately</p>
           <a onclick="$('#infoModal').modal('show')" style="color: white !important" class="btn btn-danger">Shutdown</a>
         </div>
       </div>
@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Create service announcement</h5>
-          <p class="card-text">Create a discord alert containing a custom messaaage</p>
+          <p class="card-text">Create a discord alert containing a custom message</p>
           <a onclick="$('#discordAlert').modal('show')" class="btn btn-warning">Setup alert</a>
         </div>
       </div>
@@ -98,7 +98,6 @@
   function sendAlert() {
     var type = document.getElementById("alertType").value
     var messageContent = document.getElementById("messageContent").value
-    console.log(type, messageContent)
     $.ajax({
           type: "POST",
           url: "/sendAlert",

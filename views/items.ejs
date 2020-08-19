@@ -13,21 +13,29 @@
   <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
     <h1 id="itemHeader"><%= results[0].ProductKey %> Accounts</h1>
     <% filtered.forEach(function(result) { %>
-
     <div class="card product-content" style="border: none;">
       <div class="row">
         <div class="col-md-8">
           <div class="card-body" style="color: white; margin-bottom: 30px;">
             <div>
-              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px;" src="<%=result.Image%>"></h1>
+              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px; height: 30px; margin-left: 5px;" src="<%=result.Image%>"></h1>
             </div>
+            <% if (result.Stock == 0) { %>
+              <p class="cardText">Stock: <text style="color: #ea6464" class="itemStock">Out of stock</text></p>
+            <% } else { %> 
               <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
+            <% } %>
               <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
-              <input style="display: none;" type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
+              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
           </div>
         </div>
         <div class="col-md-4 align-self-center">
-          <button class="addToCart btn wp-button wp-button-gradient wp-button-default-hover <%= result.Stock %> wp-button-not-active" id=<%= result._id %>>Add me to cart</button>
+          
+          <% if (result.Stock == 0) { %>
+            <button class="addToCart btn wp-button wp-button-not-active" disabled>Unavailable</button>
+          <% } else { %>
+            <button class="addToCart btn wp-button wp-button-gradient wp-button-default-hover <%= result.Stock %> wp-button-not-active" id=<%= result._id %>>Add me to cart</button>
+          <% } %>
         </div>
       </div>
     </div>

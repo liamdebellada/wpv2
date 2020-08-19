@@ -1,6 +1,7 @@
 <div class="content-box-span">
   <div class="content-box">
 
+
     <% if(locals.items) { %>
       <% items.forEach(function(result) { %>
 
@@ -57,7 +58,7 @@
           <div style="float: right;" class="wp-recaptcha-area">
             <form action="/executePayment" method="POST" style="padding: 6.5px;" class="form-inline">
                 <div class="form-group mb-2">
-                  <div class="g-recaptcha" data-callback="checkComplete" data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_" style="padding-top: 5px;"></div>
+                  <div class="g-recaptcha" data-callback="checkCompletePage" data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_" style="padding-top: 5px;"></div>
                 </div>
                 <div style="padding-left: 30px;" class="recaptcha-btn-spacer">
                   <input style="height: 40px;" id="captchaSubmissionPage" class="btn wp-button wp-button-gradient wp-button-checkout wp-captcha-button" type="submit" value="Checkout" disabled>
@@ -75,7 +76,7 @@
 <% } %>
 
 <script>
-    function checkComplete() {
+    function checkCompletePage() {
         document.getElementById("captchaSubmissionPage").disabled = false
     }
 </script>

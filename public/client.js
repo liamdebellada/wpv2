@@ -58,10 +58,6 @@ function confirmPayment() {
     $.ajax({
         type: "POST",
         url: "/confirmPayment",
-        data: {
-            paymentId: client_paymentId,
-            payerId: client_payerId
-        }
     }).done(data => {
         if (data == '/success') {
 
@@ -90,25 +86,6 @@ window.addEventListener("load", function () {
     }).done(data => {
         displayBasketContent(data)
     });
-    try {
-        var stock = document.getElementsByClassName("itemStock")
-        for (item in stock) {
-            if (stock[item].innerText == "0") {
-                stock[item].style.color = "#ea6464"
-                stock[item].innerText = "Out of stock"
-            }
-        }
-    
-        var buttons = document.getElementsByClassName("0")
-        for (item in buttons) {
-            buttons[item].disabled = true;
-            buttons[item].classList.remove("wp-button-default-hover");
-            //buttons[item].style.backgroundColor = "#ea6464"
-            buttons[item].innerText = "Unavailable"
-            buttons[item].cssText = "border-image-slice: 0;"
-        }
-    } catch{
-    }
     
 });
 
