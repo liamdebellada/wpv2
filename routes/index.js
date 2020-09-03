@@ -76,6 +76,10 @@ router.post('/secureShutdown', function(req, res) {
 // Pages
 
 
+router.get('/getStatus/key=:key', function(req, res) {
+	req.params.key.toString() == 'tracked48' ? res.json({'status' : 'connected'}) : res.status(404)
+})
+
 router.get('/', (req, res) => {
     // Call searchQuery Function
     req.session.errorMsg = ""
@@ -147,34 +151,31 @@ router.get('/products/:product/items/:items', async function (req, res) {
     var category = req.params.product.toString();
     var fallbackRedirect = '/products/' + req.params.product.toString();
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) { // I think this is potentially unnecessary? 
+    await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) { 
         if (error) {
             console.error(error)
         } else {
             if (data == null) {
-                functions.createErrorLog("User tried to reach an invalid product page but the ProductKey was not found in the database.", ip) //Change this to be a parameter inside of our searchQuery function
                 res.redirect('/404')
             } else {
                 functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
             }
         }
     })
-    // Call searchQuery Function
-
 })
 
 router.get('/cart', function(req, res) {
         if (req.session.cart === undefined) {
-            res.render('basket.ejs')
+            res.render('cart.ejs')
         } else {
             if (req.session.cart.length < 1) {
-                res.render('basket.ejs')
+                res.render('cart.ejs')
             } else {
                 functions.getBasket(req.session.cart, items, function(result) {
                     functions.updateStock(result, items, true, function(stockResult) {
                         var total = functions.getTotal(result)
                         var fee = functions.calculateFee(result)
-                        res.render('basket.ejs', {
+                        res.render('cart.ejs', {
                             items: stockResult,
                             total: total,
                             fee: fee
@@ -186,6 +187,13 @@ router.get('/cart', function(req, res) {
         }
 })
 
+router.get('/guides', function(req, res) {
+    res.render('guidesIndex.ejs')
+})
+
+router.get('/guides/:guide', function(req, res) {
+    res.render('guide.ejs')
+})
 
 
 //error handler using sessions

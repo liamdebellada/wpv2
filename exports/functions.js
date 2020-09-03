@@ -5,7 +5,9 @@ const accounts = require('../models/accounts');
 const banners = require('../Management/models/banners')
 const links = require('../Management/models/links');
 const products = require("../models/products");
+const categories = require("../models/categories.js")
 const errorlog = require('../Management/models/errorLogs.js')
+
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -36,7 +38,7 @@ var functions = {
                     try {
                         products.findOne({ProductKey: userQuery}, function (error, product) {
                             if (error) {
-                                console.log(error)
+                                this.createErrorLog(error.toString(), 'no-address')
                             } else {
                                 try {
                                     if (product.productState == "enabled") {
@@ -44,6 +46,7 @@ var functions = {
                                             if (result.length > 0) {
                                                 functions.getBanners(function(banner) {
                                                     res.render(pageRender, {
+                                                        title: product.Title,
                                                         results: stockResult,
                                                         banner: banner,
                                                         links: pageLinks
@@ -63,20 +66,42 @@ var functions = {
                     }    
                 }
                 else if (result.length > 0) {
-                    this.getBanners(function(banner) {
-                        res.render(pageRender, {
-                            results: result,
-                            banner: banner,
-                            links: pageLinks
+                    if (pageRender == "products.ejs") {
+                        categories.findOne({CategoryKey: userQuery}, function (error, title) {
+                            if (error) {
+                                console.log(error)
+                            } else {
+
+                                functions.getBanners(function(banner) {
+                                    res.render(pageRender, {
+                                        title: title.Title,
+                                        results: result,
+                                        banner: banner,
+                                        links: pageLinks
+                                    })
+                                })
+                            }
                         })
-                    })
+                        
+                    
+                    }
+                    else {
+                        functions.getBanners(function(banner) {
+                            res.render(pageRender, {
+                                results: result,
+                                banner: banner,
+                                links: pageLinks
+                            })
+                        })
+                    }
+                    
                 } else {
                     res.redirect(fallbackRedirect)
                 }
             })
-            .catch(categories => {
-                res.redirect(fallbackRedirect)
-            })
+            .catch(err => res.redirect(fallbackRedirect))
+                
+            
 
     },
 
@@ -157,10 +182,16 @@ var functions = {
             total = total + parseFloat(item.Price) * parseInt(quantity)
         })
         if (payment == "true") {
-            total += total / 100 * 2.9
-            total += 0.30
+
+            fee = this.calculateFee(result)
+
+
+            total = parseFloat(parseFloat(total).toFixed(2))
+
+            total = total + parseFloat(fee)
         }
-        return total.toFixed(2);
+        
+        return total
     },
 
     calculateFee : function(result) {

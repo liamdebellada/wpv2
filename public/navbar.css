@@ -108,7 +108,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
-.itemQuantity {
+.wp-item-quantity {
     color: white;
     width: 45px;
     padding: auto;
@@ -121,7 +121,7 @@ input[type=number]::-webkit-outer-spin-button {
     transition: all 0.3s;
 }
 
-.itemQuantity:focus, .itemQuantity:hover {
+.wp-item-quantity:focus, .wp-item-quantity:hover {
     border-bottom: 1px solid white;
 
 }
@@ -253,26 +253,26 @@ input[type=number]::-webkit-outer-spin-button {
     vertical-align: middle;
 }
 
-.content-box-span {
-height: auto;
-width: 50%;
-margin: 0 auto;
-margin-bottom: 2rem;
-margin-top: 2rem;
-padding: 10px;
-background-color: #1e1c29;
-box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+.wp-content-box-span {
+    height: auto;
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    padding: 10px;
+    background-color: #1e1c29;
+    box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
 }
 
 .card {
-background: none;
-border: none;
+    background: none;
+    border: none;
 }
 
 
 #itemHeader {
-color: white;
-text-transform: capitalize;
+    color: white;
+    text-transform: capitalize;
 }
 
 .wp-nav-button {

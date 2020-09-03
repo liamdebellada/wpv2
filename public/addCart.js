@@ -1,5 +1,5 @@
 window.addEventListener("load", function(){
-    $("button.addToCart").click(function () {
+    $("button.wp-button-add-to-cart").click(function () {
 
         x = $(this)[0].id
         quantity = document.getElementById(x).value

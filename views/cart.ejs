@@ -1,0 +1,267 @@
+
+
+<div class="container">
+  
+
+    <% if (locals.items) {%>
+    <!--main cart content-->
+
+    <h3 style="color: white; margin-top: 1.25rem; text-align: left;">Your Cart</h3>
+    <h6 style="color: white; margin-top: 1.25rem; text-align: left;"><text style="font-size: 1.0925rem;"><%= items.length %></text> ITEM<% if (items.length > 1) { %>S <% } else {%> <% } %> IN CART</h6>
+  <div class="row">
+    
+    <div class="col-12 col-lg-8">
+      <div class="wp-cart-content-left" style="background-color: #1e1c29; padding: 15px;">
+        <table class="wp-cart-table table table-borderless" style="color: white; font-size: 0.9rem">
+          <thead>
+            <tr class="wp-cart-table-headers">
+
+              <th scope="col" class="wp-header-text">Product</th>
+              <th scope="col" class="wp-header-text">Quantity</th>
+              <th scope="col" class="wp-header-text">Total</th>
+              <th scope="col" class="wp-header-text"></th>
+            
+            </tr>
+          </thead>
+          <tbody class="wp-cart-table-body">
+            <% items.forEach(function(result) { %>
+              <% itemTotal = parseFloat(result.Price) * parseFloat(result.Quantity) %>
+            <tr>
+              <td><img src="<%= result.Image %>" style="max-width: 30px;" class="wp-cart-table-image img-fluid"></img><%= result.Title %></td>
+              <td><input class="wp-item-quantity" type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input></td>
+              <td>£<%= parseFloat(itemTotal).toFixed(2) %></td>
+              <td><button class="btn wp-button wp-button-remove" onclick="removeItemCart(this)">Remove</button><input style="display: none;" onclick="removeItemCart(this)" id="<%= result._id %>" class="remove-small-cart-button" value="&times;" readonly></div></td>
+            </tr>
+            <%})%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!--right basket checkout content-->
+
+    <div class="wp-cart-content-right-captcha col-12 col-lg-4 collapse hide">
+      <div style="background-color: #1e1c29; padding: 1.015rem">
+        <h5 class="wp-cart-content-right-captcha-header" style="color: white;">Please complete the Captcha</h5>
+        <form action="/executePayment" method="POST" style="padding: 6.5px">
+          <div class="g-recaptcha" data-callback="checkCompletePage" 
+              data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_" ></div>
+              <button style="margin-top: 1.025rem" class="btn wp-button wp-button-gradient wp-button-checkout" id="wp-cart-content-right-button" disabled>Purchase with PayPal</button>
+        </form>
+        
+      </div>
+    </div>
+    
+    
+    <div class="wp-cart-content-right-span col-12 col-lg-4 collapse show">
+      <div class="wp-cart-content-right" style="background-color: #1e1c29; padding: 1.015rem">
+        <h4 class="wp-cart-content-right-header">Order Summary</h4>
+        <div class="wp-cart-content-right-inner" style="background-color: #16151e; padding: 1.825rem 1.125rem;">
+          <table class="wp-cart-content-right-inner-table" style="width:100%; color: white;">
+            <% grandTotal = parseFloat(total) + parseFloat(fee) %>
+            <tr>
+              <td >Order Subtotal</td>
+              <td style="text-align:right">£<%= total %></td>
+            </tr>
+            <tr>
+              <td>PayPal Tax</td>
+              <td style="text-align:right">£<%= fee %> <text id="fee" style="font-size: 0.75rem"></text> <a href="/payment-policy" data-placement="right" data-toggle="tooltip" title="We add a small fee to cover paypal charges."><svg id="fee-tooltip" width="0.75rem" height="0.75rem" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="#C8C8C8" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
+              </svg></a></td>
+            </tr>
+            <tr>
+              <td>Grand Total</td>
+              <td style="text-align:right">£<%= parseFloat(grandTotal).toFixed(2) %></td>
+            </tr>
+          </table>
+
+          
+
+          <div class="wp-cart-content-right-checkout" style="background-color: #0d0c11; padding: 0.85rem 1.25rem">
+            <h5 style="color: white; text-align: center">Checkout</h5>
+            <img src="https://cdn.worldplugs.net/shopping-items.png" style="max-width: 50px;">
+            <br>
+            <button style="margin-top: 0.525rem" onclick="showCaptcha()" class="btn wp-button wp-button-gradient">Checkout</button>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <% } %>
+
+
+    
+
+
+    <% if (!locals.items) { %>
+      <div style="background-color: #1e1c29; padding: 1.015rem; margin-top: 1.15rem">
+        <img src="https://worldplugs.net/shopping-cart-empty.svg" style="width: 13vh;">
+        <hr class="horizontalSep" style="width: 50%">
+        <h3 style="color: white; font-weight: 300">Your basket is empty!</h3>
+        <h6 style="color: white; font-weight: 300">Please add an item to your basket from our store beforehand.</h6>
+        <a style="margin-top: 1.025rem" href="https://worldplugs.net/" class="btn wp-button wp-button-gradient">Return to Homepage</a>
+      </div>
+    
+    <% } %>
+  </div>
+
+
+
+</div>
+<script>
+  function checkCompletePage() {
+    document.getElementById("wp-cart-content-right-button").disabled = false
+  }
+
+  function showCaptcha() {
+    $(".wp-cart-content-right-span").collapse("hide").on('hidden.bs.collapse', function () {
+      $(".wp-cart-content-right-captcha").collapse("show")
+})
+  }
+</script>
+
+<style>
+
+  @media (max-width: 991px) {
+    .wp-cart-content-right {
+      margin-top: 1rem;
+    }
+    .wp-cart-content-right-captcha {
+      margin-top: 1rem;
+    }
+  }
+
+  @media (max-width: 374px) {
+    .g-recaptcha {
+      transform: scale(0.55);
+      -webkit-transform: scale(0.85);
+      transform-origin: 0 0;
+      -webkit-transform-origin: 0 0;
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1198px) {
+    .g-recaptcha {
+      transform: scale(0.55);
+      -webkit-transform: scale(0.85);
+      transform-origin: 0 0;
+      -webkit-transform-origin: 0 0;
+    }
+  }
+
+  @media (max-width: 362px) {
+    .wp-button-remove {
+      display: none;
+    }
+    .remove-small-cart-button {
+      display: block !important;
+      max-width: 27px;
+      max-height: 27px;
+      outline: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .wp-basket {
+      display: block;
+    }
+
+    .wp-recaptcha-area {
+      float: left !important;
+    }
+
+    .wp-total-text {
+      text-align: left !important;
+    }
+
+  }
+
+  @media (max-width: 552px) {
+    .recaptcha-btn-spacer {
+      padding-left: 0px !important;
+    }
+  }
+
+  @media (max-width: 416px) {
+    .wp-header-text {
+      font-size: 0.7rem;
+    }
+    .wp-cart-table-body {
+      font-size: 0.7rem;
+    }
+    .wp-button-remove {
+      font-size: 0.7rem;
+    }
+  }
+
+
+  @media (max-width: 370px) {
+    /* .g-recaptcha {
+      transform: scale(0.55);
+      -webkit-transform: scale(0.85);
+      transform-origin: 0 0;
+      -webkit-transform-origin: 0 0;
+    }
+
+    .mobilecaptcha {
+      margin: 10px !important;
+    } */
+
+    .wp-cart-item {
+      margin-bottom: 10px !important;
+    }
+
+    .wp-cart-table {
+      font-size: 3px;
+    }
+  }
+  .wp-cart-table-headers {
+    font-weight: 400 !important;
+  }
+
+  .wp-cart-content-right {
+    background-color: #1e1c29;
+    min-height: 330px;
+    padding: 1.015rem;
+  }
+
+
+  .wp-header-text {
+    font-weight: 400 !important;
+  }
+
+  .wp-cart-content-right-header {
+    text-align: left;
+    color: white;
+  }
+
+  .wp-cart-content-right-inner-table {
+    border-collapse: collapse;
+    border-spacing: 0 0.825rem;
+
+  }
+
+  .wp-cart-content-right-inner-table tr:not(:last-child) {
+    border-bottom: 1px solid #5e5d5d;
+  }
+
+  .wp-cart-content-right-inner-table td {
+    padding: 0.85rem 0;
+  }
+
+  .wp-cart-table-image {
+    max-width: 30px;
+    max-height: 30px;
+    width: 30px;
+    margin-right: 5px;
+  }
+
+
+
+
+
+
+</style>

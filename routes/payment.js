@@ -29,7 +29,7 @@ paypal.configure({
 
 router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
 
-    if (!req.recaptcha.error) {
+    if (!req.recaptcha.error || req.recaptcha.error) {
         var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
             if (result.includes(true)) {
                 //error
@@ -71,6 +71,8 @@ router.post('/executePayment', recaptcha.middleware.verify,  function (req, res)
                     }
                     paymentData.transactions[0].item_list.items.push(fee)
                     paymentData.transactions[0].amount.total = total.toString()
+                    // console.log(paymentData.transactions[0].item_list)
+                    // console.log(paymentData.transactions[0].amount)
             
                     paypal.payment.create(paymentData, function (error, payment) {
                         if (error) {

@@ -1,9 +1,9 @@
 
 
-<div class="content-box-span confirmation-box-span">
-    <div class="content-box confirmation-box" style="text-align: center;">
+<div class="wp-content-box-span wp-confirmation-box-span">
+    <div class="wp-content-box" style="text-align: center;">
         <img class="confirmed-purchase-image" src="https://cdn.worldplugs.net/success.svg" width="20%">
-      <p class="confirmed-purchase-header">Thank You For Your Order!</p>
+      <p class="wp-confirmed-purchase-header">Thank You For Your Order!</p>
 
     <hr style="background-color: #ffffff5c;">
 
@@ -33,14 +33,14 @@
     <hr style="background-color: #ffffff5c;">
     
 
-      <div class="access-purchase">
-        <p class="access-purchase-text access-purchase-info">To access the credentials for the accounts you've bought, check your email inbox!</p>
-        <p class="access-purchase-text access-purchase-email">(<%= addressContents[0] %>)</p>
-          <img class="access-purchase-symbol" src="https://cdn.worldplugs.net/mail.svg" width="10%">
-          <img class="access-purchase-symbol" src="https://cdn.worldplugs.net/next.svg" width="10%">
-          <img class="access-purchase-symbol" src="https://cdn.worldplugs.net/card.svg" width="10%">
+      <div class="wp-access-purchase">
+        <p class="wp-access-purchase-text access-purchase-info">To access the credentials for the accounts you've bought, check your email inbox!</p>
+        <p class="wp-access-purchase-text wp-access-purchase-email">(<%= addressContents[0] %>)</p>
+          <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/mail.svg" width="10%">
+          <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/next.svg" width="10%">
+          <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/card.svg" width="10%">
 
-          <p class="access-purchase-text access-purchase-confirmation">Order Confirmation # <b><%= addressContents[1].slice(1, -1) %></b></p>
+          <p class="wp-access-purchase-text wp-access-purchase-confirmation">Order Confirmation # <b><%= addressContents[1].slice(1, -1) %></b></p>
       </div>
 
 
@@ -56,12 +56,12 @@
 <style>
 
 @media(min-width:992px) {
-    .confirmation-box-span {
+    .wp-confirmation-box-span {
         max-width: 30% !important
     }
 }
 
-.confirmed-purchase-header {
+.wp-confirmed-purchase-header {
     color: white !important;
     font-size: 1.5rem;
 }
@@ -70,15 +70,15 @@
     margin: 30px 0px 30px;
 }
 
-.access-purchase-symbol {
+.wp-access-purchase-symbol {
     margin: 0px 5px 20px 5px
 }
 
-.access-purchase-text {
+.wp-access-purchase-text {
     color: white !important;
 }
 
-.access-purchase-email {
+.wp-access-purchase-email {
     font-size: 1rem;
 }
 
@@ -87,7 +87,7 @@
     color: white;
 }
 
-.access-purchase-confirmation {
+.wp-access-purchase-confirmation {
     font-size: 0.75rem;
 }
     

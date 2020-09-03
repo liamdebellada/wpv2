@@ -8,33 +8,33 @@
   </div>
 </div>
 
-<div class="content-box-span">
+<div class="wp-content-box-span">
   <div class="content-box">
   <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
-    <h1 id="itemHeader"><%= results[0].ProductKey %> Accounts</h1>
+    <h1 id="itemHeader"><%= title %> Accounts</h1>
     <% filtered.forEach(function(result) { %>
     <div class="card product-content" style="border: none;">
       <div class="row">
         <div class="col-md-8">
           <div class="card-body" style="color: white; margin-bottom: 30px;">
             <div>
-              <h1 class="cardText" style="font-size: 2em;"><%= result.Title %><img style="width: 30px; height: 30px; margin-left: 5px;" src="<%=result.Image%>"></h1>
+              <h1 class="wp-body-text-position-alignment" style="font-size: 2em;"><img style="width: 30px; height: 30px; margin-right: 5px;" src="<%=result.Image%>"><%= result.Title %></h1>
             </div>
             <% if (result.Stock == 0) { %>
-              <p class="cardText">Stock: <text style="color: #ea6464" class="itemStock">Out of stock</text></p>
+              <p class="wp-body-text-position-alignment">Stock: <text style="color: #ea6464" class="itemStock">Out of stock</text></p>
             <% } else { %> 
-              <p class="cardText">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
+              <p class="wp-body-text-position-alignment">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
             <% } %>
-              <p class="cardText">Price: <text style="color: #4BB543">£<%= result.Price %></text></p>
-              <input type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
+              <p class="wp-body-text-position-alignment">Price: <text style="color: #4BB543">£<%= parseFloat(result.Price).toFixed(2) %></text></p>
+              <input type="number" pattern="[0-9]*" class="wp-item-quantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
           </div>
         </div>
         <div class="col-md-4 align-self-center">
           
           <% if (result.Stock == 0) { %>
-            <button class="addToCart btn wp-button wp-button-not-active" disabled>Unavailable</button>
+            <button class="wp-button-add-to-cart btn wp-button wp-button-disabled" disabled>Unavailable</button>
           <% } else { %>
-            <button class="addToCart btn wp-button wp-button-gradient wp-button-default-hover <%= result.Stock %> wp-button-not-active" id=<%= result._id %>>Add me to cart</button>
+            <button class="wp-button-add-to-cart btn wp-button wp-button-gradient wp-button-default-hover <%= result.Stock %>" id=<%= result._id %>>Add me to cart</button>
           <% } %>
         </div>
       </div>

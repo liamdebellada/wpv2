@@ -1,11 +1,11 @@
-<div class="content-box-span confirmation-box-span">
+<div class="wp-content-box-span wp-confirmation-box-span">
     <text style="color: white;">Please review your order before tapping confirm:</text>
-    <div class="content-box confirmation-box" style="text-align: center;">
+    <div class="wp-content-box" style="text-align: center;">
       <% items.forEach(function(result) { %>
         <div style="margin: 10px;">
             <div class="resultDivider" style="border: none; color: white; margin: auto;">
-                <h1 class="cardText accountText" style="font-size: 2em;"><%= result[0].Title %></h1>
-                <p class="cardText accountText">Quantity: <%=result[1]%></p>
+                <h1 class="wp-body-text-position-alignment accountText" style="font-size: 2em;"><%= result[0].Title %></h1>
+                <p class="wp-body-text-position-alignment accountText">Quantity: <%=result[1]%></p>
             </div>
         </div>
         <hr class="horizontalSep"/>
@@ -16,15 +16,15 @@
       <br>
       <text style="color: white;">Total including fee: <text style="color: #4BB543">£<%= total %></text></text>
       <br>
-      <text style="font-size: 10px; color: white;">By clicking confirm you accept our <a href="https://worldplugs.net/payment-policy">payment policy</a>and <a href="https://worldplugs.net/terms">Terms of service</a></text>
+      <text style="font-size: 10px; color: white;">By clicking confirm you accept our  <a href="https://worldplugs.net/terms">Terms</a> and <a href="https://worldplugs.net/payment-policy">Payment policy</a></text>
       <div style="padding-top: 10px;">
         <button class="btn wp-button wp-button-gradient wp-button-checkout" id="confirmation-button" onclick="confirmPayment()">Confirm</button>
       </div>
   
     </div>
 
-    <div class="circle-loader">
-      <div class="checkmark draw"></div>
+    <div class="wp-confirmation-animation">
+      <div class="wp-confirmation-checkmark draw"></div>
     </div>
 
 <!--Have you got a nectar card?-->
@@ -34,7 +34,7 @@
 <style>
 
 @media(min-width:992px) {
-    .confirmation-box-span {
+    .wp-confirmation-box-span {
         max-width: 80% !important
     }
 }
@@ -45,7 +45,7 @@
 }
 
 
-.circle-loader {
+.wp-confirmation-animation {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-left-color: #d53a9d;
   animation: loader-spin 0.5s infinite linear;
@@ -64,16 +64,16 @@
   transition: border 500ms ease-out;
 }
 
-.checkmark {
+.wp-confirmation-checkmark {
   display: none;
 }
-.checkmark.draw:after {
+.wp-confirmation-checkmark.draw:after {
   animation-duration: 800ms;
   animation-timing-function: ease;
-  animation-name: checkmark;
+  animation-name: wp-confirmation-checkmark;
   transform: scaleX(-1) rotate(135deg);
 }
-.checkmark:after {
+.wp-confirmation-checkmark:after {
   opacity: 1;
   height: 1.45em;
   width: 0.875em;
@@ -94,7 +94,7 @@
     transform: rotate(360deg);
   }
 }
-@keyframes checkmark {
+@keyframes wp-confirmation-checkmark {
   0% {
     height: 0;
     width: 0;

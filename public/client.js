@@ -26,7 +26,7 @@ function displayBasketContent(basketContent) {
             <text>£${item.Price}</text>
             <div class="propertyContainer" style="float:right; -webkit-transform: translate(-50%, -50%);  
             transform: translate(-50%, -50%);   ">
-            <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="itemQuantity" onchange="updateQuantity(this)" style="width: 50px; display: none;"></input>
+            <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="wp-item-quantity" onchange="updateQuantity(this)" style="width: 50px; display: none;"></input>
             <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;"></div>
             </div>
             </div>
@@ -53,7 +53,7 @@ function displayBasketContent(basketContent) {
 
 
 function confirmPayment() {
-    $('.circle-loader').css("display", "inline-block")
+    $('.wp-confirmation-animation').css("display", "inline-block")
     $('#confirmation-button').toggle()
     $.ajax({
         type: "POST",
@@ -61,8 +61,8 @@ function confirmPayment() {
     }).done(data => {
         if (data == '/success') {
 
-            $('.circle-loader').toggleClass('load-complete');
-            $('.checkmark').toggle();
+            $('.wp-confirmation-animation').toggleClass('load-complete');
+            $('.wp-confirmation-checkmark').toggle();
 
             setTimeout(function () {
 
