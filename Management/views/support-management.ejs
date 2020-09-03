@@ -1,0 +1,166 @@
+<h1>Guide Management</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item dropdown">
+        <a class="nav-link active" style="cursor: pointer" onclick="test(this)" href="#" role="button"
+            id="dropSelection" style="color: #2C3E50;">View</a>
+    </li>
+    <li>
+        <a class="nav-link" style="cursor: pointer" onclick="test(this)" id="createSelection">Create New</a>
+    </li>
+</ul>
+<script src="https://cdn.jsdelivr.net/gh/RubaXa/Sortable/Sortable.min.js"></script>
+
+
+<div id="viewGuides" style="margin-top: 15px ;">
+    <h4>Pinned Guides</h4>
+    <ul id="popularList" class="list-group" >
+        <% guides.forEach(function(guide) {  %>
+            <% if (guide.Pinned == "TRUE") { %>
+                <li id="<%= guide._id %>" class="list-group-item"><%= guide.Title %><text onclick="removeFromPinned(this)" style="float: right; color: #D9534F; cursor: pointer;">Remove</li>
+            <% }%>
+        <% })%>
+    </ul>
+    <br />
+    <br />
+        <h5>Other Guides</h5>
+        <ul id="sortable" class="list-group">
+            <% guides.forEach(function(guide) { %>
+                <% if (guide.Pinned == "FALSE") { %>
+                    <li id="<%= guide._id %>" class="list-group-item collapse show"><%= guide.Title %><text onclick="addToPinned(this)" style="float: right; color: #5CB85C; cursor: pointer;">Add</li>
+                <% } %>
+            <% }) %>
+    </ul>
+</div>
+
+
+<div id="create" style="display: none;">
+    <h4>Create new guide</h4>
+    <div class="form-group">
+        <label>Title</label>
+        <input id="titleField" class="form-control" type="text" placeholder="Title">
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea id="descriptionField" class="form-control" type="text" placeholder="Description"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Guide link</label>
+        <input id="linkField" class="form-control" type="text" placeholder="link">
+    </div>
+    <div class="form-group">
+        <label>Product Link</label>
+        <input id="productLinkField" class="form-control" type="text" placeholder="product link">
+    </div>
+    <div class="form-group">
+        <label>Content</label>
+        <textarea id="contentField" class="form-control" type="text" placeholder="Content"></textarea>
+    </div>
+    <div class="form-check" style="margin-bottom: 10px;">
+        <input type="checkbox" class="form-check-input" id="pinOnCreate">
+        <label class="form-check-label">Pin guide on creation</label>
+    </div>
+
+    <button class="btn btn-success" onclick="createNewGuide()">Create</button>
+</div>
+
+
+
+<script>
+    function test(option) {
+
+        $("#dropSelection,#createSelection").removeClass('active')
+        $("#create,#viewGuides").css('display', 'none')
+
+        option.classList.add('active')
+
+        if (option.id == "createSelection") {
+            $("#create").css('display', 'block')
+        } else if (option.id == "dropSelection") {
+            $("#viewGuides").css('display', 'block')
+        } 
+    }
+
+    var active = "FALSE";
+    $("#pinOnCreate").click(function(){
+        var check = $(this).prop('checked');
+        if(check == true) {
+            active = "TRUE";
+        } else {
+            active = "FALSE";
+        }
+    });
+
+
+    createNewGuide = () => { 
+        console.log("test")
+        title = document.getElementById("titleField").value
+        description = document.getElementById("descriptionField").value
+        link = document.getElementById("linkField").value
+        content = document.getElementById("contentField").value
+        productLink = document.getElementById("productLinkField").value
+
+        var obj = {
+            Title: title,
+            Description: description,
+            GuideLink: link,
+            Content: content,
+            Pinned: active,
+            ProductLink: productLink
+        }
+        $.ajax({
+            type: "POST",
+            url: "/createGuide",
+            data: obj
+        }).done(data => {
+            console.log(data)
+            if (data == "s") {
+                window.location.reload()
+            } else if (data == "er") {
+                alert('An error has occured.')
+            }
+        })
+    }
+
+    function addToPinned(id) {
+        guideID = $(id).parent().attr('id')
+        $.ajax({
+            type: "POST",
+            url: "/addToPinned",
+            data: { 
+                id: guideID,
+            }
+        }).done(data => {
+            if (data == "RL") {
+                alert("Too many items in the pinned section!")
+            } else if (data == "SU") {
+                window.location.reload()
+            } else if (data == "UE") {
+                alert("Error updating the database!")
+            } else {
+                alert("There was a database error.")
+            }
+        })
+    } 
+
+    function removeFromPinned(id) {
+        guideID = $(id).parent().attr('id')
+        $.ajax({
+            type: "POST",
+            url: "/removeFromPinned",
+            data: { 
+                id: guideID,
+            }
+        }).done(data => {
+            if (data == "RL") {
+                alert("Not enough items in the pinned section!")
+            } else if (data == "SU") {
+                window.location.reload()
+            } else if (data == "UE") {
+                alert("Error updating the database!")
+            } else {
+                alert("There was a database error.")
+            }
+        })
+    }
+
+</script>

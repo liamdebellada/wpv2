@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost:27017/worldPlugs', { useNewUrlParser: true, useUnifiedTopology: true} ).then(res => {}).catch(err => {})
+
 const categoryScehma = new mongoose.Schema({
     _id: {
         type: String,

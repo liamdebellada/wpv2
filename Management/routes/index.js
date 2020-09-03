@@ -28,6 +28,7 @@ const links = require('../models/links')
 const e = require('express');
 const grouplinks = require('../models/groupLinks')
 const groups = require('../models/groups')
+const guides = require('../../models/guides');
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -194,6 +195,7 @@ router.post('/updateLink', ensureAuthenticated, ensureAdmin, async function(req,
 })
 
 router.get('/manage-homepage', ensureAuthenticated, ensurePermissions('/manage-homepage'), function(req, res) {
+
     categories.find({}, function(error, result) {
         if (error) {
             console.error(error)
@@ -1079,6 +1081,81 @@ router.post('/sendAlert', ensureAuthenticated, ensureAdmin, function(req, res) {
     createDiscordAnnouncement(`-@here\n__**${type}:**__ ${icons[type]}\n***${message}***`, "740961097267544077")
 }) 
 
+router.get('/support-management', ensureAuthenticated, ensureAdmin, function(req, res) {
+    guides.find({}, function(error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            getLinks(req.user.group, function(links) {res.render("support-management.ejs", {guides: result, layout: "authenticated-layout.ejs", dashboardLinks: links}) })
+        }
+    })
+    
+})
 
-///secureShutdown
+router.get('/support-management/guides/:guide', ensureAuthenticated, ensureAdmin, function(req, res) {
+    var guide = req.params.guide.toString();
+    guides.findOne({GuideLink: guide}, function(error, result) {
+        
+    })
+})
+
+router.post('/addToPinned', ensureAuthenticated, ensureAdmin, function(req, res) {
+    guides.find({Pinned : "TRUE"}, function(error, results) {
+        if (error) {
+            res.send("GE").end()
+        } else {
+            if (results.length < 3) {
+                id = req.body.id.toString()
+                guides.updateOne({_id: id}, {$set: {Pinned: "TRUE"}}, function (error, result) {
+                    if (error) {
+                        res.send("UE").end()
+                    } else {
+                        res.send("SU").end()
+                    }
+                })
+            } else {
+                res.send("RL").end()
+            }
+        }
+    })
+})
+
+router.post('/removeFromPinned', ensureAuthenticated, ensureAdmin, function(req, res) {
+    guides.find({Pinned : "TRUE"}, function(error, results) {
+        if (error) {
+            res.send("GE").end()
+        } else {
+            if (results.length >  0) {
+                id = req.body.id.toString()
+                guides.updateOne({_id: id}, {$set: {Pinned: "FALSE"}}, function (error, result) {
+                    if (error) {
+                        res.send("UE").end()
+                    } else {
+                        res.send("SU").end()
+                    }
+                })
+            } else {
+                res.send("RL").end()
+            }
+        }
+    })
+})
+
+router.post('/createGuide', ensureAuthenticated, ensureAdmin, async function(req, res) {
+    var obj = {
+        _id: mongoose.Types.ObjectId(),
+        Title: req.body.Title,
+        Description: req.body.Description,
+        CreationDate: new Date(),
+        GuideLink: req.body.GuideLink,
+        Content: req.body.Content,
+        ProductLink: req.body.ProductLink,
+        Pinned: req.body.Pinned
+    }
+    var result = await guides.create(obj)
+    .then(data => {
+        res.send('s')
+    }).catch(error => res.send('er'))
+}) 
+
 module.exports = router;
