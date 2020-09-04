@@ -16,7 +16,7 @@
     <ul id="popularList" class="list-group" >
         <% guides.forEach(function(guide) {  %>
             <% if (guide.Pinned == "TRUE") { %>
-                <li id="<%= guide._id %>" class="list-group-item"><%= guide.Title %><text onclick="removeFromPinned(this)" style="float: right; color: #D9534F; cursor: pointer;">Remove</li>
+                <li id="<%= guide._id %>" class="list-group-item"> <a style="display:inline-block; max-width:230px;" href="https://admin.worldplugs.net/support-management/guides/<%= guide.GuideLink %>"><%= guide.Title %> </a>  <text onclick="removeFromPinned(this)" style="float: right; color: #D9534F; cursor: pointer;"> Remove </text> </li>
             <% }%>
         <% })%>
     </ul>
@@ -92,7 +92,7 @@
 
 
     createNewGuide = () => { 
-        console.log("test")
+
         title = document.getElementById("titleField").value
         description = document.getElementById("descriptionField").value
         link = document.getElementById("linkField").value

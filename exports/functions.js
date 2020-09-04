@@ -7,6 +7,7 @@ const links = require('../Management/models/links');
 const products = require("../models/products");
 const categories = require("../models/categories.js")
 const errorlog = require('../Management/models/errorLogs.js')
+const guides = require('../models/guides')
 
 
 const Discord = require('discord.js');

@@ -1095,7 +1095,17 @@ router.get('/support-management', ensureAuthenticated, ensureAdmin, function(req
 router.get('/support-management/guides/:guide', ensureAuthenticated, ensureAdmin, function(req, res) {
     var guide = req.params.guide.toString();
     guides.findOne({GuideLink: guide}, function(error, result) {
-        
+        if (error) {
+            res.redirect('/support-management')
+        } else {
+            try {
+                console.log(result.length)
+                getLinks(req.user.group, function(links) {res.render("guide-management.ejs", {guide: result, layout: "authenticated-layout.ejs", dashboardLinks: links })})
+            } catch {
+                res.redirect('/support-management')
+            }
+            
+        }
     })
 })
 
@@ -1152,10 +1162,9 @@ router.post('/createGuide', ensureAuthenticated, ensureAdmin, async function(req
         ProductLink: req.body.ProductLink,
         Pinned: req.body.Pinned
     }
-    var result = await guides.create(obj)
-    .then(data => {
-        res.send('s')
-    }).catch(error => res.send('er'))
+    var result = await guides.create(obj).then(data => {res.send('s')}).catch(error => res.send('er'))
 }) 
 
+router.post('/updateGuide', ensureAuthenticated, ensureAdmin, function(req, res) {guides.updateOne({_id : req.body._id}, req.body).then(() => res.send('s')).catch(() => res.send('er'))})
+//worldplugs proprietary one line mongoose update function.
 module.exports = router;

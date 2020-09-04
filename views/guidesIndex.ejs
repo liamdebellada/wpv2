@@ -2,36 +2,23 @@
 <div class="wp-guides-parent">
     <h1 class="wp-guides-title">WorldPlugs Support & Guides</h1>
     <div class="row justify-content-center no-gutters" style="margin: 10px; padding-left: 20px; padding-right: 20px;">
-        <div class="col-sm-12 col-md-6 col-lg-4 wp-guides-card-spacer">
-        <div class="card wp-guides-card" style="text-align: center;">
-            <a style="display: block;  text-decoration: none; color: #0d0c11;">
-            <div class="card-header">
-                <h1 style="color: white; font-size: 1em;">Nandos guide</h1>
-                <p class="wp-guides-card-desc">Guide content guidecontentdkajdfl;kajsdkl;fjakl;dfjlajsdfkl;</p>
-            </div>
-            </a>
-        </div>
-        </div>
+
+        <% results.forEach(function (guide) { %>
+            <% if (guide.Pinned == "TRUE") { %>
         <div class="col-sm-12 col-md-6 col-lg-4 wp-guides-card-spacer">
             <div class="card wp-guides-card" style="text-align: center;">
-            <a style="display: block;  text-decoration: none; color: #0d0c11;">
+                <a href="https://worldplugs.net/guides/<%= guide.GuideLink %>" style="display: block;  text-decoration: none; color: #0d0c11; min-height: 200px;">
                 <div class="card-header">
-                <h1 style="color: white; font-size: 1em;">Spotify guide</h1>
-                <p class="wp-guides-card-desc">Guide content guidecontentdkajdfl;kajsdkl;fjakl;dfjlajsdfkl;</p> 
-            </div>
-            </a>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-6 col-lg-4 wp-guides-card-spacer">
-            <div class="card wp-guides-card" style="text-align: center;">
-            <a style="display: block;  text-decoration: none; color: #212529;">
-                <div class="card-header">
-                <h1 style="color: white; font-size: 1em;">ExpressVPN guide</h1>
-                <p class="wp-guides-card-desc">Guide content guidecontentdkajdfl;kajsdkl;fjakl;dfjlajsdfkl;</p>
+                    <h1 style="color: white; font-size: 1em;"><%= guide.Title %></h1>
+                    <p class="wp-guides-card-desc"><%= guide.Description %></p>
                 </div>
-            </a>
+                </a>
             </div>
         </div>
+    <% }%>
+    <% }) %>
+
+
     </div>
 
     <div class="container wp-guides-small-parent">

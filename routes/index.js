@@ -12,7 +12,8 @@ const products = require('../models/products');
 const items = require('../models/items');
 const accounts = require('../models/accounts');
 const { db } = require('../models/categories');
-const banners = require('../Management/models/banners')
+const banners = require('../Management/models/banners');
+const guides = require('../models/guides');
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -188,11 +189,17 @@ router.get('/cart', function(req, res) {
 })
 
 router.get('/guides', function(req, res) {
-    res.render('guidesIndex.ejs')
+    functions.searchQuery(res, guides, '', '', 'guidesIndex.ejs', '/')
 })
 
 router.get('/guides/:guide', function(req, res) {
-    res.render('guide.ejs')
+    guides.findOne({GuideLink : req.params.guide.toString()}, function(error, result) {
+        if (error || result.length < 1) {
+            res.redirect('/guides')
+        } else {
+            res.render('guide.ejs', {guide: result})
+        }
+    })
 })
 
 

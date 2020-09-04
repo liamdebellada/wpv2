@@ -1,0 +1,128 @@
+<h3>Edit: <%= guide.Title %></h3>
+
+<% var formatCode = function(code, stripWhiteSpaces, stripEmptyLines) { 
+    "use strict";
+    var whitespace          = ' '.repeat(4);             // Default indenting 4 whitespaces
+    var currentIndent       = 0;
+    var char                = null;
+    var nextChar            = null;
+
+
+    var result = '';
+    for(var pos=0; pos <= code.length; pos++) {
+        char            = code.substr(pos, 1);
+        nextChar        = code.substr(pos+1, 1);
+
+        // If opening tag, add newline character and indention
+        if(char === '<' && nextChar !== '/') {
+            result += '\n' + whitespace.repeat(currentIndent);
+            currentIndent++;
+        }
+        // if Closing tag, add newline and indention
+        else if(char === '<' && nextChar === '/') {
+            // If there're more closing tags than opening
+            if(--currentIndent < 0) currentIndent = 0;
+            result += '\n' + whitespace.repeat(currentIndent);
+        }
+
+        // remove multiple whitespaces
+        else if(stripWhiteSpaces === true && char === ' ' && nextChar === ' ') char = '';
+        // remove empty lines
+        else if(stripEmptyLines === true && char === '\n' ) {
+            //debugger;
+            if(code.substr(pos, code.substr(pos).indexOf("<")).trim() === '' ) char = '';
+        }
+
+        result += char;
+    }
+
+    return result;
+} 
+%>
+
+<div id="create">
+    <div class="form-group">
+        <label>Title</label>
+        <input id="titleField" class="form-control" type="text" value="<%= guide.Title %>" placeholder="Title">
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea id="descriptionField" class="form-control" type="text" placeholder="Description"><%= guide.Description %></textarea>
+    </div>
+    <div class="form-group">
+        <label>Guide link</label>
+        <input id="linkField" class="form-control" type="text" value="<%= guide.GuideLink %>" placeholder="link">
+    </div>
+    <div class="form-group">
+        <label>Product Link</label>
+        <input id="productLinkField" class="form-control" type="text" value="<%= guide.ProductLink %>" placeholder="product link">
+    </div>
+    <div class="form-group">
+        <label>Content</label>
+        <textarea id="contentField" class="form-control" type="text" rows="5" placeholder="Content" onchange="updatePreview(this)"><%= formatCode(guide.Content, true, true) %></textarea>
+    </div>
+    <button style="margin-bottom: 10px;;" class="btn btn-info" data-toggle="modal" data-target=".bd-example-modal-lg">Preview guide</button>
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #1e1c29;">
+                <div id="previewHTML" style="margin: 10px; color: white;">
+                    <%- guide.Content %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-check" style="margin-bottom: 10px;">
+        <input type="checkbox" class="form-check-input" id="pinOnCreate">
+        <label class="form-check-label">Pin guide on edit</label>
+    </div>
+
+    <button class="btn btn-success" onclick="updateExistingGuide()">Update</button>
+</div>
+
+<script>
+
+    var active = "FALSE";
+    $("#pinOnCreate").click(function(){
+        var check = $(this).prop('checked');
+        if(check == true) {
+            active = "TRUE";
+        } else {
+            active = "FALSE";
+        }
+    });
+
+    function updatePreview(html) {
+        document.getElementById("previewHTML").innerHTML = html.value
+    }
+
+    function updateExistingGuide() {
+        title = document.getElementById("titleField").value
+        description = document.getElementById("descriptionField").value
+        link = document.getElementById("linkField").value
+        content = document.getElementById("contentField").value
+        productLink = document.getElementById("productLinkField").value
+        $.ajax({
+            type: "POST",
+            url: "/updateGuide",
+            data: {
+                _id: '<%= guide._id %>',
+                Title: title,
+                Description: description,
+                GuideLink: link,
+                Content: content,
+                ProductLink: productLink,
+                Pinned: active,
+                CreationDate: new Date()
+            }
+        }).done(data => {
+            console.log(data)
+            if (data == "s") {
+                window.location.href = "/support-management"
+            } else if (data == "er") {
+                alert('An error has occured.')
+            }
+        })
+    }
+</script>
