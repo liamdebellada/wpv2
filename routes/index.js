@@ -189,17 +189,40 @@ router.get('/cart', function(req, res) {
 })
 
 router.get('/guides', function(req, res) {
-    functions.searchQuery(res, guides, '', '', 'guidesIndex.ejs', '/')
+    try {
+        functions.searchQuery(res, guides, '', '', 'guidesIndex.ejs', '/')
+    } catch {
+        res.render('404.ejs')
+    }
+    
 })
 
 router.get('/guides/:guide', function(req, res) {
-    guides.findOne({GuideLink : req.params.guide.toString()}, function(error, result) {
-        if (error || result.length < 1) {
-            res.redirect('/guides')
-        } else {
-            res.render('guide.ejs', {guide: result})
-        }
-    })
+    try {
+        guides.findOne({GuideLink : req.params.guide.toString()}, function(error, result) {
+            try {
+                if (error || result.length < 1) {
+                    functions.getPageLinks(function(links) {
+                        res.render('404', { links: links });
+                        return;
+                    })
+                } else {
+                    res.render('guide.ejs', {guide: result})
+                }
+            } catch {
+                functions.getPageLinks(function(links) {
+                    res.render('404', { links: links });
+                    return;
+                })
+            }
+        })
+    } catch {
+        functions.getPageLinks(function(links) {
+            res.render('404', { links: links });
+            return;
+        })
+    }
+    
 })
 
 

@@ -29,66 +29,78 @@ paypal.configure({
 
 router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
 
-    if (!req.recaptcha.error || req.recaptcha.error) {
-        var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
-            if (result.includes(true)) {
-                //error
-                for (i in conflicts) {
-                    req.session.cart.splice(conflicts[i], 1)
-                }
-                req.session.errorMsg = "Your quantity is greater than the current stock for that item."
-                res.redirect('/error')
-                //call function to draw error messages to the page
-            } else {
-                var paymentData = paymentDataConst
-    
-                functions.getBasket(req.session.cart, items, function(result) {
-                    req.session.order = result //use this to pass to email template
-                    req.session.viewOrder = result
-                    paymentData.transactions[0].item_list.items = []
-                    var total = functions.getTotal(result, "true")
-                    for (item in result) {
-            
-                        var itemData = result[item][0] //Indivudal Item Data
-                        var quantity = result[item][1] //Indivudal Item Quantity
-            
-                        var itemObject =  {
-                            "name" : itemData.Title,
+    try {
+        if (!req.recaptcha.error && req.session.cart.length > 0) {
+            var check = functions.checkStock(req.session.cart, accounts, function(result, conflicts) {
+                if (result.includes(true)) {
+                    //error
+                    for (i in conflicts) {
+                        req.session.cart.splice(conflicts[i], 1)
+                    }
+                    req.session.errorMsg = "Your quantity is greater than the current stock for that item."
+                    res.redirect('/error')
+                    //call function to draw error messages to the page
+                } else {
+                    var paymentData = paymentDataConst
+        
+                    functions.getBasket(req.session.cart, items, function(result) {
+                        req.session.order = result //use this to pass to email template
+                        req.session.viewOrder = result
+                        paymentData.transactions[0].item_list.items = []
+                        var total = functions.getTotal(result, "true")
+                        for (item in result) {
+                
+                            var itemData = result[item][0] //Indivudal Item Data
+                            var quantity = result[item][1] //Indivudal Item Quantity
+                
+                            var itemObject =  {
+                                "name" : itemData.Title,
+                                "sku" : "1",
+                                "price" : itemData.Price,
+                                "currency" : "GBP",
+                                "quantity" : quantity
+                            }
+                
+                            paymentData.transactions[0].item_list.items.push(itemObject)
+                        }
+                        var fee = {
+                            "name" : "Fee",
                             "sku" : "1",
-                            "price" : itemData.Price,
+                            "price" : functions.calculateFee(result),
                             "currency" : "GBP",
-                            "quantity" : quantity
+                            "quantity" : "1"
                         }
-            
-                        paymentData.transactions[0].item_list.items.push(itemObject)
-                    }
-                    var fee = {
-                        "name" : "Fee",
-                        "sku" : "1",
-                        "price" : functions.calculateFee(result),
-                        "currency" : "GBP",
-                        "quantity" : "1"
-                    }
-                    paymentData.transactions[0].item_list.items.push(fee)
-                    paymentData.transactions[0].amount.total = total.toString()
-                    // console.log(paymentData.transactions[0].item_list)
-                    // console.log(paymentData.transactions[0].amount)
-            
-                    paypal.payment.create(paymentData, function (error, payment) {
-                        if (error) {
-                            console.log(error.response.details);
-                        } else {
-                            req.session.total = total.toString()
-                            req.session.fee = functions.calculateFee(result).toString()
-                            res.redirect(payment.links[1].href);
-                        }
-                    });
-                    
-                    
-                })
+                        paymentData.transactions[0].item_list.items.push(fee)
+                        paymentData.transactions[0].amount.total = total.toString()
+                        // console.log(paymentData.transactions[0].item_list)
+                        // console.log(paymentData.transactions[0].amount)
+                
+                        paypal.payment.create(paymentData, function (error, payment) {
+                            if (error) {
+                                res.redirect('/error')
+                            } else {
+                                req.session.total = total.toString()
+                                req.session.fee = functions.calculateFee(result).toString()
+                                res.redirect(payment.links[1].href);
+                            }
+                        });
+                        
+                        
+                    })
+                }
+            })
+        } else {
+            if (req.session.cart.length > 0) {
+                req.session.errorMsg = 'Please add an item to your cart before purchasing.'
+                res.redirect('/error')
+            } else {
+                req.session.errorMsg = 'Please complete the captcha before purchasing.'
+                res.redirect('/error')
             }
-        })
-    } else {
+            
+        }
+    } catch {
+        req.session.errorMsg = 'There was an error while checking out'
         res.redirect('/error')
     }
     
@@ -205,70 +217,81 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
     
                         var ids = []
                         var orderLog = []
-                        for(let item in req.session.order) {
-                            req.session.order[item].push([])
-                            let itemData = req.session.order[item][0] 
-                            let quantity = req.session.order[item][1]
-                            await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
-                                if (error) {
-                                    console.error(error)
-                                }
-                                if (data.length < 1) {
-                                    stockResult = true
-                                } else {
-                                    for (i in data) {
-                                        if (i < quantity) {
-                                            ids.push(data[i]._id)
-                                            orderLog.push({"Title" : itemData.Title, "AccountID": data[i]._id})
-            
-                                            var email = functions.decrypt(data[i].email)
-                                            var password = functions.decrypt(data[i].password)
-            
-                                            req.session.order[item][2].push({email : email, password: password})
-                                            req.session.save()
-            
-                                            
+ 
+                        new Promise(async function(resolve, reject) {
+                            for(let item in req.session.order) {
+                                req.session.order[item].push([])
+                                let itemData = req.session.order[item][0] 
+                                let quantity = req.session.order[item][1]
+                                await accounts.find({ itemID: itemData._id, availability : "true" }, function(error, data) {
+                                    if (error) {
+                                        console.error(error)
+                                        reject()
+                                    }
+                                    if (data.length < 1) {
+                                        stockResult = true
+                                    } else {
+                                        for (i in data) {
+                                            if (i < quantity) {
+                                                ids.push(data[i]._id)
+                                                orderLog.push({"Title" : itemData.Title, "AccountID": data[i]._id})
+                
+                                                var email = functions.decrypt(data[i].email)
+                                                var password = functions.decrypt(data[i].password)
+                
+                                                req.session.order[item][2].push({email : email, password: password})
+                                                req.session.save()
+                
+                                                
+                                            }
                                         }
                                     }
-                                }
-        
-                            })
-                            
-                        }
-                        if (ids.length == 0) {
-                            console.log("\n\n No IDs were found")
-                            console.log(req.session.order)
-                        }
-                        for (id in ids) {
-                            await accounts.updateOne(
-                                {_id : ids[id]},
-                                {availability : "false"},
-                                function(error, success) {
-                                    if (error) {
-                                        console.log(error)
-                                    }
-                            })
-                        }
-                        purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
-
-                        emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID, function (status) {
-                            if (status) {
-                                req.session.total = "empty"
-                                req.session.cart = []
-                
-                                req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
-                
-                                req.session.save()
-                
-                                logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
-                                    if (error) {
-                                        console.log(error)
-                                    }
+            
                                 })
-                                sem.leave();
-                                res.send('/success').status(200).end()
                             }
+                            resolve()
+                        }).then(async () => {
+                            if (ids.length == 0) {
+                                console.log("\n\n No IDs were found")
+                                console.log(req.session.order)
+                            }
+                            for (id in ids) {
+                                await accounts.updateOne(
+                                    {_id : ids[id]},
+                                    {availability : "false"},
+                                    function(error, success) {
+                                        if (error) {
+                                            console.log(error)
+                                        }
+                                })
+                            }
+                            purchaseID = JSON.stringify(payment.id).replace("PAYID-", "")
+    
+                            emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID, function (status) {
+                                if (status) {
+                                    req.session.total = "empty"
+                                    req.session.cart = []
+                    
+                                    req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
+                    
+                                    req.session.save()
+                    
+                                    logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
+                                        if (error) {
+                                            console.log(error)
+                                        }
+                                    })
+                                    sem.leave();
+                                    res.send('/success').status(200).end()
+                                }
+                            })
+                        }).catch(() => {
+                            sem.leave();
+                            res.send('/').status(400).end();
                         })
+
+
+                        
         
         
                         

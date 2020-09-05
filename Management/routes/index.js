@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const assert = require('assert');
 const bcrypt = require('bcrypt')
+var speakeasy = require('speakeasy')
 
 var http = require('https');
 
@@ -29,6 +30,7 @@ const e = require('express');
 const grouplinks = require('../models/groupLinks')
 const groups = require('../models/groups')
 const guides = require('../../models/guides');
+const qrcode = require('qrcode')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -37,6 +39,7 @@ var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPT
 //discord config
 
 const Discord = require('discord.js');
+const { nextTick } = require('process');
 const client = new Discord.Client();
 
 
@@ -384,6 +387,7 @@ router.post('/createStaffAccount', ensureAuthenticated, ensureAdmin, function(re
             var email = req.body.email
             var password = [...Array(24)].map(i => (~~(Math.random() * 36)).toString(36)).join('')
             var group = req.body.group
+            var secret = [...Array(24)].map(i => (~~(Math.random() * 36)).toString(36)).join('')
 
             const newUser = new users({
                 name,
@@ -391,6 +395,7 @@ router.post('/createStaffAccount', ensureAuthenticated, ensureAdmin, function(re
                 password,
                 group,
                 requirePasswordChange: ["true", createPasswordURL],
+                secret: secret
             });
 
             newUser.save()
@@ -441,28 +446,41 @@ router.post('/createResetPassword', ensureAuthenticated, ensureAdmin, function (
     }
 })
 
-router.get('/reset-password/:resetURL', function (req, res) {
-    users.findOne({
+router.get('/reset-password/:resetURL', async function (req, res) {
+
+
+    var result = await users.findOne({
         requirePasswordChange: {
             $all: ["true", 'https://admin.worldplugs.net/reset-password/' + req.params.resetURL.toString()]
         }
-    }, function (error, result) {
-        if (error) {
-            console.log(error)
-            res.redirect('/')
-        } else {
-            if (result == null) {
-                res.redirect('/')
-            } else {
-                res.render('reset-password.ejs', {
-                    aURL: result.requirePasswordChange[1],
-                    header: "The Admins have requested a password reset. To continue please enter a new password",
-                    subheader: "Please note this cannot be the same as your old password",
-                    buttonText: "Change Password"
-                })
-            }
-        }
-    })
+    }).then(mainResult => mainResult).catch(err => console.log(err))
+
+    if (result == null) {
+        res.redirect('/')
+    } else {
+
+        var secret = speakeasy.generateSecret({
+            name: result.email
+        })
+        
+        await users.updateOne({_id: result._id}, {secret: secret.base32}).catch(errmsg => console.log(errmsg))
+
+        await qrcode.toDataURL(secret.otpauth_url)
+        .then(url => {
+            return res.render('reset-password.ejs', {
+                aURL: result.requirePasswordChange[1],
+                header: "The Admins have requested a password reset. To continue please enter a new password",
+                subheader: "Please note this cannot be the same as your old password",
+                buttonText: "Change Password",
+                tfaqr: url
+            })
+        })
+        .catch(error => error)
+
+
+        
+    
+    }
 })
 
 router.get('/create-password/:createURL', function (req, res) {
@@ -470,7 +488,7 @@ router.get('/create-password/:createURL', function (req, res) {
         requirePasswordChange: {
             $all: ["true", 'https://admin.worldplugs.net/create-password/' + req.params.createURL.toString()]
         }
-    }, function (error, result) {
+    }, async function (error, result) {
         if (error) {
             console.log(error)
             res.redirect('/')
@@ -478,11 +496,28 @@ router.get('/create-password/:createURL', function (req, res) {
             if (result == null) {
                 res.redirect('/')
             } else {
+
+
+
+                var secret = speakeasy.generateSecret({
+                    name: result.email
+                })
+                
+            
+                await users.updateOne({_id: result._id}, {secret: secret.base32}).catch(errmsg => console.log(errmsg))
+
+                var qr = await qrcode.toDataURL(secret.otpauth_url)
+                .then(url => url)
+                .catch(error => error)
+
+
+                        
                 res.render('reset-password.ejs', {
                     aURL: result.requirePasswordChange[1],
                     header: "Welcome to the WorldPlugs staff team!",
                     subheader: "Please enter a new password to continue to the management page.",
-                    buttonText: "Create Password"
+                    buttonText: "Create Password",
+                    tfaqr: qr
             })
             }
         }
@@ -1160,7 +1195,8 @@ router.post('/createGuide', ensureAuthenticated, ensureAdmin, async function(req
         GuideLink: req.body.GuideLink,
         Content: req.body.Content,
         ProductLink: req.body.ProductLink,
-        Pinned: req.body.Pinned
+        Pinned: req.body.Pinned,
+        ProductUrlTitle: req.body.ProductUrlTitle
     }
     var result = await guides.create(obj).then(data => {res.send('s')}).catch(error => res.send('er'))
 }) 

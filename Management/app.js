@@ -5,6 +5,7 @@ const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
+
 const passport = require('passport');
 
 var EV = require('dotenv').config({ path: '../.env' })
@@ -50,6 +51,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 // Connect flash
+
 
 app.use(flash());
 

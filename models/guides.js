@@ -30,6 +30,10 @@ const guideSchema = new mongoose.Schema({
     ProductLink: {
         type: String,
         required: true
+    },
+    ProductUrlTitle: {
+        type: String,
+        required: true
     }
 });
 

@@ -52,6 +52,10 @@
         <input id="productLinkField" class="form-control" type="text" placeholder="product link">
     </div>
     <div class="form-group">
+        <label>ProductURLTitle</label>
+        <input id="productUrlTitle" class="form-control" type="text" placeholder="product url title">
+    </div>
+    <div class="form-group">
         <label>Content</label>
         <textarea id="contentField" class="form-control" type="text" placeholder="Content"></textarea>
     </div>
@@ -98,6 +102,8 @@
         link = document.getElementById("linkField").value
         content = document.getElementById("contentField").value
         productLink = document.getElementById("productLinkField").value
+        productUrlTitle = document.getElementById("productUrlTitle").value
+
 
         var obj = {
             Title: title,
@@ -105,7 +111,8 @@
             GuideLink: link,
             Content: content,
             Pinned: active,
-            ProductLink: productLink
+            ProductLink: productLink,
+            ProductUrlTitle: productUrlTitle
         }
         $.ajax({
             type: "POST",

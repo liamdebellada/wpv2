@@ -1,0 +1,22 @@
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+      <div class="card card-body">
+        <a href="/logout" class="text-right mb-1" style="font-weight: 400 !important; font-size: 0.75rem">Logout</a>
+        <text class="text-center mb-3" style="font-weight: 400 !important; font-size: 1.40625rem">Please Enter Your 2FA Code</text>
+        <%- include('partials/messages'); %>
+        <form action="/2faCheck" method="POST">
+          <div class="form-group">
+            <input
+              type="string"
+              id="token"
+              name="token"
+              class="form-control"
+              placeholder="Enter 2FA Code"
+              autofocus
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Enter Code</button>
+        </form>
+      </div>
+    </div>
+</div>

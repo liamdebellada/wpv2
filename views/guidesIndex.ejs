@@ -1,36 +1,58 @@
 <div class="container">
 <div class="wp-guides-parent">
     <h1 class="wp-guides-title">WorldPlugs Support & Guides</h1>
+    <hr class="horizontalSep" style="width: 50%">
+
+
+    <h3 style="color: white;">Popular Guides</h3>
     <div class="row justify-content-center no-gutters" style="margin: 10px; padding-left: 20px; padding-right: 20px;">
 
         <% results.forEach(function (guide) { %>
             <% if (guide.Pinned == "TRUE") { %>
-        <div class="col-sm-12 col-md-6 col-lg-4 wp-guides-card-spacer">
-            <div class="card wp-guides-card" style="text-align: center;">
-                <a href="https://worldplugs.net/guides/<%= guide.GuideLink %>" style="display: block;  text-decoration: none; color: #0d0c11; min-height: 200px;">
-                <div class="card-header">
-                    <h1 style="color: white; font-size: 1em;"><%= guide.Title %></h1>
-                    <p class="wp-guides-card-desc"><%= guide.Description %></p>
+            <div class="col-sm-12 col-md-6 col-lg-4 wp-guides-card-spacer">
+                <div class="wp-guides-card" style="text-align: center;">
+
+
+
+                        <!-- <a href="https://worldplugs.net/guides/<%= guide.GuideLink %>"> -->
+                            <div class="wp-guides-card-content">
+                                <h1 style="color: white; font-size: 1em;"><%= guide.Title %></h1>
+                                <hr class="horizontalSep" style="width: 50%">
+                                <p class="wp-guides-card-desc"><%= guide.Description %></p>
+                            </div>
+                                
+                            <footer><a href="https://worldplugs.net/guides/<%= guide.GuideLink %>" class="btn wp-button wp-button-gradient wp-button-default-hover">View Guide</a></footer>
+                            
+                            <!-- </a> -->
+                    
+
+
                 </div>
-                </a>
             </div>
-        </div>
-    <% }%>
-    <% }) %>
+            <% }%>
+        <% }) %>
 
 
     </div>
-
-    <div class="container wp-guides-small-parent">
-        <div class="row">
-            <div class="col-sm wp-guides-small" onclick="window.location.href='/guides/linktoguides'">
-            <img src="https://cdn.worldplugs.net/guide-book.svg" class="wp-guides-small-book" style="width: 30px;"></img>Guide 1
+    <h4 style="color: white;">Our Other Guides</h4>
+            <div class="container wp-guides-small-parent">
+                <div class="row justify-content-center">
+                    <% results.forEach(function(guide) { %> 
+                        <% if (guide.Pinned == "FALSE") { %>
+                            
+                            <div class="col-sm-12 col-md-6 wp-guides-small-click">
+                                
+                                <div class="wp-guides-small">
+                                    
+                                        <img src="https://cdn.worldplugs.net/guide-book.svg" class="wp-guides-small-book" style="width: 30px;">
+                                    <span><a href="/guides/<%= guide.GuideLink %>"><%= guide.Title %></a></span>
+                                    
+                                </div>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                </div>
             </div>
-            <div class="col-sm wp-guides-small">
-                <img src="https://cdn.worldplugs.net/guide-book.svg" class="wp-guides-small-book" style="width: 30px;"></img>Guide 2
-            </div>
-        </div>
-    </div>
 </div>
 
 </div>
@@ -40,6 +62,13 @@
     @media (max-width: 570px) {
         .wp-guides-parent {
             margin: 10px !important;
+        }
+        .wp-guides-small-parent {
+            padding: 25px !important;
+            padding-top: 0px !important;
+        }
+        .wp-guides-small {
+            margin-top: 20px !important;
         }
     }
 
@@ -54,11 +83,23 @@
         font-size: 2rem;
         font-weight: 400;
     }
+
+
     .wp-guides-card {
         background-color: #0d0c11 !important;
-        margin: 20px;
-        background-color: #1e1c29;
-        border-radius: 0;
+        margin: 20px 10px;
+        min-height: 200px;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        -webkit-box-shadow: inset 0px 0px 10px -2px rgba(0,0,0,0.75);
+        -moz-box-shadow: inset 0px 0px 10px -2px rgba(0,0,0,0.75);
+        box-shadow: inset 0px 0px 10px -2px rgba(0,0,0,0.75);
+    }
+
+    .wp-guides-card-content {
+        flex: 1 1 auto;
     }
 
     .wp-guides-card-spacer {
@@ -67,15 +108,18 @@
 
     .wp-guides-small {
         background-color:#0d0c11 !important; 
-        margin: 15 10 0 15;
+        /* margin: 15 10 0 15; */
         text-align: left;
         color: white;
+        border-radius: 5px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
     }
 
     .wp-guides-small-parent {
-        padding-bottom: 50px;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding: 50px;
+        padding-top: 0px;
     }
 
     .wp-guides-small-book {
@@ -88,4 +132,33 @@
         color: white;
         font-weight: 200;
     }
+
+    .wp-guides-small a, .wp-guides-small a:visited, .wp-guides-small a:hover {
+        text-decoration: none !important;
+        position: relative;
+        color: #fff;
+    }
+    .wp-guides-small a:after, .wp-guides-small a:visited:after {
+        content: "";
+        height: 1px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        background: #fff;
+        transition: 0.2s;
+    }
+    .wp-guides-small a:hover:after, .wp-guides-small a:visited:hover:after {
+        background: #fff;
+        width: 100%;
+    }
+    .wp-guides-small a.block, .wp-guides-small a:visited.block {
+        display: block;
+        padding: 0.5em;
+    }
+    .wp-guides-small a.block:hover, .wp-guides-small a:visited.block:hover {
+        background: #eee;
+    }
+
+
 </style>

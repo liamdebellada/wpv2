@@ -27,7 +27,7 @@
             <% items.forEach(function(result) { %>
               <% itemTotal = parseFloat(result.Price) * parseFloat(result.Quantity) %>
             <tr>
-              <td><img src="<%= result.Image %>" style="max-width: 30px;" class="wp-cart-table-image img-fluid"></img><%= result.Title %></td>
+              <td><p style="float: left;"><img src="<%= result.Image %>" style="max-width: 30px;" class="wp-cart-table-image img-fluid"></img></p><p><%= result.Title %></p></td>
               <td><input class="wp-item-quantity" type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input></td>
               <td>£<%= parseFloat(itemTotal).toFixed(2) %></td>
               <td><button class="btn wp-button wp-button-remove" onclick="removeItemCart(this)">Remove</button><input style="display: none;" onclick="removeItemCart(this)" id="<%= result._id %>" class="remove-small-cart-button" value="&times;" readonly></div></td>
@@ -102,7 +102,7 @@
         <hr class="horizontalSep" style="width: 50%">
         <h3 style="color: white; font-weight: 300">Your basket is empty!</h3>
         <h6 style="color: white; font-weight: 300">Please add an item to your basket from our store beforehand.</h6>
-        <a style="margin-top: 1.025rem" href="https://worldplugs.net/" class="btn wp-button wp-button-gradient">Return to Homepage</a>
+        <a style="margin-top: 1.025rem" href="https://worldplugs.net/" class="btn wp-button wp-button-gradient wp-button-default-hover">Return to Homepage</a>
       </div>
     
     <% } %>

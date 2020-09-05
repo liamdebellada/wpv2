@@ -32,7 +32,7 @@
       </select>
     </div>
     <button style="margin-bottom: 10px" onclick="addAccount()" class="btn btn-success ">Add Account and Generate Password Link</button>
-    <div id="wp-admin-create-password-collapse-box" class="collapse">
+    <div id="wp-admin-create-password-collapse-box" class="collapse hide">
       <div  class="selectBox form-group">
         <b><label for="inputState" id="wp-create-account-copy">Click link to copy</label></b>
         <input id="wp-create-account-copybox" class="form-control wp-copybox" spellcheck="false" onclick="copyURL(this, 'wp-create-account-copy')"
@@ -404,8 +404,10 @@
             group: newUserGroup
         } 
       }).done(data => {
-        $("#wp-admin-reset-password-collapse-box").collapse('show')
+        $("#wp-admin-create-password-collapse-box").collapse('show')
         $("#wp-create-account-copybox").val(data)
+        $("#wp-create-account-user-name").val("")
+        $("#wp-create-account-user-email").val("")
       })
       } else {
         $("#wp-create-account-response").text("Please fill all fields")
