@@ -17,6 +17,10 @@ const accountScehma = new mongoose.Schema({
         type: String,
         required: true
     }, 
+    hidden: {
+        type: String,
+        required: true
+    }
 });
 
 const accounts = mongoose.model('accounts', accountScehma);

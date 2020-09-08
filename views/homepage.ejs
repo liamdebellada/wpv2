@@ -1,5 +1,8 @@
 <%- include('banner.ejs', {banner: banner}) %>
 
+<title>WorldPlugs</title>
+
+<meta name="description" content="Welcome to WorldPlugs! The site to buy food, entertainment, music and much more at an unmatchable price."/>
 
 
 <h1 class="titleText" style="padding: 30px; font-weight: 200;">
@@ -27,7 +30,7 @@
     <% results.forEach(function(result) { %>
     <% if (result.DisplayPopular == "true") { %>
     <div class="col-sm-12 col-md-6 col-lg-4">
-      <div class="card itemCard homeCard" style="text-align: center;">
+      <div class="itemCard" style="text-align: center;">
         <a style="display: block;  text-decoration: none; color: #212529;"
           href="/products/<%= result.CategoryKey %>">
           <div class="card-header">

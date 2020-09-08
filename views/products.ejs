@@ -1,19 +1,24 @@
 <%- include('banner.ejs', {banner: banner}) %>
 
-<div class="wp-products-span">
+<title>WorldPlugs | <%= title  %> Products </title>
+<meta name="description" content="Browse our selection of <%= title  %> products here!"/>
 
+
+
+<div class="wp-products-span justify-content-center container-fluid">
+ 
   <div class="wp-products-contentbox">
-    <h1 class="wp-products-contentbox-header"><%= title  %> Products</h1>
-    <hr class="wp-products-contentbox-header-seperator">
-    <div class="container" style="padding-right: 0px; padding-left: 0px">
+    <h3 class="wp-products-contentbox-header"><%= title  %> Products</h3>
+    <div class="container">
       <div class="row justify-content-center">
       <% results.forEach(function(result) { %>
         <% if (result.productState == "enabled") { %>
-        <div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 10px; padding-right: 10px;">
-        <div class="card wp-products-contentbox-product" style="text-align: center">
-          <div class="wp-products-contentbox-product-header" style="border: none">
+        <div class="wp-products-contentbox-product-container col-sm-12 col-md-6 col-lg-4">
+        <div class="wp-products-contentbox-product">
+          <div class="wp-products-contentbox-product-header">
             <img class="img-fluid wp-products-contentbox-product-img" src="<%= result.Image %>"></img>
-            <h1 style="color: white; font-size: 2em;"><%= result.Title %></h1>
+            <br>
+            <text style="color: white; font-size: 2em;"><%= result.Title %></text>
             <hr style="background-color: white; width: 75%">
           </div>
           <div class="wp-products-contentbox-product-body">
@@ -42,34 +47,18 @@
   }
 
   .wp-products-contentbox {
-    width: 80%;
+    max-width: 1500px;
     height: auto;
     background-color: #1e1c29;
     display: flex;
     flex-direction: column;
     z-index: 0;
     padding: 20px;
+    border-radius: 5px;
   }
-
-  @media(min-width:992px) and (max-width:1199px) {
-    .wp-products-contentbox {
-      width: 90%
-    }
-  }
-
-  @media(max-width:992px) {
-    .wp-products-contentbox {
-      width: 90%
-    }
-    .itemCard {
-      margin: 30px !important;
-    }
-  }
-
 
   .wp-products-contentbox-header {
     color: white;
-    font-weight: 300;
   }
 
   .wp-products-contentbox-header-seperator {
@@ -78,12 +67,19 @@
     height: 0.5px;
   }
 
+  .wp-products-contentbox-product-container {
+    padding-left: 10px; 
+    padding-right: 10px; 
+    min-width: 360px;
+  }
+
   .wp-products-contentbox-product {
     position: relative;
     margin: 20px;
     background-color: #22202d;
     border-radius: 0;
     box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+    text-align: center
   }
 
   .wp-products-contentbox-product:before {
@@ -92,11 +88,11 @@
     border: 10px solid;
     border-image-slice: 1;
     border-width: 1px;
-    border-image-source: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-    top: 8px;
-    right: -8px;
+    border-image-source: linear-gradient(to top, #12c2e9, #c471ed, #f64f59);
+    top: 7px;
+    right: -5px;
     bottom: -8px;
-    left: 8px;
+    left: -5px;
     position: absolute;
     z-index: -1;
   }
@@ -107,11 +103,11 @@
     border: 10px solid;
     border-image-slice: 1;
     border-width: 1px;
-    border-image-source: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-    top: 17px;
+    border-image-source: linear-gradient(to top, #12c2e9, #c471ed, #f64f59);
+    top: 19px;
     right: -17px;
     bottom: -17px;
-    left: 17px;
+    left: -17px;
     position: absolute;
     z-index: -2;
   }

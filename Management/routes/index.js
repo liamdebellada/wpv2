@@ -32,6 +32,9 @@ const groups = require('../models/groups')
 const guides = require('../../models/guides');
 const qrcode = require('qrcode')
 
+
+const terms = require('../../models/terms')
+
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
@@ -93,6 +96,17 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
 
     
     
+})
+
+router.post('/updateTerms', ensureAuthenticated, ensureAdmin, async function(req, res) {
+    terms.updateOne({_id : req.body.id}, {content : req.body.content, title: "test", contentKey: req.body.contentKey}).then(result => res.send("s")).catch(error => error)
+})
+
+router.get('/update-terms', ensureAuthenticated, ensureAdmin, async function(req, res) {
+    var termsData = await terms.find({}).then(data => data).catch(error => error)
+    res.render('manage-terms', {
+        data: termsData
+    })
 })
 
 router.get('/logs', ensureAuthenticated, ensurePermissions('/logs'), function (req, res) {
@@ -1006,7 +1020,7 @@ router.post('/getStock', ensureAuthenticated, ensureAdmin, function (req, res) {
     })
 })
 
-
+//accounts.updateMany({}, {$set: {hidden: "true"}}).then(datastuff => console.log(datastuff)).catch(temperror => console.log(temperror))
 
 
 
@@ -1031,6 +1045,15 @@ router.post('/changeState', ensureAuthenticated, ensureAdmin, function (req, res
         }
     })
 })
+
+router.post('/hideAccount', ensureAuthenticated, ensureAdmin, function(req, res) {
+    const inverse = {
+        "true": "false",
+        "false": "true"
+    }
+    accounts.updateOne({_id: req.body.id}, {hidden: inverse[req.body.hiddenStatus]}).then(res.send('s')).catch(error => console.log(error))
+})
+
 
 function encrypt(value) {
     var mykey = crypto.createCipher('aes-128-cbc', process.env.KEY);
@@ -1134,7 +1157,6 @@ router.get('/support-management/guides/:guide', ensureAuthenticated, ensureAdmin
             res.redirect('/support-management')
         } else {
             try {
-                console.log(result.length)
                 getLinks(req.user.group, function(links) {res.render("guide-management.ejs", {guide: result, layout: "authenticated-layout.ejs", dashboardLinks: links })})
             } catch {
                 res.redirect('/support-management')
@@ -1186,7 +1208,7 @@ router.post('/removeFromPinned', ensureAuthenticated, ensureAdmin, function(req,
     })
 })
 
-router.post('/createGuide', ensureAuthenticated, ensureAdmin, async function(req, res) {
+router.post('/createGuide', ensureAuthenticated, ensureAdmin, function(req, res) {
     var obj = {
         _id: mongoose.Types.ObjectId(),
         Title: req.body.Title,
@@ -1198,9 +1220,15 @@ router.post('/createGuide', ensureAuthenticated, ensureAdmin, async function(req
         Pinned: req.body.Pinned,
         ProductUrlTitle: req.body.ProductUrlTitle
     }
-    var result = await guides.create(obj).then(data => {res.send('s')}).catch(error => res.send('er'))
+    guides.create(obj).then(res.send('s')).catch(error => console.log(error))
 }) 
 
 router.post('/updateGuide', ensureAuthenticated, ensureAdmin, function(req, res) {guides.updateOne({_id : req.body._id}, req.body).then(() => res.send('s')).catch(() => res.send('er'))})
 //worldplugs proprietary one line mongoose update function.
+
+
+router.post('/deleteGuide', ensureAuthenticated, ensureAdmin, function(req, res) {
+    guides.deleteOne({_id : req.body._id}).then(res.send('s')).catch(err => console.log(err))
+})
+
 module.exports = router;

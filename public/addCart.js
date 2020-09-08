@@ -1,25 +1,35 @@
 window.addEventListener("load", function(){
     $("button.wp-button-add-to-cart").click(function () {
-
-        x = $(this)[0].id
-        quantity = document.getElementById(x).value
         $.ajax({
             type: "POST",
             url: "/updateCart",
             data: {
-                items: x,
-                quantity: quantity
+                items: $(this).parent().attr('id'),
+                quantity: $(this).siblings('input').val()
             }
         }).done(data => {
-           
 
             if (typeof(data) != "object") {
-                document.getElementById("fixed-alert").innerText = data
-                $("#alertMsg").collapse('show');
-                setTimeout(function(){$("#alertMsg").collapse('hide');}, 2000)
+                
+                var wp_cart_text = data
+                
             } else {
-                displayBasketContent(data)
+
+                var wp_cart_text = data.Item
+                
+                displayBasketContent(data.userCart)   
             }
+
+            $(`<div class="wp-cart-alert"><div class="wp-cart-alert-information"><text>${wp_cart_text}</text></div></div>`).promise().done(function() {
+                if (typeof(data) != "object") { 
+                    $(this).find('.wp-cart-alert-information').addClass('wp-cart-alert-error')
+                }
+                $(this).addClass('wp-cart-alert-move')
+                $('#wp-cart-alerts').append(this)
+                setTimeout((x) => {
+                    $(x).remove()
+                }, 2000, this);
+            })
         });
       });
   });

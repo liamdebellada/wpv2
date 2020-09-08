@@ -1,5 +1,12 @@
 <%- include('banner.ejs', {banner: banner}) %>
 
+<title>WorldPlugs | <%= title %> Accounts</title>
+
+<meta name="description" content="Browse our selection of <%= title  %> items here!"/>
+
+
+
+
 <script src="/addCart.js"></script>
 
 <div style="margin: 0 auto; width: 20rem; position: relative; z-index: 99999;" class="collapse" id="alertMsg">
@@ -8,49 +15,200 @@
   </div>
 </div>
 
-<div class="wp-content-box-span">
-  <div class="content-box">
-  <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
-    <h1 id="itemHeader"><%= title %> Accounts</h1>
-    <% filtered.forEach(function(result) { %>
-    <div class="card product-content" style="border: none;">
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card-body" style="color: white; margin-bottom: 30px;">
-            <div>
-              <h1 class="wp-body-text-position-alignment" style="font-size: 2em;"><img style="width: 30px; height: 30px; margin-right: 5px;" src="<%=result.Image%>"><%= result.Title %></h1>
-            </div>
-            <% if (result.Stock == 0) { %>
-              <p class="wp-body-text-position-alignment">Stock: <text style="color: #ea6464" class="itemStock">Out of stock</text></p>
-            <% } else { %> 
-              <p class="wp-body-text-position-alignment">Stock: <text style="color: #4BB543" class="itemStock"><%= result.Stock %></text></p>
-            <% } %>
-              <p class="wp-body-text-position-alignment">Price: <text style="color: #4BB543">£<%= parseFloat(result.Price).toFixed(2) %></text></p>
-              <input type="number" pattern="[0-9]*" class="wp-item-quantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input>
+
+
+
+  <div class="wp-items-container container-fluid">
+    
+
+
+
+    <div class="row">
+
+     
+
+      <div class="col-md-7 col-lg-9" style="margin-bottom: 5px;">
+
+        <div>
+          <div class="wp-background" style="margin-bottom: 5px; padding: 10px;">
+            <h3 style="color: white;">Welcome to our <%= title %> Store</h3>
           </div>
         </div>
-        <div class="col-md-4 align-self-center">
+
+        <div class="wp-background">
+          <div class="row justify-content-center" style="padding-bottom: 15px;">
+
+            <% var filtered = results.filter(function (el) { return el.productState == "enabled" })%>
+
+            <% filtered.forEach(function(result) { %>
+
+            <div class="col-lg-6" >
+
+            <div class="wp-items-item <% if (result.Stock < 1) { %> <%= "wp-items-item-disabled" %> <% } %> ">
+                <h6 class="text-left wp-items-item-title"><img style="width: 1.5em;  margin-right: 0.5em;" src="<%=result.Image%>"><%= result.Title %></h6>
+                <div style="display: flex; align-items: center">
+                  <div>
+                    <text class="text-left" style="font-size: 0.9175rem; display:block; color: white;">Price: <text style="color: #4BB543">£<%= parseFloat(result.Price).toFixed(2) %></text></text>
+                    <text class="text-left" style="font-size: 0.9075rem; display:block; color: white;">Stock: <text style="<% if (result.Stock > 0) { %> <%= "color: #4BB543 " %> <% } else { %> <%= "color: #EA6464 " %> <% } %>"><%= result.Stock %></text></text>
+                  </div>
+                  <div style="margin-left: auto" <% if (result.Stock > 0) { %> id=<%= result._id%> <% } %>>
+                    <input type="number" pattern="[0-9]*" style="margin-right:5px" class="wp-item-quantity" value="1" min="1" <% if (result.Stock > 0) { %> max=<%= result.Stock %> <% } %> ></input>
+                    <button class="btn <% if (result.Stock > 0) { %> wp-button-add-to-cart <% } %> wp-button wp-button-gradient wp-button-default-hover">Add To Basket</button>
+                  </div>
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+
+          <% }) %>
+
+
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-5 col-lg-3">
+        <div class="wp-background wp-items-support">
+
+          <div style="display: flex; align-items: center">
+            <h5 style="color: white; text-align: left; margin-bottom: 0;">Warranty and Support</h5>
+            <img style="max-height: 20px; margin-left: auto;" src="/wp-shield.svg">
+          </div>
+
+          <hr style="background-color: rgb(255 255 255 / 36%); margin: 0.25rem auto; width: 80%">
+
+          <div style="text-align: left; color: white">
+            <p>The warranty for the products you buy are explicitly listed on the <a href="/payment-policy">Payment Policy</a>, when you purchase one or more of these items you are agreeing to this.</p>
+            <p>If you require support on one of the products you have purchased, please head to our <a href="/support">support panel</a> where we have guides on all of our products</p>
+          </div>
+
           
-          <% if (result.Stock == 0) { %>
-            <button class="wp-button-add-to-cart btn wp-button wp-button-disabled" disabled>Unavailable</button>
-          <% } else { %>
-            <button class="wp-button-add-to-cart btn wp-button wp-button-gradient wp-button-default-hover <%= result.Stock %>" id=<%= result._id %>>Add me to cart</button>
-          <% } %>
+
+
+            
+          
+            
+          
         </div>
       </div>
+      
+
+
     </div>
-    
-      <% if(filtered[filtered.length -1] !== result) { %>
-        <hr class="horizontalSep"/>
-      <% } %>
-
-
-    <%})%>
-
   </div>
+
+<div id="wp-cart-alerts">
+
 </div>
 
-<div id="watch1" style="height: 20px">
-  <div><text id="valueAfter" style="color: white;"></text></div>
-  <div><text id="valueBefore" style="color: white;"> </text></div>
-</div>
+
+<style>
+
+  .wp-cart-alert {
+    position: fixed;
+    bottom: -10rem;
+    right: 5%; 
+  }
+
+  .wp-cart-alert-information {
+    padding: 15px; 
+    box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75); 
+    background-color: white;
+    border-radius: 5px;
+    color: black;
+  }
+
+  .wp-cart-alert-error {
+    background-color: #e45158 !important;
+    color: white !important;
+  }
+
+  @media screen and (max-width: 576px) {
+    .wp-cart-alert {
+      right: auto !important;
+      padding: 10px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      width: 90%
+    }
+  }
+
+  .wp-cart-alert-move {
+    -webkit-animation: move ease-in-out 2s;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation: move ease-in-out 2s;
+    -moz-animation-fill-mode: forwards;
+    animation: move 2s;
+    animation-timing-function: cubic-bezier(.14, .05, .25, .90);
+  }
+
+
+
+  @keyframes move {
+    0% {bottom: -5rem;}
+    50% {bottom: 5rem ;}
+    60% {bottom: 5rem ;}
+    100% {bottom: -10rem ;}
+  }
+
+  @-webkit-keyframes move {
+    0% {bottom: -5rem;}
+    50% {bottom: 5rem ;}
+    60% {bottom: 5rem ;}
+    100% {bottom: -10rem ;}
+  }
+
+  @-moz-keyframes move {
+    0% {bottom: -5rem;}
+    50% {bottom: 5rem ;}
+    60% {bottom: 5rem ;}
+    100% {bottom: -10rem ;}
+  }
+
+
+
+  .wp-items-container {
+    max-width: 1500px;
+    margin-top: 2rem
+  }
+
+  .wp-background {
+    background-color: #1E1C29;
+    border-radius: 5px;
+  }
+
+  .wp-items-item {
+    background-color: #0d0c11;
+    margin: 15px 15px 0px 15px;
+    border-radius: 3px;
+    min-height: 50px;
+    padding: 8px;
+    position: relative;
+  }
+  .wp-items-item-title {
+    color: white;
+  }
+
+  .wp-items-item-disabled:after {
+    content: "Out of stock!";
+    display: inline-block;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(27, 27, 27, 0.63);
+    color: white;
+    display:flex;
+    flex-direction:row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wp-items-support {
+    padding: 10px;
+  }
+
+</style>

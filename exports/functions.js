@@ -19,22 +19,11 @@ var functions = {
     // Search Database With Arguments
 
     searchQuery: async function (res, modelName, dbKey, userQuery, pageRender, fallbackRedirect = '/', fallbackError = "There was an issue display the page. You have been redirected.", ip) {
-        var pageLinks;
-        await links.find({}, function(error, result) {
-            if (error) {
-                res.redirect(fallbackRedirect)
-            } else {
-                pageLinks = result
-            }
-        })
-
+        var pageLinks = await links.find({}).then(result => result).catch(error => console.log(error))
         query = {}
-        if (dbKey !== '') {
-            query[dbKey] = userQuery
-        }
-        modelName.find(
-                query
-            ).then(result => {
+        if (dbKey !== '') query[dbKey] = userQuery
+        modelName.find(query)
+        .then(async result => {
                 if (pageRender == "items.ejs") {
                     try {
                         products.findOne({ProductKey: userQuery}, function (error, product) {
@@ -68,23 +57,15 @@ var functions = {
                 }
                 else if (result.length > 0) {
                     if (pageRender == "products.ejs") {
-                        categories.findOne({CategoryKey: userQuery}, function (error, title) {
-                            if (error) {
-                                console.log(error)
-                            } else {
-
-                                functions.getBanners(function(banner) {
-                                    res.render(pageRender, {
-                                        title: title.Title,
-                                        results: result,
-                                        banner: banner,
-                                        links: pageLinks
-                                    })
-                                })
-                            }
+                        var title = await categories.findOne({CategoryKey: userQuery}).then(title => title).catch(error => console.log(error))
+                        functions.getBanners(function(banner) {
+                            res.render(pageRender, {
+                                title: title.Title,
+                                results: result,
+                                banner: banner,
+                                links: pageLinks
+                            })
                         })
-                        
-                    
                     }
                     else {
                         functions.getBanners(function(banner) {
@@ -101,9 +82,6 @@ var functions = {
                 }
             })
             .catch(err => res.redirect(fallbackRedirect))
-                
-            
-
     },
 
     //check if the session cart item id is equal to the request id
@@ -129,8 +107,7 @@ var functions = {
         }).then(result => {
             return result
         }).catch(errorCatch => {
-            console.log("error")
-            res.redirect("/")
+            console.log(errorCatch)
         })
     },
 
@@ -141,7 +118,6 @@ var functions = {
             var price = parseInt(result.Price)
             return (price * quantity).toString()
         } else {
-            //error here
             const errMsg = "Invalid order"
         }
     },
@@ -149,7 +125,6 @@ var functions = {
     //Uses existing session basket returning usable data to the client
 
     getBasket: function (sessionBasket, items, callback) {
-
         var arr = []
         for (item in sessionBasket) {
             let obj = sessionBasket[item]
@@ -210,7 +185,7 @@ var functions = {
     },
 
     countStock : async function(id, name, callback) {
-        await accounts.countDocuments( {itemID : id, availability : "true" },
+        await accounts.countDocuments( {itemID : id, availability : "true", hidden: "false" },
         function(error, stock) {
             if (error) {
                 console.log(error)
@@ -259,7 +234,7 @@ var functions = {
         for (let item in session) {
             var id = session[item].id
             let quantity = session[item].quantity
-            accounts.countDocuments( {itemID : id, availability : "true" },
+            accounts.countDocuments( {itemID : id, availability : "true", hidden: "false" },
             function(error, stock) {
                 if (error) {
                     console.log(error) 
@@ -285,14 +260,9 @@ var functions = {
         return mystr;
     },
 
-    getBanners: function(callback) {
-        banners.findOne({active: true}, function(error, banner) {
-            if (error) {
-                console.log(error)
-            } else {
-                return callback(banner)
-            }
-        })
+    getBanners: async function(callback) {
+        var banner = await banners.findOne({active: true}).then(banner => banner).catch(error => console.log(error))
+        return callback(banner)
     },
     
     getPageLinks: async function(callback) { //WorldPlugs 2020 proprietary link management

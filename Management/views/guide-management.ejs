@@ -1,3 +1,4 @@
+<% try { %> 
 <h3>Edit: <%= guide.Title %></h3>
 
 <% var formatCode = function(code, stripWhiteSpaces, stripEmptyLines) { 
@@ -58,11 +59,19 @@
         <input id="productLinkField" class="form-control" type="text" value="<%= guide.ProductLink %>" placeholder="product link">
     </div>
     <div class="form-group">
+        <label>ProductURLTitle</label>
+        <input id="productUrlTitle" class="form-control" value="<%= guide.ProductUrlTitle %>" type="text" placeholder="product url title">
+    </div>
+    <div class="form-group">
         <label>Content</label>
         <textarea id="contentField" class="form-control" type="text" rows="5" placeholder="Content" onchange="updatePreview(this)"><%= formatCode(guide.Content, true, true) %></textarea>
     </div>
+    <div class="form-check" style="margin-bottom: 10px;">
+        <input type="checkbox" class="form-check-input" id="pinOnCreate">
+        <label class="form-check-label">Pin guide on edit</label>
+    </div>
     <button style="margin-bottom: 10px;;" class="btn btn-info" data-toggle="modal" data-target=".bd-example-modal-lg">Preview guide</button>
-
+    <br>
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="background-color: #1e1c29;">
@@ -73,15 +82,28 @@
         </div>
     </div>
 
-    <div class="form-check" style="margin-bottom: 10px;">
-        <input type="checkbox" class="form-check-input" id="pinOnCreate">
-        <label class="form-check-label">Pin guide on edit</label>
-    </div>
-
     <button class="btn btn-success" onclick="updateExistingGuide()">Update</button>
+    <hr/>
+    <div class="wp-dangerzone">
+        <div style="margin: 10px;">
+            <label style="margin: 5px; font-weight: 600;">DangerZone</label>
+            <br>
+            <text style="margin: 5px; font-size: 12px;">Delete <%= guide.Title %></text>
+            <br>
+            <button style="margin: 5px; margin-bottom: 10px;" class="btn btn-danger" onclick="deleteGuide()">Delete guide</div>
+        </div>
+    </div>
 </div>
 
 <script>
+
+    function deleteGuide() {
+        $.ajax({
+            type: "POST",
+            url: "/deleteGuide",
+            data: {_id: '<%= guide._id %>'}
+        }).done(data => data == "s" ? window.location.href = "/support-management" : alert('failed to delete account'))
+    }
 
     var active = "FALSE";
     $("#pinOnCreate").click(function(){
@@ -103,6 +125,8 @@
         link = document.getElementById("linkField").value
         content = document.getElementById("contentField").value
         productLink = document.getElementById("productLinkField").value
+        productUrlTitle = document.getElementById("productUrlTitle").value
+
         $.ajax({
             type: "POST",
             url: "/updateGuide",
@@ -114,7 +138,8 @@
                 Content: content,
                 ProductLink: productLink,
                 Pinned: active,
-                CreationDate: new Date()
+                CreationDate: new Date(),
+                ProductUrlTitle: productUrlTitle
             }
         }).done(data => {
             console.log(data)
@@ -126,3 +151,13 @@
         })
     }
 </script>
+
+<style>
+    .wp-dangerzone {
+        margin: 5px;
+        border-radius: 3px;
+        background-color: rgba(163, 73, 79, 0.17);
+        border-left: 3px solid rgba(217, 26, 39, 0.7);
+    }
+</style>
+<%} catch {}%>

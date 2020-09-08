@@ -14,6 +14,7 @@ const accounts = require('../models/accounts');
 const { db } = require('../models/categories');
 const banners = require('../Management/models/banners');
 const guides = require('../models/guides');
+const terms = require('../models/terms')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -148,16 +149,18 @@ router.get('/success', function(req, res) {
 
 
 router.get('/products/:product/items/:items', async function (req, res) {
-    var item = req.params.items.toString();
-    var category = req.params.product.toString();
-    var fallbackRedirect = '/products/' + req.params.product.toString();
+    var item = req.params.items.toString().toLowerCase();
+    var category = req.params.product.toString().toLowerCase();
+    var fallbackRedirect = '/products/' + req.params.product.toString().toLowerCase();
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     await products.findOne({CategoryKey: category, ProductKey: item}, function(error, data) { 
         if (error) {
             console.error(error)
         } else {
             if (data == null) {
-                res.redirect('/404')
+                functions.getPageLinks(function(links) {
+                    functions.errorHandler(res, "This items page doesn't exist or is no longer available!", links)
+                })
             } else {
                 functions.searchQuery(res, items, 'ProductKey', item, 'items.ejs', fallbackRedirect);
             }
@@ -166,38 +169,33 @@ router.get('/products/:product/items/:items', async function (req, res) {
 })
 
 router.get('/cart', function(req, res) {
-        if (req.session.cart === undefined) {
+    if (req.session.cart === undefined) {
+        res.render('cart.ejs')
+    } else {
+        if (req.session.cart.length < 1) {
             res.render('cart.ejs')
         } else {
-            if (req.session.cart.length < 1) {
-                res.render('cart.ejs')
-            } else {
-                functions.getBasket(req.session.cart, items, function(result) {
-                    functions.updateStock(result, items, true, function(stockResult) {
-                        var total = functions.getTotal(result)
-                        var fee = functions.calculateFee(result)
-                        res.render('cart.ejs', {
-                            items: stockResult,
-                            total: total,
-                            fee: fee
-                        })
+            functions.getBasket(req.session.cart, items, function(result) {
+                functions.updateStock(result, items, true, function(stockResult) {
+                    var total = functions.getTotal(result)
+                    var fee = functions.calculateFee(result)
+                    res.render('cart.ejs', {
+                        items: stockResult,
+                        total: total,
+                        fee: fee
                     })
-                }) 
-            }
-            
+                })
+            }) 
         }
-})
-
-router.get('/guides', function(req, res) {
-    try {
-        functions.searchQuery(res, guides, '', '', 'guidesIndex.ejs', '/')
-    } catch {
-        res.render('404.ejs')
+        
     }
-    
 })
 
-router.get('/guides/:guide', function(req, res) {
+router.get('/support', function(req, res) {
+    functions.searchQuery(res, guides, '', '', 'guidesIndex.ejs', '/')
+})
+
+router.get('/support/:guide', function(req, res) {
     try {
         guides.findOne({GuideLink : req.params.guide.toString()}, function(error, result) {
             try {
@@ -234,20 +232,18 @@ router.get('/error', function(req, res) {
     })
 })
 
-
-
-
-
 //Terms and policies page renders
-router.get('/terms', function(req, res) {
+router.get('/terms', async function(req, res) {
+    var termsData = await terms.findOne({contentKey : "terms-and-conditions"}).then(result => result).catch(error => error)
     functions.getPageLinks(function(Links) { 
-        res.render('terms', {links: Links}) 
+        res.render('terms', {links: Links, termsData: termsData}) 
     })
 })
 
-router.get('/payment-policy', function(req, res) {
+router.get('/payment-policy', async function(req, res) {
+    var termsData = await terms.findOne({contentKey : "payment-policy"}).then(result => result).catch(error => error)
     functions.getPageLinks(function(Links) {
-        res.render('payment-policies', {links: Links})
+        res.render('payment-policies', {links: Links, termsData: termsData})
     })
 })
 

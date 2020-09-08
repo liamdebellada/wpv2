@@ -208,11 +208,9 @@ function drawSearchResults(data) {
         data.forEach(function(item) {     
             var resultArea = document.createElement("DIV")
             var rowContent = `
-            <div>
+            <div style="display: flex; align-items: center;">
             <text>${item.Title}</text>
-            <div class="propertyContainer" style="float:right;">
-            <a href="/products/${item.CategoryKey}/items/${item.ProductKey}" class="btn wp-button wp-button-gradient wp-button-checkout">View Product</a>
-            </div>
+            <a href="/products/${item.CategoryKey}/items/${item.ProductKey}" class="btn wp-button wp-button-gradient wp-button-default-hover" style="margin-left: auto;" >View Product</a>
             </div>
             <hr/>
             `

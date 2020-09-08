@@ -1,4 +1,7 @@
 
+<title>WorldPlugs | <%= guide.Title %></title>
+
+<meta name="description" content="<%= guide.Title %>"/>
 
 <div class="container">
     <h4 style="margin-top: 2rem; color: white; text-align: left;">WorldPlugs Support & Guides</h4>
@@ -12,7 +15,7 @@
                 <%- guide.Content %>
             </div>
             <div class="wp-guide-content-box-footer-link">
-                <a href="https://worldplugs.net/products/"><text class="wp-guide-content-box-title-text" style="color: white; font-size: 0.8375rem; margin-right: 0.5rem;">Head to our <%= guide.ProductUrlTitle %> page to purchase accounts!</text><img class="wp-guide-content-box-footer-image" src="https://cdn.worldplugs.net/guide-url-link.svg" class="image-fluid" style="height: 25px;"></a>
+                <a href="https://worldplugs.net/<%= guide.ProductLink %>"><text class="wp-guide-content-box-title-text" style="color: white; font-size: 0.8375rem; margin-right: 0.5rem;">Head to our <%= guide.ProductUrlTitle %> page to purchase accounts!</text><img class="wp-guide-content-box-footer-image" src="https://cdn.worldplugs.net/guide-url-link.svg" class="image-fluid" style="height: 25px;"></a>
             </div>
         </div>
     </div>

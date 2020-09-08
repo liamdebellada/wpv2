@@ -1,4 +1,6 @@
+<title>WorldPlugs | Your Cart</title>
 
+<meta name="description" content="Your cart"/>
 
 <div class="container">
   
@@ -11,7 +13,7 @@
   <div class="row">
     
     <div class="col-12 col-lg-8">
-      <div class="wp-cart-content-left" style="background-color: #1e1c29; padding: 15px;">
+      <div class="wp-cart-content-left" style="background-color: #1e1c29; padding: 15px; border-radius: 5px;">
         <table class="wp-cart-table table table-borderless" style="color: white; font-size: 0.9rem">
           <thead>
             <tr class="wp-cart-table-headers">
@@ -42,7 +44,7 @@
     <!--right basket checkout content-->
 
     <div class="wp-cart-content-right-captcha col-12 col-lg-4 collapse hide">
-      <div style="background-color: #1e1c29; padding: 1.015rem">
+      <div style="background-color: #1e1c29; padding: 1.015rem; border-radius: 5px;">
         <h5 class="wp-cart-content-right-captcha-header" style="color: white;">Please complete the Captcha</h5>
         <form action="/executePayment" method="POST" style="padding: 6.5px">
           <div class="g-recaptcha" data-callback="checkCompletePage" 
@@ -55,17 +57,17 @@
     
     
     <div class="wp-cart-content-right-span col-12 col-lg-4 collapse show">
-      <div class="wp-cart-content-right" style="background-color: #1e1c29; padding: 1.015rem">
+      <div class="wp-cart-content-right" style="background-color: #1e1c29; padding: 1.015rem; border-radius: 5px;"">
         <h4 class="wp-cart-content-right-header">Order Summary</h4>
         <div class="wp-cart-content-right-inner" style="background-color: #16151e; padding: 1.825rem 1.125rem;">
           <table class="wp-cart-content-right-inner-table" style="width:100%; color: white;">
             <% grandTotal = parseFloat(total) + parseFloat(fee) %>
             <tr>
               <td >Order Subtotal</td>
-              <td style="text-align:right">£<%= total %></td>
+              <td style="text-align:right">£<%= total.toFixed(2) %></td>
             </tr>
             <tr>
-              <td>PayPal Tax</td>
+              <td>PayPal Fee</td>
               <td style="text-align:right">£<%= fee %> <text id="fee" style="font-size: 0.75rem"></text> <a href="/payment-policy" data-placement="right" data-toggle="tooltip" title="We add a small fee to cover paypal charges."><svg id="fee-tooltip" width="0.75rem" height="0.75rem" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="#C8C8C8" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
               </svg></a></td>

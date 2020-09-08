@@ -1,3 +1,7 @@
+<title>WorldPlugs | Guides</title>
+
+<meta name="description" content="Find guides on how to use the products you've bought."/>
+
 <div class="container">
 <div class="wp-guides-parent">
     <h1 class="wp-guides-title">WorldPlugs Support & Guides</h1>
@@ -21,7 +25,7 @@
                                 <p class="wp-guides-card-desc"><%= guide.Description %></p>
                             </div>
                                 
-                            <footer><a href="https://worldplugs.net/guides/<%= guide.GuideLink %>" class="btn wp-button wp-button-gradient wp-button-default-hover">View Guide</a></footer>
+                            <footer><a href="https://worldplugs.net/support/<%= guide.GuideLink %>" class="btn wp-button wp-button-gradient wp-button-default-hover">View Guide</a></footer>
                             
                             <!-- </a> -->
                     
@@ -45,7 +49,7 @@
                                 <div class="wp-guides-small">
                                     
                                         <img src="https://cdn.worldplugs.net/guide-book.svg" class="wp-guides-small-book" style="width: 30px;">
-                                    <span><a href="/guides/<%= guide.GuideLink %>"><%= guide.Title %></a></span>
+                                    <span><a href="/support/<%= guide.GuideLink %>"><%= guide.Title %></a></span>
                                     
                                 </div>
                             </div>
@@ -53,8 +57,32 @@
                     <% }) %>
                 </div>
             </div>
-</div>
 
+        <h4 style="color: white;">Support links</h4>
+        <div class="container wp-guides-small-parent">
+            <p style="margin: 0 auto; max-width: 450px; color: white;">Have you encountered an issue during your order? Get in touch with our staff team through the links below:</p>
+            <div class="row justify-content-center">
+                <% links.forEach(function(link) { %>
+                <div class="col-sm-12 col-md-6 wp-guides-small-click">
+                    <div class="wp-guides-small" style="background-color: #0d0c1178 !important">
+                            <img src="https://cdn.worldplugs.net/link.svg" class="wp-guides-small-book" style="width: 30px;">
+                    <span><a 
+                        <% if (link.link.includes("://")) {%>
+                            href="<%= link.link %>" 
+                        <%} else {%> 
+                            
+                        <% } %> 
+                        >
+                        <%= link.link %>
+                        </a>
+                    </span>
+                    </div>
+                </div>
+                <%})%>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <style>
@@ -72,6 +100,12 @@
         }
     }
 
+    .wp-info-text {
+        color: white;
+        margin: 0 auto;
+        max-width: 600px;
+    }
+
     .wp-guides-parent {
         margin: 30px;
         background-color: #1e1c29;
@@ -81,7 +115,7 @@
         padding-top: 20px;
         color: white;
         font-size: 2rem;
-        font-weight: 400;
+        font-weight: 200;
     }
 
 

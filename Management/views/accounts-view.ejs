@@ -29,6 +29,8 @@
             <th scope="col">Id</th>
             <th scope="col">Availability</th>
             <th scope="col">Toggle state</th>
+            <th scope="col">Hidden</th>
+            <th scope="col">Hide account</th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +39,8 @@
                     <td><%= account._id %></td>
                     <td><%= account.availability %></td>
                     <td><button id="<%= account._id %>" data-available="<%= account.availability %>" onclick="changeState(this)" class="btn btn-alert">Toggle</button></td>
+                    <td><%= account.hidden %></td>
+                    <td><button id="<%= account._id %>" data-hidden="<%= account.hidden %>" onclick="hideAccount(this)" class="btn btn-alert">Hide</button></td>
                 </tr>
             <% }) %> 
         </tbody>
@@ -206,6 +210,19 @@
         createTab.disabled = false;
         tableTab.disabled = true;
       }
+    }
+
+    function hideAccount(data) {
+      var hidden = $(data).attr("data-hidden")
+
+      $.ajax({
+        type: "POST",
+        url: "/hideAccount",
+        data: {
+          id: data.id,
+          hiddenStatus: hidden
+        } 
+      }).done(response => response == "s" ? window.location.reload() : alert('Post error'));
     }
 
 </script>
