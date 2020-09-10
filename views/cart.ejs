@@ -19,20 +19,25 @@
             <tr class="wp-cart-table-headers">
 
               <th scope="col" class="wp-header-text">Product</th>
-              <th scope="col" class="wp-header-text">Quantity</th>
-              <th scope="col" class="wp-header-text">Total</th>
+              <th scope="col" class="wp-header-text text-center">Quantity</th>
+              <th scope="col" class="wp-header-text text-center">Total</th>
               <th scope="col" class="wp-header-text"></th>
             
             </tr>
           </thead>
-          <tbody class="wp-cart-table-body">
+          <tbody class="wp-cart-table-body" >
             <% items.forEach(function(result) { %>
               <% itemTotal = parseFloat(result.Price) * parseFloat(result.Quantity) %>
             <tr>
-              <td><p style="float: left;"><img src="<%= result.Image %>" style="max-width: 30px;" class="wp-cart-table-image img-fluid"></img></p><p><%= result.Title %></p></td>
-              <td><input class="wp-item-quantity" type="number" pattern="[0-9]*" class="itemQuantity" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input></td>
+              <td>
+                <div style="display: flex; align-items: center">
+                <img src="<%= result.Image %>" style="max-width: 30px;" class="wp-cart-table-image img-fluid">
+                <text><%= result.Title %></text>
+              </div>
+              </td>
+              <td><input style="text-align: center" class="wp-item-quantity" type="number" pattern="[0-9]*" value=1 min="1" max=<%= result.Stock %> id=<%= result._id%>></input></td>
               <td>£<%= parseFloat(itemTotal).toFixed(2) %></td>
-              <td><button class="btn wp-button wp-button-remove" onclick="removeItemCart(this)">Remove</button><input style="display: none;" onclick="removeItemCart(this)" id="<%= result._id %>" class="remove-small-cart-button" value="&times;" readonly></div></td>
+              <td style="float: right;"><button class="btn wp-button wp-button-remove wp-button-remove-hover" onclick="removeItemCart(this)">Remove</button><input style="display: none; cursor: pointer" type="submit" onclick="removeItemCart(this)" id="<%= result._id %>" class="remove-small-cart-button" value="&times;"></td>
             </tr>
             <%})%>
           </tbody>
@@ -50,6 +55,7 @@
           <div class="g-recaptcha" data-callback="checkCompletePage" 
               data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_" ></div>
               <button style="margin-top: 1.025rem" class="btn wp-button wp-button-gradient wp-button-checkout" id="wp-cart-content-right-button" disabled>Purchase with PayPal</button>
+
         </form>
         
       </div>
@@ -84,7 +90,7 @@
             <h5 style="color: white; text-align: center">Checkout</h5>
             <img src="https://cdn.worldplugs.net/shopping-items.png" style="max-width: 50px;">
             <br>
-            <button style="margin-top: 0.525rem" onclick="showCaptcha()" class="btn wp-button wp-button-gradient">Checkout</button>
+            <button style="margin-top: 0.525rem" onclick="showCaptcha()" class="btn wp-button wp-button-gradient wp-button-default-hover">Checkout</button>
           </div>
 
 
@@ -98,17 +104,22 @@
     
 
 
-    <% if (!locals.items) { %>
-      <div style="background-color: #1e1c29; padding: 1.015rem; margin-top: 1.15rem">
+    
+  </div>
+
+
+  <% if (!locals.items) { %>
+    <div class="container-fluid" style=" max-width: 800px; margin-top: 1.015rem;">
+      <div style="background-color: #1e1c29; padding: 2.015rem; border-radius: 5px;">
         <img src="https://worldplugs.net/shopping-cart-empty.svg" style="width: 13vh;">
-        <hr class="horizontalSep" style="width: 50%">
         <h3 style="color: white; font-weight: 300">Your basket is empty!</h3>
         <h6 style="color: white; font-weight: 300">Please add an item to your basket from our store beforehand.</h6>
         <a style="margin-top: 1.025rem" href="https://worldplugs.net/" class="btn wp-button wp-button-gradient wp-button-default-hover">Return to Homepage</a>
       </div>
+    </div>
     
-    <% } %>
-  </div>
+  
+  <% } %>
 
 
 
@@ -154,17 +165,6 @@
     }
   }
 
-  @media (max-width: 362px) {
-    .wp-button-remove {
-      display: none;
-    }
-    .remove-small-cart-button {
-      display: block !important;
-      max-width: 27px;
-      max-height: 27px;
-      outline: none;
-    }
-  }
 
   @media (max-width: 640px) {
     .wp-basket {
@@ -177,6 +177,17 @@
 
     .wp-total-text {
       text-align: left !important;
+    }
+
+    .wp-button-remove {
+      display: none;
+    }
+
+    .remove-small-cart-button {
+      display: block !important;
+      max-width: 27px;
+      max-height: 27px;
+      outline: none;
     }
 
   }
@@ -197,6 +208,11 @@
     .wp-button-remove {
       font-size: 0.7rem;
     }
+  }
+
+  .table td {
+    vertical-align: middle;
+    text-align: center;
   }
 
 
@@ -265,6 +281,12 @@
   .wp-cart-content-left {
      box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
   }
+
+  .wp-cart-table-body {
+    background-color: #191721;
+  }
+
+
 
 
 

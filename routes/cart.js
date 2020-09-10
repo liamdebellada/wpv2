@@ -53,63 +53,74 @@ const limitRequests = rateLimit({
 
 
 router.post('/updateCart', limitRequests, (req, res) => {
-    var cartItemId = req.body.items
-    var quantity = req.body.quantity
+    try {
+        var cartItemId = req.body.items
+        var quantity = req.body.quantity
+        if (quantity > 0 && parseInt(quantity)) {
+            var checkId = functions.checkID(req.session, cartItemId) // Check if item exists in cart already
+            if (req.session.cart == undefined) {
+                req.session.cart = []
+            }
+            checkId.then(function (result) {
+                if (!result) { //if the value doesnt exist yet
 
-    var checkId = functions.checkID(req.session, cartItemId) // Check if item exists in cart already
+                    var check = functions.checkItem(cartItemId, items)
+                    check.then(function (item) {
+                        if (item != undefined || item != null) {
+                            products.findOne({
+                                ProductKey: item.ProductKey
+                            }, function (error, product) {
+                                if (error) {
+                                    console.log(error)
+                                } else {
+                                    if (product.productState == "enabled") {
+                                        var calculatePrice = functions.getPrice(item, quantity)
+                                        if (calculatePrice !== undefined) { //checks if the price is above 1
+                                            item.Price = calculatePrice
 
-    if (req.session.cart == undefined) {
-        req.session.cart = []
-    }
+                                            var createItem = {
+                                                "id": item._id,
+                                                "quantity": quantity
+                                            }
 
-
-    checkId.then(function (result) {
-        if (!result) { //if the value doesnt exist yet
-
-            var check = functions.checkItem(cartItemId, items)
-            check.then(function (item) {
-                if (item != undefined || item != null) {
-                    products.findOne({
-                        ProductKey: item.ProductKey
-                    }, function (error, product) {
-                        if (error) {
-                            console.log(error)
-                        } else {
-                            if (product.productState == "enabled") {
-                                var calculatePrice = functions.getPrice(item, quantity)
-                                if (calculatePrice !== undefined) { //checks if the price is above 1
-                                    item.Price = calculatePrice
-
-                                    var createItem = {
-                                        "id": item._id,
-                                        "quantity": quantity
-                                    }
-
-                                    if (req.session.cart.length > 0) {
-                                        req.session.cart.push(createItem)
+                                            if (req.session.cart.length > 0) {
+                                                req.session.cart.push(createItem)
+                                            } else {
+                                                req.session.cart = [createItem]
+                                            }
+                                            functions.getBasket(req.session.cart, items, function (userCart) {
+                                                res.send({
+                                                    userCart: userCart,
+                                                    Item: item.Title + " has been added to your cart."
+                                                }).end()
+                                            })
+                                        }
                                     } else {
-                                        req.session.cart = [createItem]
+                                        res.send("This item does not exist.").end()
                                     }
-                                    functions.getBasket(req.session.cart, items, function (userCart) {
-                                        res.send({userCart: userCart, Item: item.Title + " has been added to your cart."}).end()
-                                    })
                                 }
-                            } else {
-                                res.send("This item does not exist.").end()
-                            }
+                            })
+                        } else {
+                            res.send("There was an error adding the item to the basket. Please try again").end()
                         }
                     })
+
                 } else {
-                    res.send("There was an error adding the item to the basket. Please try again").end()
+                    functions.getBasket([{
+                        id: cartItemId,
+                        quantity: "1"
+                    }], items, function (errorItem) {
+                        res.send(`${errorItem[0][0].Title} is already in your basket`).end()
+                    })
                 }
             })
-
         } else {
-            functions.getBasket([{id:cartItemId, quantity: "1"}], items, function(errorItem) {
-                res.send(`${errorItem[0][0].Title} is already in your basket`).end()  
-            })
+            res.send('Please input a quantity before adding an item to the basket.')
         }
-    })
+    } catch {
+        res.send('There was an error adding the item to the basket. Please try again').end()
+    }
+
 
 })
 

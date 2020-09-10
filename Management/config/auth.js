@@ -20,8 +20,8 @@ module.exports = {
         
     },
     ensureNotAuthenticated: function(req, res, next) {
-        if (req.isAuthenticated()) {
-            res.redirect('/dashboard')
+        if(req.isAuthenticated()) {
+            return res.redirect('/dashboard')
         }
         return next();
     },

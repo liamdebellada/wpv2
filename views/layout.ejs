@@ -18,30 +18,6 @@
   <meta name="msapplication-config" content="/favicons/browserconfig.xml">
   <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
   </script>
-  <meta name="theme-color" content="#ffffff">
-  <title>WorldPlugs</title>
-</head>
-
-
-
-
-<body class="preload" style="background: #020024;
-background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family: 'Raleway', sans-serif;   position: relative;
-  margin: 0;
-  padding-bottom: 6rem;
-  min-height: 100%;">
-
-
-  <%- include('navbar.ejs') %>
-  <div></div>
-
-
-  <div style="
-    text-align:center;
-    margin: auto; overflow: hidden;">
-    <%- body %>
-  </div>
-
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
@@ -49,328 +25,23 @@ background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js"
-    integrity="sha512-+VS2+Nl1Qit71a/lbncmVsWOZ0BmPDkopw5sXAS2W+OfeceCEd9OGTQWjgVgP5QaMV4ddqOIW9XLW7UVFzkMAw=="
-    crossorigin="anonymous"></script>
   <script src="/client.js"></script>
+  <meta name="theme-color" content="#ffffff">
+</head>
 
 
+<!--Worldplugs giving back to the community since 1998)-->
 
+<body class="preload wp-body">
 
-  <style>
 
-.preload * {
-  -webkit-transition: none !important;
-  -moz-transition: none !important;
-  -ms-transition: none !important;
-  -o-transition: none !important;
-}
+  <%- include('navbar.ejs') %>
 
-    ::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-      background-color: #666B7A;
-    }
 
-    ::-webkit-scrollbar {
-      width: 6px;
 
-    }
+    <%- body %>
 
-    ::-webkit-scrollbar-thumb {
-      background-color: #1E2338;
-    }
-
-    .titleText {
-      margin: auto;
-      color: white;
-    }
-
-    .info-msg {
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 3px 3px 3px 3px;
-    }
-
-    .info-msg {
-      color: #e6e6e6;
-      background-color: #8E8AEC;
-    }
-
-    .itemCard {
-      margin: 20px;
-      border-radius: 0;
-      background-color: #1e1c29;
-      box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
-      transition: 0.5s;
-    }
-
-    .itemCard:hover {
-      background-color: #181720;
-    }
-
-
-
-
-    input[type="number"] {
-      -webkit-appearance: textfield;
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
-
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-    }
-
-    .wp-item-quantity {
-      color: white;
-      width: 45px;
-      padding: auto;
-      -webkit-appearance: none;
-      border-style: none;
-      background-color: transparent;
-      outline: none;
-      border-bottom: 1px solid grey;
-      border-radius: 1px;
-      transition: all 0.3s;
-    }
-
-    .wp-item-quantity:focus,
-    .wp-item-quantity:hover {
-      border-bottom: 1px solid white;
-
-    }
-
-    .wp-content-box-span {
-      height: auto;
-      width: 50%;
-      margin: 0 auto;
-      margin-bottom: 2rem;
-      margin-top: 2rem;
-      padding: 10px;
-      background-color: #1e1c29;
-      box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
-    }
-
-
-    .inlineInp {
-      display: inline;
-    }
-
-    .resultDivider {
-      max-width: 50%;
-    }
-
-    @media(min-width:1200px) {
-      .product-content-image {
-        float: left;
-      }
-
-      .wp-body-text-position-alignment {
-        text-align: left
-      }
-
-      .wp-item-quantity {
-        float: left;
-      }
-    }
-
-    @media(min-width:992px) and (max-width:1199px) {
-      .wp-body-text-position-alignment {
-        text-align: center
-      }
-
-      .inlineInp {
-        float: unset;
-      }
-
-      .wp-content-box-span {
-        width: 80%;
-      }
-
-
-      .resultDivider {
-        max-width: 80%;
-      }
-
-      .accountText {
-        text-align: center;
-      }
-    }
-
-    @media(max-width:992px) {
-      .wp-content-box-span {
-        width: 90%;
-      }
-
-
-      .inlineInp {
-        float: unset;
-      }
-
-      .resultDivider {
-        max-width: 90%;
-      }
-
-      .accountText {
-        text-align: center;
-      }
-    }
-
-    @media(max-width: 320px) {
-      .mobile-content-margin {
-        margin-left: 0 !important;
-      }
-    }
-
-    #itemHeader {
-      color: white;
-      text-transform: capitalize;
-    }
-
-    .homeCard {
-      background-color: #1e1c29 !important;
-    }
-
-    .checkout-basket:hover {
-      background-color: #03fc8c !important
-    }
-
-    .wp-button-disabled:hover {
-      color: #bf5050 !important;
-    }
-
-    .horizontalSep {
-      width: 100%;
-      height: 1px;
-      background-color: #ffffff17;
-      border: 1px;
-    }
-
-    .wp-button-gradient {
-      border-color: white;
-      border-image: linear-gradient(to left, #743ad5, #d53a9d);
-      -webkit-border-image: -webkit-linear-gradient(to left, #743ad5, #d53a9d);
-      border-image-slice: 1;
-      -webkit-border-image-slice: 2;
-      border-width: 1px;
-    }
-
-    .wp-button {
-      color: white;
-      background: transparent;
-      max-width: 100%;
-      border-radius: 0px;
-    }
-
-    .wp-button-view-product {
-      position: relative;
-      line-height: 50px;
-      width: 200px;
-    }
-
-    .wp-button-checkout:hover {
-      border-color: #4BB543;
-      background-color: #4BB543;
-      border-image-slice: 0;
-      color: white;
-    }
-
-    .wp-button-default-hover:hover {
-      border-image: none;
-      background-color: white;
-      color: black;
-    }
-
-   .wp-button-remove {
-     border-color: #ea6464;
-   } 
-
-    .wp-button-remove-hover:hover {
-      background-color: #ea6464 !important;
-      color: white !important;
-    }
-
-    .wp-button-no-stock {
-      border-image: none;
-      background-color: #ea6464;
-      color: white;
-    }
-
-    .wp-search {
-      width: 100%;
-      background-color: #1e2338;
-      color: white;
-      border: none;
-      border-radius: none;
-      display: inline-block;
-      border-bottom: 1px solid #ffffff52;
-      transition: border-bottom 0.5s;
-    }
-
-    .wp-search:focus {
-      outline: none;
-      border-bottom: 1px solid white;
-    }
-
-    .wp-captcha-button {
-      float: right;
-      margin-right: 15px;
-    }
-
-    .g-recaptcha>div {
-      margin: 0 auto;
-    }
-
-    .wp-tos {
-      background: #1e1c29;
-      box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
-      margin: 20px;
-      text-align: left;
-      font-size: 1rem;
-      overflow-wrap: break-word;
-      color: white;
-    }
-
-    .wp-payment-policy-list {
-      margin-top: 10px;
-      list-style-type: none;
-    }
-
-    .wp-payment-policy-list li {
-      padding-bottom: 20px;
-    }
-
-    .wp-horizontal-separator-gradient {
-      background: linear-gradient(to left, #743ad5, #d53a9d);
-    }
-
-    .wp-footer {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      padding: 1rem;
-      text-align: center;
-      color: #ffffff8a;
-      padding-top: 50px;
-    }
-
-    .wp-footer p {
-      font-size: 11px;
-    }
-
-    .wp-footer p a {
-      color: white;
-    }
-
-    html {
-      height: 100%;
-    }
-  </style>
-
-
-
+  
 
 
 
@@ -388,6 +59,340 @@ background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b); font-family
 <!--Styling acomplished by GloriaStyleSheets (.gss)-->
 
 </html>
+
+<style>
+
+  .preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+  }
+  
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #666B7A;
+      }
+  
+      ::-webkit-scrollbar {
+        width: 6px;
+  
+      }
+  
+      ::-webkit-scrollbar-thumb {
+        background-color: #1E2338;
+      }
+  
+      .titleText {
+        margin: auto;
+        color: white;
+      }
+  
+      .info-msg {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 3px 3px 3px 3px;
+      }
+  
+      .info-msg {
+        color: #e6e6e6;
+        background-color: #8E8AEC;
+      }
+  
+      .itemCard {
+        margin: 20px;
+        border-radius: 0;
+        background-color: #1e1c29;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+        transition: 0.5s;
+      }
+  
+      .itemCard:hover {
+        background-color: #181720;
+      }
+  
+  
+  
+  
+      input[type="number"] {
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+  
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+  
+      .wp-item-quantity {
+        color: white;
+        width: 45px;
+        padding: auto;
+        -webkit-appearance: none;
+        border-style: none;
+        background-color: transparent;
+        outline: none;
+        border-bottom: 1px solid grey;
+        border-radius: 1px;
+        transition: all 0.3s;
+      }
+  
+      .wp-item-quantity:focus,
+      .wp-item-quantity:hover {
+        border-bottom: 1px solid white;
+  
+      }
+  
+      .wp-content-box-span {
+        height: auto;
+        width: 50%;
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+        padding: 10px;
+        background-color: #1e1c29;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+      }
+  
+  
+      .inlineInp {
+        display: inline;
+      }
+  
+      .resultDivider {
+        max-width: 50%;
+      }
+  
+      @media(min-width:1200px) {
+        .product-content-image {
+          float: left;
+        }
+  
+        .wp-body-text-position-alignment {
+          text-align: left
+        }
+      }
+  
+      @media(min-width:992px) and (max-width:1199px) {
+        .wp-body-text-position-alignment {
+          text-align: center
+        }
+  
+        .inlineInp {
+          float: unset;
+        }
+  
+        .wp-content-box-span {
+          width: 80%;
+        }
+  
+  
+        .resultDivider {
+          max-width: 80%;
+        }
+  
+        .accountText {
+          text-align: center;
+        }
+      }
+  
+      @media(max-width:992px) {
+        .wp-content-box-span {
+          width: 90%;
+        }
+  
+  
+        .inlineInp {
+          float: unset;
+        }
+  
+        .resultDivider {
+          max-width: 90%;
+        }
+  
+        .accountText {
+          text-align: center;
+        }
+      }
+  
+      @media(max-width: 320px) {
+        .mobile-content-margin {
+          margin-left: 0 !important;
+        }
+      }
+  
+      #itemHeader {
+        color: white;
+        text-transform: capitalize;
+      }
+  
+      .homeCard {
+        background-color: #1e1c29 !important;
+      }
+  
+      .checkout-basket:hover {
+        background-color: #03fc8c !important
+      }
+  
+      .wp-button-disabled:hover {
+        color: #bf5050 !important;
+      }
+  
+      .horizontalSep {
+        width: 100%;
+        height: 1px;
+        background-color: #ffffff17;
+        border: 1px;
+      }
+  
+      .wp-button-gradient {
+        border-color: white;
+        border-image: linear-gradient(to left, #743ad5, #d53a9d);
+        -webkit-border-image: -webkit-linear-gradient(to left, #743ad5, #d53a9d);
+        border-image-slice: 1;
+        -webkit-border-image-slice: 2;
+        border-width: 1px;
+      }
+  
+      .wp-button {
+        color: white;
+        background: transparent;
+        max-width: 100%;
+        border-radius: 0px;
+      }
+  
+      .wp-button-view-product {
+        position: relative;
+        line-height: 50px;
+        width: 200px;
+      }
+  
+      .wp-button-checkout:hover {
+        border-color: #4BB543;
+        background-color: #4BB543;
+        border-image-slice: 0;
+        color: white;
+      }
+  
+      .wp-button-default-hover:hover {
+        border-image: none;
+        background-color: white;
+        color: black;
+      }
+
+      .wp-button-remove-hover:hover {
+        border-image: none;
+        background-color: #ea6464;
+      }
+  
+     .wp-button-remove {
+       border-color: #ea6464;
+     } 
+  
+      .wp-button-remove-hover:hover {
+        background-color: #ea6464 !important;
+        color: white !important;
+      }
+  
+      .wp-button-no-stock {
+        border-image: none;
+        background-color: #ea6464;
+        color: white;
+      }
+  
+      .wp-search {
+        width: 100%;
+        background-color: #1e2338;
+        color: white;
+        border: none;
+        border-radius: none;
+        display: inline-block;
+        border-bottom: 1px solid #ffffff52;
+        transition: border-bottom 0.5s;
+      }
+  
+      .wp-search:focus {
+        outline: none;
+        border-bottom: 1px solid white;
+      }
+  
+      .wp-captcha-button {
+        float: right;
+        margin-right: 15px;
+      }
+  
+      .g-recaptcha>div {
+        margin: 0 auto;
+      }
+  
+      .wp-tos {
+        background: #1e1c29;
+        box-shadow: 4px 4px 17px -5px rgba(0, 0, 0, 0.75);
+        margin: 20px;
+        text-align: left;
+        font-size: 1rem;
+        overflow-wrap: break-word;
+        color: white;
+      }
+  
+      .wp-payment-policy-list {
+        margin-top: 10px;
+        list-style-type: none;
+      }
+  
+      .wp-payment-policy-list li {
+        padding-bottom: 20px;
+      }
+  
+      .wp-horizontal-separator-gradient {
+        background: linear-gradient(to left, #743ad5, #d53a9d);
+      }
+  
+      .wp-footer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 1rem;
+        text-align: center;
+        color: #ffffff8a;
+        padding-top: 50px;
+      }
+  
+      .wp-footer p {
+        font-size: 11px;
+      }
+  
+      .wp-footer p a {
+        color: white;
+      }
+
+      .wp-body {
+        background: #020024;
+        background: linear-gradient(90deg, #020024 0%, #1d2237 0%, #3c346b);
+        font-family: 'Raleway', sans-serif;   
+        position: relative;
+        margin: 0;
+        padding-bottom: 6rem;
+        min-height: 100%;
+        text-align: center;
+        margin: auto; 
+      }
+
+      .wp-item-container {
+        float:right; 
+        -webkit-transform: translate(-50%, -50%); 
+        transform: translate(-50%, -50%);
+      }
+  
+      html {
+        height: 100%;
+      }
+    </style>
+
+
+
 
 <script>
   window.addEventListener("load", function () {

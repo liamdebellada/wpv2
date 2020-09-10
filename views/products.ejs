@@ -39,14 +39,8 @@
 
 
 <style>
-  .wp-products-span {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-  }
 
-  .wp-products-contentbox {
+.wp-products-contentbox {
     max-width: 1500px;
     height: auto;
     background-color: #1e1c29;
@@ -56,6 +50,21 @@
     padding: 20px;
     border-radius: 5px;
   }
+
+  @media (min-width: 768px) {
+    .wp-products-contentbox {
+      padding: 20px 50px;
+    }
+  }
+
+  .wp-products-span {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  
 
   .wp-products-contentbox-header {
     color: white;

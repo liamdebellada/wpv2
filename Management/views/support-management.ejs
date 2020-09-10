@@ -57,7 +57,7 @@
     </div>
     <div class="form-group">
         <label>Content</label>
-        <textarea id="contentField" class="form-control" type="text" placeholder="Content"></textarea>
+        <textarea style="width: 1106px;height: 349.5px;" id="contentField" name="my-xml-editor" data-editor="xml" data-gutter="1" rows="15"></textarea>
     </div>
     <div class="form-check" style="margin-bottom: 10px;">
         <input type="checkbox" class="form-check-input" id="pinOnCreate">
@@ -68,9 +68,43 @@
 </div>
 
 
-
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
 
 <script>
+
+    var editor
+
+    window.addEventListener("load", function() {
+
+    // Hook up ACE editor to all textareas with data-editor attribute
+        $(function() {
+            $('textarea[data-editor]').each(function() {
+                var textarea = $(this);
+                var mode = textarea.data('editor');
+                var editDiv = $('<div>', {
+                position: 'absolute',
+                width: textarea.width(),
+                height: textarea.height(),
+                'class': textarea.attr('class')
+                }).insertBefore(textarea);
+                textarea.css('display', 'none');
+                editor = ace.edit(editDiv[0]);
+                editor.renderer.setShowGutter(textarea.data('gutter'));
+                editor.getSession().setValue(textarea.val());
+                editor.getSession().setMode("ace/mode/" + mode);
+                editor.setTheme("ace/theme/idle_fingers");
+
+                // copy back to textarea on form submit...
+                textarea.closest('form').submit(function() {
+                textarea.val(editor.getSession().getValue());
+                })
+            });
+        });
+
+    })
+
+
     function test(option) {
 
         $("#dropSelection,#createSelection").removeClass('active')
@@ -110,7 +144,7 @@
             Title: title,
             Description: description,
             GuideLink: link,
-            Content: content,
+            Content: editor.getValue(),
             Pinned: active,
             ProductLink: productLink,
             ProductUrlTitle: productUrlTitle
@@ -172,3 +206,9 @@
     }
 
 </script>
+
+<style>
+    textarea {
+        width: 100%;
+    }
+</style>

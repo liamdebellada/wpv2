@@ -4,7 +4,40 @@
 
 <meta name="description" content="Browse our selection of <%= title  %> items here!"/>
 
+<!-- <div class="wp-redirect-overlay">
 
+
+  <span class="wp-redirect-overlay-container">
+      hello
+  </span>
+
+
+
+
+</div>
+
+<style>
+  .wp-redirect-overlay {
+    z-index: 9999; position: fixed; top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: #000;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    opacity: 0.5;    
+  }
+  .wp-redirect-overlay-container {
+    max-width: 500px;
+    padding: 5px;
+    border-radius: 5px;
+    color: #000;
+    background-color: #fff;
+    position:relative;
+    top:50%;
+  }
+</style> -->
 
 
 <script src="/addCart.js"></script>
@@ -51,8 +84,8 @@
                     <text class="text-left" style="font-size: 0.9175rem; display:block; color: white;">Price: <text style="color: #4BB543">£<%= parseFloat(result.Price).toFixed(2) %></text></text>
                     <text class="text-left" style="font-size: 0.9075rem; display:block; color: white;">Stock: <text style="<% if (result.Stock > 0) { %> <%= "color: #4BB543 " %> <% } else { %> <%= "color: #EA6464 " %> <% } %>"><%= result.Stock %></text></text>
                   </div>
-                  <div style="margin-left: auto" <% if (result.Stock > 0) { %> id=<%= result._id%> <% } %>>
-                    <input type="number" pattern="[0-9]*" style="margin-right:5px" class="wp-item-quantity" value="1" min="1" <% if (result.Stock > 0) { %> max=<%= result.Stock %> <% } %> ></input>
+                  <div style="margin-left: auto; position: relative" <% if (result.Stock > 0) { %> id=<%= result._id%> <% } %>>
+                    <input type="number" pattern="[0-9]*" style="margin-right:5px; position: absolute; bottom: 0; right: 100%;" class="wp-item-quantity" value="1" min="1" <% if (result.Stock > 0) { %> max=<%= result.Stock %> <% } %> ></input>
                     <button class="btn <% if (result.Stock > 0) { %> wp-button-add-to-cart <% } %> wp-button wp-button-gradient wp-button-default-hover">Add To Basket</button>
                   </div>
                   
@@ -212,3 +245,11 @@
   }
 
 </style>
+
+<script>
+  window.onload(function() {
+    $('input[type=number]').on('mouseup keyup', function () {
+        $(this).val(Math.min(10, Math.max(2, $(this).val())));
+      });
+  })
+</script>

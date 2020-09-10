@@ -15,7 +15,7 @@
 
 <section class="wp-homepage-hero" style="margin-bottom: 30px;">
 
-  <img src="https://cdn.worldplugs.net/hero/launch-sale-text.svg" class="img-fluid" style="height: 95%"></img>
+  <img src="https://cdn.worldplugs.net/hero/launch-sale-text.svg" class="img-fluid" style="max-width: 450px"></img>
 
 
 
@@ -30,7 +30,7 @@
     <% results.forEach(function(result) { %>
     <% if (result.DisplayPopular == "true") { %>
     <div class="col-sm-12 col-md-6 col-lg-4">
-      <div class="itemCard" style="text-align: center;">
+      <div class="itemCard" style="text-align: center; border-radius: 5px;">
         <a style="display: block;  text-decoration: none; color: #212529;"
           href="/products/<%= result.CategoryKey %>">
           <div class="card-header">
@@ -54,9 +54,8 @@
 
 <style>
   .wp-homepage-hero {
-    background-image: url("https://cdn.worldplugs.net/hero-element3.svg");
+    background-image: url("https://cdn.worldplugs.net/hero-element.svg");
     background-color: #1d1b28;
-    height: 50vh;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;

@@ -1,5 +1,5 @@
 {
-  "name": "node_family_notepad",
+  "name": "worldplugs-management",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bl": "^4.0.3",
     "connect-flash": "^0.1.1",
     "discord.js": "^12.2.0",
     "ejs": "^3.1.3",

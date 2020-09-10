@@ -4,9 +4,7 @@ function displayBasketContent(basketContent) {
     if (basketContent == "e") {
         basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
         $(".basket-items-quantity").text("")
-        $("#captchaSubmission").hide()
-        $(".g-recaptcha").hide()
-        $("#modalBodyPrice").hide()
+        $("#captchaSubmission, .g-recaptcha, #modalBodyPrice").hide()
 
     } else {
         $("#modalBodyPrice").show()
@@ -19,18 +17,14 @@ function displayBasketContent(basketContent) {
             var quantity = row[1]
             var basketRow = document.createElement("DIV")
             total = total + parseFloat(item.Price) * parseInt(quantity)
-            var rowContent = `
-            <div>
-            <text>${item.Title}</text>
-            <br>
-            <text>£${item.Price}</text>
-            <div class="propertyContainer" style="float:right; -webkit-transform: translate(-50%, -50%);  
-            transform: translate(-50%, -50%);   ">
-            <input id="${item._id}" type="number" pattern="[0-9]*" value="${quantity}" min="1" max="${item.Stock}" class="wp-item-quantity" onchange="updateQuantity(this)" style="width: 50px; display: none;"></input>
-            <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;"></div>
-            </div>
-            </div>
-            <hr/>
+            var rowContent = 
+            `
+                <text style="float: left;">${item.Title}</text>
+                <br>
+                <text style="float: left;">£${item.Price}</text>
+                <div class="wp-item-container">
+                    <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;">
+                </div>
             `
 
             basketRow.innerHTML = rowContent
@@ -78,16 +72,15 @@ function confirmPayment() {
     });
 }
 
-window.addEventListener("load", function () {
-    $.ajax({
-        type: "POST",
-        url: "/getCart",
-        data: {}
-    }).done(data => {
-        displayBasketContent(data)
-    });
-    
+$.ajax({
+    type: "POST",
+    url: "/getCart",
+    data: {}
+}).done(data => {
+    displayBasketContent(data)
 });
+
+
 
 function removeItemCart(item) {
     $.ajax({
@@ -156,6 +149,7 @@ function executePayment() {
 }
 
 window.onload = function() {
+    
     $('[data-toggle="tooltip"]').tooltip();   
 }
 
@@ -186,11 +180,12 @@ window.onscroll = function () {
     prevScrollpos = currentScrollPos;
 }
 
+let myInput = $('#searched');
 let typingTimer;
 let doneTypingInterval = 100;  
-let myInput = document.getElementById('searched');
 
-myInput.addEventListener('keyup', () => {
+
+myInput.keyup( () => {
     clearTimeout(typingTimer);
     if (myInput.value) {
         typingTimer = setTimeout(function() {doneTyping(myInput.value)}, doneTypingInterval);

@@ -1,3 +1,13 @@
+<script src="https://code.jquery.com/jquery-3.5.1.js"> </script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"> </script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.5/js/responsive.bootstrap4.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+<link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+<link href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.bootstrap4.min.css">
+
 <h1>
     Manage Accounts
 </h1>
@@ -23,7 +33,7 @@
     }
 </style>
 <div style="display: block" id="showTable">
-    <table class="table">
+  <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
         <thead>
           <tr>
             <th scope="col">Id</th>
@@ -37,10 +47,15 @@
             <% accounts.forEach(function(account) { %>
                 <tr>
                     <td><%= account._id %></td>
-                    <td><%= account.availability %></td>
-                    <td><button id="<%= account._id %>" data-available="<%= account.availability %>" onclick="changeState(this)" class="btn btn-alert">Toggle</button></td>
-                    <td><%= account.hidden %></td>
-                    <td><button id="<%= account._id %>" data-hidden="<%= account.hidden %>" onclick="hideAccount(this)" class="btn btn-alert">Hide</button></td>
+                    <td 
+                      <% if (account.availability == "false") {%>
+                      style="color: red;" <%} else {%> style="color: green;"<%}%> 
+                      >
+                      <%= account.availability %>
+                    </td>
+                    <td><button id="<%= account._id %>" data-available="<%= account.availability %>" onclick="changeState(this)" class="btn btn-success">Toggle</button></td>
+                  <td <% if (account.hidden == "false") { %> style="color: red;" <%} else {%> style="color: green;"<%}%>><%= account.hidden %></td>
+                    <td><button id="<%= account._id %>" data-hidden="<%= account.hidden %>" onclick="hideAccount(this)" class="btn btn-success">Hide</button></td>
                 </tr>
             <% }) %> 
         </tbody>
@@ -94,6 +109,11 @@
 
 
 <script>
+      $(document).ready(function() {
+        $('#example').DataTable({
+            lengthChange: false
+        });
+    });
     var allAccounts = [];
     function getAccounts() {
 
