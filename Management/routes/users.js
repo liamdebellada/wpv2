@@ -10,7 +10,8 @@ const qrcode = require('qrcode')
 const User = require('../models/User')
 
 
-
+const Recaptcha = require('express-recaptcha').RecaptchaV2;
+var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
 // User Login
 router.get('/', ensureNotAuthenticated, function(req,res) {
@@ -21,12 +22,17 @@ router.get('/', ensureNotAuthenticated, function(req,res) {
 
 
 // Login Handle
-router.post('/login' , (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect: '/2fa',
-        failureRedirect: '/',
-        failureFlash: true
-    })(req, res, next);
+router.post('/login', recaptcha.middleware.verify, (req, res, next) => {
+    if (!req.recaptcha.error) {
+        passport.authenticate('local', {
+            successRedirect: '/2fa',
+            failureRedirect: '/',
+            failureFlash: true
+        })(req, res, next);
+    } else {
+        req.flash('error_msg', 'Please complete the captcha before continuing')
+        res.redirect('/')
+    }
 })
 
 

@@ -99,13 +99,42 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
 })
 
 router.post('/updateTerms', ensureAuthenticated, ensureAdmin, async function(req, res) {
-    terms.updateOne({_id : req.body.id}, {content : req.body.content, title: "test", contentKey: req.body.contentKey}).then(result => res.send("s")).catch(error => error)
+    terms.updateOne({_id : req.body.id}, {content : req.body.content, title: req.body.title, contentKey: req.body.contentKey}).then(result => res.send("s")).catch(error => error)
 })
 
 router.get('/update-terms', ensureAuthenticated, ensureAdmin, async function(req, res) {
     var termsData = await terms.find({}).then(data => data).catch(error => error)
-    res.render('manage-terms', {
-        data: termsData
+    getLinks(req.user.group, function(links) {
+        res.render('manage-terms', {
+            data: termsData,
+            layout: "authenticated-layout.ejs",
+            dashboardLinks: links
+        })
+    })
+    
+})
+
+router.get('/update-terms/:term', ensureAuthenticated, ensureAdmin, async function(req, res) {
+    var term = req.params.term.toString()
+    console.log(term)
+    terms.findOne({'contentKey' : term}, function(error, result) {
+        if (error) {
+            res.redirect('/update-terms')
+        } else {
+            if (result) {
+                getLinks(req.user.group, function(links) {
+                    res.render('manage-term', {
+                        result: result,
+                        layout: "authenticated-layout.ejs",
+                        dashboardLinks: links
+                    })
+                })
+            } else {
+                res.redirect('/update-terms')
+            }
+            
+                
+        }
     })
 })
 
@@ -1078,15 +1107,15 @@ router.post('/addAccounts', ensureAuthenticated, ensureAdmin, function (req, res
             itemID: id,
             email: username,
             password: password,
-            availability: "true"
+            availability: "true",
+            hidden: "false"
         }, function (error, result) {
             if (error) {
                 console.error(error)
-            } else {
-                console.log(result)
             }
         })
     };
+    res.send("e")
 })
 
 router.post('/sendShutdown', ensureAdmin, ensureAuthenticated, function (req, response) {

@@ -221,10 +221,10 @@ input[type=number]::-webkit-outer-spin-button {
 /*Right*/
 .modal.right.fade .modal-dialog {
     right: -320px;
-    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
-    -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
-    -o-transition: opacity 0.3s linear, right 0.3s ease-out;
-    transition: opacity 0.3s linear, right 0.3s ease-out;
+    -webkit-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    -moz-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    -o-transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
+    transition: opacity 0.3s linear, right 0.3s cubic-bezier(0.280, 0.840, 0.420, 1);
 }
 
 .modal.right.fade.show .modal-dialog {
@@ -251,6 +251,11 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 23px;
     font-weight: 200;
     vertical-align: middle;
+    transition: color 0.5s ease-in-out;
+}
+
+.remove-small-cart-button:hover {
+    color: #b65151;
 }
 
 .wp-content-box-span {

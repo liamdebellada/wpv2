@@ -1,14 +1,14 @@
 function displayBasketContent(basketContent) {
-    var basket = document.getElementById("modalBody")
+    var basket = $('#wp-side-basket-items')
     var total = 0;
     if (basketContent == "e") {
-        basket.innerHTML = "<div style='text-align: center;'><text>Your basket is empty</text></div>"
+        basket.html("<div style='text-align: center;'><text>Your basket is empty</text></div>")
         $(".basket-items-quantity").text("")
-        $("#captchaSubmission, .g-recaptcha, #modalBodyPrice").hide()
+        $("#captchaSubmission, .g-recaptcha, #wp-side-basket-price-table").hide()
 
     } else {
-        $("#modalBodyPrice").show()
-        basket.innerHTML = ""
+        $("#wp-side-basket-price-table").show()
+        basket.html("")
         $(".basket-items-quantity").text(basketContent.length)
         $("#captchaSubmission").show()
         $(".g-recaptcha").show()
@@ -19,11 +19,14 @@ function displayBasketContent(basketContent) {
             total = total + parseFloat(item.Price) * parseInt(quantity)
             var rowContent = 
             `
-                <text style="float: left;">${item.Title}</text>
-                <br>
-                <text style="float: left;">£${item.Price}</text>
-                <div class="wp-item-container">
-                    <input id="${item._id}" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.825rem; background-color: #0d0c11; padding: 0.425rem; border-radius: 5px;">
+                    <div>
+                        <text class="text-left" style="font-size: 0.9175rem; display:block; color: white;">${item.Title}</text>
+                        <text class="text-left" style="font-size: 0.9175rem; display:block; color: white;">£${item.Price}</text>
+                    </div>
+                    <div style="margin-left: auto; position: relative">
+                        <input id="${item._id}" style="outline: none;" class="remove-small-cart-button" type="submit" onclick="removeItem(this)" value="&times;">
+                    </div>
                 </div>
             `
 
@@ -35,9 +38,9 @@ function displayBasketContent(basketContent) {
 
         fee = parseFloat((total / 100 * 2.9 + 0.30).toFixed(2))
 
-        $("#subtotal").text("Subtotal: £" + total.toFixed(2))
-        $("#fee").text("Fee: £" + fee.toFixed(2))
-        $("#total").text("Total: £" + (total + fee).toFixed(2))
+        $("#wp-side-basket-subtotal").text('£' + total.toFixed(2))
+        $("#wp-side-basket-fee").text('£' + fee.toFixed(2))
+        $("#wp-side-basket-total").text('£' + (total + fee).toFixed(2))
 
         // feeText.innerText = "Fee: £" + (total / 100 * 0.29 + 0.30).toFixed(2)
         // totalText.innerText = 
@@ -102,6 +105,7 @@ function removeItem(item) {
             id: item.id
         }
     }).done(data => {
+        console.log(data)
         displayBasketContent(data)
         if (window.location.href.includes("/cart")) {
             window.location.href = "/cart"
@@ -139,13 +143,7 @@ function updateQuantity(item) {
 
 function executePayment() {
 
-    $.ajax({
-        type: "POST",
-        url: "/executePayment",
-        data: {}
-    }).done(data => {
-        window.location.href = data //redirect to confirm payment
-    });
+    $("#wp-redirect-overlay").fadeIn()
 }
 
 window.onload = function() {

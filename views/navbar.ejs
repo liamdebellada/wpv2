@@ -107,38 +107,51 @@
 <div class="modal right fade" id="shopping-basket-toggle" tabindex="-1" role="dialog"
     aria-labelledby="shopping-basket-label">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="shopping-basket-label">Your Basket</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
+        <div class="modal-content" style="overflow-x: hidden; background-color: #1e1c29">
             <div class="modal-body">
-                <div id="modalBody">
+              <div style="display: flex; align-items: center; margin-bottom: 0.5rem">
+                <h4 class="modal-title" id="shopping-basket-label">Your Basket</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; outline: none; margin-left: auto;"><span
+                        aria-hidden="true">&times;</span></button>
+              </div>
+              
+                <div id="wp-side-basket-items">
                     
                 </div>
-                <div id="modalBodyPrice">
-                    <text id="subtotal" style="font-size: 0.75rem"></text>
-                    <div>
-                    <text id="fee" style="font-size: 0.75rem"></text> <a href="/payment-policy" data-placement="right" data-toggle="tooltip" title="We add a small fee to cover paypal charges."><svg id="fee-tooltip" width="0.75rem" height="0.75rem" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="#C8C8C8" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
-                      </svg></a>
-                      <hr align="left" style="background-color: white; width: 10%; margin-top: 0.5rem; margin-bottom: 0.5rem">
-                    </div>
-                    <text id="total"></text>
-                </div>
-            </div>
-            <div class="modal-footer" style="padding: 0; overflow: hidden;">
 
-                <form action="/executePayment" method="POST" style="padding: 6.5px;">
+                <hr>
+
+                <div id="wp-side-basket-price-table" style="display: flex; background-color: #0d0c11; padding: 0.625rem; border-radius: 5px;">
+                  <table class="wp-cart-items-price-table" style="width:100%; color: white;">
+                    <tr>
+                      <td style="font-size: 0.9175rem;">Order Subtotal</td>
+                      <td style="text-align:right; font-size: 0.9175rem;" id="wp-side-basket-subtotal"></td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 0.9175rem;">PayPal Fee</td>
+                      <td style="text-align:right; font-size: 0.9175rem;"><text id="wp-side-basket-fee"></text> <a style="cursor: pointer" data-placement="right" data-toggle="tooltip" title="We add a small fee to cover paypal charges."><svg id="fee-tooltip" width="0.75rem" height="0.75rem" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="#C8C8C8" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
+                      </svg></a></td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 0.9175rem;">Grand Total</td>
+                      <td style="text-align:right; font-size: 0.9175rem;" id="wp-side-basket-total"></td>
+                    </tr>
+                  </table>
+                  
+              </div>
+
+            </div>
+            <div class="modal-footer" style="padding: 0; z-index: 1000">
+
+                <form onsubmit="executePayment()" action="/executePayment" method="POST" style="padding: 6.5px;">
                     <div class="g-recaptcha" data-callback="checkComplete"
                         data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_"></div>
                     <br />
                     <a class="btn wp-button wp-button-default-hover" href="/cart">View Basket</a>
                     <input id="captchaSubmission"
                         class="btn wp-button wp-button-gradient wp-button-checkout wp-captcha-button" type="submit"
-                        value="Express Checkout">
-                    <!--<button class="btn wp-button wp-button-gradient wp-button-checkout">Express Checkout</button>-->
+                        value="Express Checkout" disabled>
                 </form>
             </div>
         </div>
@@ -201,3 +214,81 @@
   top: 100% !important;
 }
 </style>
+
+<div id="wp-redirect-overlay" style="display: none;">
+
+
+    <div class="wp-redirect-overlay-container">
+        <!-- <div style="width: 300px; background-color: #1d1b28; height: 200px; border-radius: 5px; border: solid 3px white;">
+          
+        </div> -->
+        <h4 style="color: white;">Please wait whilst we redirect you to PayPal..</h4>
+        <div class="container" style="margin-top: 2rem">
+          <div class="row wp-redirect-animation">
+            <div class="col-4">
+              <img src="https://worldplugs.net/temp/burger.svg">
+            </div>
+            <div class="col-4">
+              <img src="https://worldplugs.net/temp/music.svg">
+            </div>
+            <div class="col-4">
+              <img src="https://worldplugs.net/temp/ticket.svg">
+            </div>
+          </div>
+        </div>
+    </div>
+  
+  
+  
+  
+  </div>
+  
+  <style>
+    #wp-redirect-overlay {
+      z-index: 9999; position: fixed; top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      background-color: rgba(15, 13, 13, 0.507);
+    }
+    .wp-redirect-overlay-container {
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+        color: white;
+      z-index: 999999;
+      width: 400px;
+    }
+    .wp-redirect-animation img {
+      max-width: 80px;
+    }
+  
+    .wp-redirect-animation .col-4 {
+      animation: snake 1s infinite ease-in-out
+    }
+  
+  
+    .wp-redirect-animation .col-4:nth-child(2) {
+      
+      animation-delay: 0.2s
+    }
+  
+    .wp-redirect-animation .col-4:nth-child(3) {
+      animation-delay: 0.4s
+    }
+  
+    @keyframes snake {
+    0%,100% {
+      opacity: 0.3;
+      transform: translateY(0px);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-20px);
+    }
+  }
+  
+  
+  </style>

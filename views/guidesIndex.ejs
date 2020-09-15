@@ -69,8 +69,8 @@
                     <span><a 
                         <% if (link.link.includes("://")) {%>
                             href="<%= link.link %>" 
-                        <%} else {%> 
-                            
+                        <%} else if (link.link.includes("@")) {%> 
+                            href="mailto:<%= link.link %>"
                         <% } %> 
                         >
                         <%= link.link %>

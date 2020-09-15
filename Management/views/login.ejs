@@ -1,3 +1,4 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <div class="row mt-5">
     <div class="col-md-6 m-auto">
       <div class="card card-body">
@@ -23,6 +24,9 @@
               class="form-control"
               placeholder="Enter Password"
             />
+          </div>
+          <div style="text-align: center;">
+            <div class="g-recaptcha" style="display:inline-block; margin-bottom: 16px;" data-callback="checkComplete" data-sitekey="6LdqTLQZAAAAAMiaotVGuMyPr-FUhKNP6u_ARIr_"></div>
           </div>
           <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
