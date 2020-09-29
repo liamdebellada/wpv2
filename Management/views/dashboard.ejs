@@ -1,26 +1,294 @@
-<h1 style="margin-top: 0px !important;" class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome <%= name %></p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+<h1>Dashboard</h1>
+<p class="lead mb-3 text-white">Welcome <%= name %></p>
 
-<div class="row">
-<% dashboardLinks.forEach(function(link) { %>
+<%
+function secondsToTime(seconds) { // day, h, m and s
+  var days = Math.floor(seconds / (24*60*60));
+      seconds -= days    * (24*60*60);
+  var hours    = Math.floor(seconds / (60*60));
+      seconds -= hours   * (60*60);
+  var minutes  = Math.floor(seconds / (60));
+      seconds -= minutes * (60);
+  return [days, hours, minutes];
+}
+%>
 
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title"><%= link.Title %></h5>
-        <p class="card-text"><%= link.Description %></p>
-        <a href="<%= link.URL %>" class="btn btn-primary"><%= link.Title %></a>
+<div>
+  <div class="row my-2">
+      <div class="col-md-6 py-1">
+          <div class="card blue-card-gradient">
+              <div class="card-body">
+                  <div class="chart-text-heading">
+                    <h5 style="float: left;">Users</h5>
+                    <h5 style="float: right;"><%= analyticalData.data.totalsForAllResults["ga:users"] %></h5>
+                  </div>
+              </div>
+              <div>
+                <canvas id="chLine"></canvas>
+              </div>
+          </div>
       </div>
+      <div class="col-md-6 py-1">
+          <div class="card red-card-gradient">
+              <div class="card-body">
+                <div class="chart-text-heading">
+                    <h5 style="float: left;">Pages</h5>
+                    <h5 style="float: right;"><%= pageData.length %></h5>
+                    <br>
+                    <text>30 days</text>
+                </div>
+                <br>
+              </div>
+              <div style="height: 130px;">
+                <canvas id="chBar1"></canvas>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="row py-2">
+      <div class="col-md-4 py-1">
+          <div class="card dark-card-static" style="max-height: 500px !important;">
+            <div class="card-header" style="color: white;">
+              <text>Current CPU Usage</text>
+              <text style="float: right;" id="cpuUsageVal">0%</text>
+            </div>
+              <div class="card-body">
+                  <canvas id="chDonut1"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4 py-1">
+          <div class="card dark-card-static" style="max-height: 500px !important">
+              <div class="card-header" style="color: white;">
+                <text>Current Memory Usage <text style="font-size: 10px">(mb)</text></text>
+                <text style="float: right;" id="memoryUsageVal">0%</text>
+              </div>
+              <div class="card-body">
+                  <canvas id="chDonut2"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4 py-1">
+          <div class="card dark-card-static" style="max-height: 500px !important;">
+            <div class="card-header" style="color: white;">
+              <text>Disk capacity <text style="font-size: 10px">(gb)</text></text>
+              <text style="float: right;" id="storageVal">0gb</text>
+            </div>
+              <div class="card-body">
+                  <canvas id="chDonut3"></canvas>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-md-12 py-1">
+        <div class="card dark-card-static" style="max-height: 500px !important;">
+          <div class="card-header" style="color: white;">
+            Data
+          </div>
+            <div class="card-body" style="color: white;">
+              <% time = secondsToTime(upTime) %>
+              <div style="display: inline-block;">
+                <h3>System status</h3>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center;">
+                    <span class="statusCircle"></span>
+                  <text id="statusText" style="margin-left: 5px; font-size: 16px; font-weight: 600;">Loading...</text>
+                  </div>
+                  <div>
+                    <text style="margin-left: 10px;"><%= time[0] %>d <text><%= time[1] %>h </text><text><%= time[2] %>mins</text></text>
+                  </div>
+                </div>
+                <h6 style="margin-top: 10px;">System information</h6>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th class="text-muted" style="font-weight: 400; font-size: 15; min-width: 6rem" scope="row">IP address:</th>
+                      <td style="color: white;"><%= ipAddr %></td>
+                    </tr>
+                    <tr>
+                      <th class="text-muted" style="font-weight: 400; font-size: 15" scope="row">Architecture:</th>
+                      <td style="color: white;"><%= arch %></td>
+                    </tr>
+                    <tr>
+                      <th class="text-muted" style="font-weight: 400; font-size: 15" scope="row">CPU:</th>
+                      <td style="color: white; font-size: 12px;"><%= cpuModel.replace(/[R()]/g, "") %></td>
+                    </tr>
+                    <tr>
+                      <th class="text-muted" style="font-weight: 400; font-size: 15" scope="row">Processes:</th>
+                      <td style="color: white;"><%= processes %></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="d-flex" style="  align-items: center; justify-content: center;">
+                  <h4 style="margin-top: 20px;">Network usage <text style="font-size: 10">(megabytes)</text></h4>
+                <div style="margin-left: auto; margin-top: auto; align-items: center; justify-content: center; margin-bottom: 0.5rem;"><span class="badge badge-secondary" style="background-color: #333333; font-weight: 400; font-family: 'Courier New', Courier, monospace">I/O: I: <text id="recievedVal"></text> O: <text id="sentVal"></text></span></div>
+              </div>
+              
+              <div>
+                <canvas id="networkLine"></canvas>
+              </div>
+            </div>
+        </div>
     </div>
   </div>
-
-<% }) %>
-
 </div>
 
+<div class="row my-2">
+  <div class="col-md-12 py-1">
+      <div class="card dark-card-static" style="max-height: 500px !important;">
+        <div class="card-header" style="color: white;">
+          Sessions
+        </div>
+        <div class="card-body" style="color: white;">
+          <h3 style="margin-bottom: 10px;">User behaviour</h3>
+          <div style="display: flex; align-items: center;">
+            <div class="metric-key metric-key-child metric-key-purple">
+              <div>
+                <text class="text-muted" style="font-size: 13px; font-weight: 200">Active sessions</text>
+                <h6 id="countSessions">0</h6>
+              </div>
+            </div>
+            <div class="metric-key metric-key-child metric-key-blue" style="margin-left: 10vw;"> 
+              <div>
+                <text class="text-muted" style="font-size: 13px; font-weight: 200">Active carts</text>
+                <h6 id="cartSessions">0</h6>
+              </div>
+            </div>
+            <div class="metric-key metric-key-child metric-key-red" style="margin-left: 10vw;"> 
+              <div>
+                <text class="text-muted" style="font-size: 13px; font-weight: 200">Active checkouts</text>
+                <h6 id="orderSessions">0</h6>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 1.5rem; display: flex; align-items: center;">
+            <img src="https://www.flaticon.com/svg/static/icons/svg/3081/3081840.svg" style="width: 35px;"></img>
+            <div class="progress progress-bar-back" style="width: 100%; margin-left: 1rem">
+              <div id="cartSessionProgress" class="progress-bar" role="progressbar" style="width: 100%; background-color: #45484a;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Loading..</div>
+            </div>
+          </div>
+          <div style="margin-top: 1.5rem; display: flex; align-items: center;">
+            <img src="https://cdn.worldplugs.net/success.svg" style="width: 35px;"></img>
+            <div class="progress progress-bar-back" style="width: 100%; margin-left: 1rem">
+              <div id="orderSessionProgress" class="progress-bar" role="progressbar" style="width: 100%; background-color: #45484a;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Loading..</div>
+            </div>
+          </div>
+          <br>
+          <text class="text-muted">Active success pages: <text id="totalSuccessPages" style="font-size: 0.9rem; color: white;">loading...</text></text>
+        <br>
+        <br>
+        <button class="btn btn-danger" onclick="destroySessions()">Destroy sessions</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+$(window).resize(function() {
+    breadCrumbsDisplay([{"href": "/dashboard", "title": "Dashboard"}], {"href": "/dashboard", "title": "Dashboard"})
+  })
+  breadCrumbsDisplay([{"href": "/dashboard", "title": "Dashboard"}], {"href": "/dashboard", "title": "Dashboard"})
+
+
+function destroySessions() {
+  progressBarStart()
+  $.ajax({
+        type: "POST",
+        url: "/destroy",
+        data: {}
+  }).done(data => {
+    if (data.status = "success") {
+      $('#countSessions').text(0)
+      progressBarComplete()
+    }
+  });
+}
+</script>
+
+<script>
+  var userChartData = '<%- JSON.stringify(analyticalData.data) %>'
+  var pageChartData = '<%- JSON.stringify(pageData) %>'
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
+
+<script src="setup.js"></script>
+
+
 <style>
+    .metric-key {
+      border-radius: 3px;
+      min-height: 2.5rem;
+    }
+    .metric-key-purple {
+      border-left: 3px solid #7258b0;
+    }
+    .metric-key-blue {
+      border-left: 3px solid #4799eb;
+    }
+    .metric-key-red {
+      border-left: 3px solid #d16767;
+    }
+
+    .metric-key-child div {
+      margin-left: 5px;
+    }
+
+    .statusCircle {
+      height: 20px;
+      width: 20px;
+      background-color:#FFFF;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .progress-bar-back {
+      background-color: #333333;
+    }
+
+    .chart-text-heading {
+        clear: both;
+        color: #e6e6e6;
+    }
+    .chart-text-heading h5 {
+        margin: 0;
+    }
+
+    .blue-card-gradient {
+        background: linear-gradient(45deg,#4799eb 0%,#4280b4 100%) !important;
+        border-color: #4280b4 !important;       
+    }
+    .red-card-gradient {
+        background: linear-gradient(45deg,#d16767 0%,#c14f4f 100%) !important;
+border-color: #c14f4f !important;
+    }
+
+    .dark-card-static {
+      background-color: #191a1c;
+    }
+
+  .card {
+    -webkit-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    -moz-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    max-height: 200px !important;
+    border: none;
+  }
+
   .wp-backbutton {
     visibility: hidden;
     margin: none;
 }
+
 </style>
+

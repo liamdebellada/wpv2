@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 var helmet = require('helmet')
 
 
+
 //sessions
 const session = require("express-session");
 const nodemon = require('nodemon');
@@ -16,8 +17,10 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 
 var store = new MongoDBStore({
     uri: require('./config/keys').MongoURI,
-    collection: 'Sessions'
+    collection: 'Sessions',
+    expires: 1000 * 60 * 60
 });
+
 
 store.on('error', function(error) {
     console.log(error); 
@@ -56,14 +59,14 @@ app.use(require('express-session')({
     store: store,
     secure: true,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 
 
 // DB Config
 const db = require('./config/keys').MongoURI;
 
-
+console.log("WorldPlugs.net")
 
 // Connect to Mongo
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -76,14 +79,10 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
-
-
 // EJS
 app.use(express.static('public'))
 app.use(expressLayouts);
 app.set('view engine', 'ejs')
-
-
 
 // Routes
 app.use('/', require('./routes/index'));
@@ -111,6 +110,8 @@ io.on('connection', function(client) {
         //console.log("connected")
     })
 })
+
+app.enable('trust proxy')
 
 
 app.io = io;

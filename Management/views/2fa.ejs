@@ -7,7 +7,9 @@
         <form action="/2faCheck" method="POST">
           <div class="form-group">
             <input
-              type="string"
+              inputmode="numeric" 
+              pattern="[0-9]*" 
+              type="number"
               id="token"
               name="token"
               class="form-control"

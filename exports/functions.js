@@ -10,6 +10,10 @@ const errorlog = require('../Management/models/errorLogs.js')
 const guides = require('../models/guides')
 
 
+const successOrders = require('../models/successOrders.js')
+
+var ejs = require("ejs")
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
@@ -294,8 +298,23 @@ var functions = {
         client.channels.cache.get("741734136728911913").send(msg.toString());
     },
 
+    prettyJSON: (obj) => {return JSON.stringify(obj, null, 2)},
+
     santizeString: function(string) {
         return string.replace(/[^0-9a-zA-Z-]/g, '')
+    },
+
+    createSuccessView: async (data) => {
+        var successURL = [...Array(50)].map(i => (~~(Math.random() * 36)).toString(36)).join('')
+        await successOrders.create(
+            {
+                url: successURL,
+                purchaseData: data
+            }
+        )
+        .then(result => result)
+        .catch(err => console.error(err))
+        return successURL
     }
 
 }

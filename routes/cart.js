@@ -6,6 +6,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 
+
+
 // Export Models
 const items = require('../models/items');
 const functions = require('../exports/functions');
@@ -18,8 +20,6 @@ const https = require('https')
 //discord logging stuff
 const Discord = require('discord.js');
 const client = new Discord.Client();
-
-
 client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
 //rate limiter
@@ -51,11 +51,10 @@ const limitRequests = rateLimit({
 
 
 
-
 router.post('/updateCart', limitRequests, (req, res) => {
     try {
         var cartItemId = req.body.items
-        var quantity = req.body.quantity
+        var quantity = req.body.quantity 
         if (quantity > 0 && parseInt(quantity)) {
             var checkId = functions.checkID(req.session, cartItemId) // Check if item exists in cart already
             if (req.session.cart == undefined) {
@@ -125,21 +124,31 @@ router.post('/updateCart', limitRequests, (req, res) => {
 })
 
 router.post('/removeCart', limitRequests, function (req, res) {
-    var deletionId = req.body.id
-    var userCart = req.session.cart
-    var index = userCart.findIndex(x => x.id === deletionId)
-    userCart.splice(index, 1)
-    req.session.cart = userCart
-    req.session.save()
-    if (req.session.cart === undefined) {
-        res.send("e")
-    } else {
-        if (req.session.cart.length < 1) {
-            res.send("e")
+    try {
+        var deletionId = req.body.id
+        var userCart = req.session.cart
+        if (req.session.cart && req.session.cart.length > 0) {
+            var index = userCart.findIndex(x => x.id === deletionId)
+            userCart.splice(index, 1)
+            req.session.cart = userCart
+            req.session.save()
+            if (req.session.cart === undefined) {
+                res.send("e")
+            } else {
+                if (req.session.cart.length < 1) {
+                    res.send("e")
+                } else {
+                    functions.getBasket(req.session.cart, items, function (result) { //when basket is empty it loads endlessly???
+                        res.send(result)
+                    })
+                }
+                
+            }
+        } else {
+            res.send("e").end()
         }
-        functions.getBasket(req.session.cart, items, function (result) { //when basket is empty it loads endlessly???
-            res.send(result)
-        })
+    } catch {
+        res.send("e").end()
     }
 })
 

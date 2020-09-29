@@ -3,7 +3,10 @@ const express= require('express');
 const router = express.Router();
 const expressQueue = require('express-queue');
 var paypal = require('paypal-rest-sdk');
-var sanitizer = require('sanitize')();
+var sanitizer = require('sanitize')(); 
+const rateLimit = require('express-rate-limit');
+
+const https = require('https')
 
 //exports
 const paymentDataConst = require('../exports/payment-data');
@@ -26,8 +29,39 @@ paypal.configure({
     'client_secret': process.env.CLIENT_SECRET
 });
 
+const Discord = require('discord.js');
+const client = new Discord.Client();
+client.login('NzQwOTU4MzMxMzc5Nzc3NjU4.XywlOA.dQAzqV4rGRLOQgwQ5ovqBZrSLd4');
 
-router.post('/executePayment', recaptcha.middleware.verify,  function (req, res) {
+//rate limiter
+
+const limitRequests = rateLimit({
+    windowMS: 1000,
+    max: 100,
+    message:
+    "You are sending too many requests to the server.",
+    onLimitReached: function(req) {
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        https.get(`https://api.ipgeolocation.io/ipgeo?apiKey=cefdbd6742ab46a09c460ddd81ee0e9e&ip=${ip}&fields=geo&include=security`, function(resp) {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+            
+            resp.on('end', async () => {
+                var datares = "\n```json\n" + JSON.stringify(JSON.parse(data),null,2) + "```"
+                await client.channels.cache.get('741352723693174905').send("", {files: ['https://thumbs.gfycat.com/CostlyDopeyAcornwoodpecker-size_restricted.gif']})
+                client.channels.cache.get('741352723693174905').send(datares);
+            }); 
+        }).on("error", (err) => {
+            console.log("Error: " + err.message);
+        });
+    }
+})
+
+
+router.post('/executePayment', limitRequests, recaptcha.middleware.verify,  function (req, res) {
 
     try {
         if (!req.recaptcha.error && req.session.cart.length > 0) {
@@ -82,6 +116,7 @@ router.post('/executePayment', recaptcha.middleware.verify,  function (req, res)
                                 req.session.total = total.toString()
                                 req.session.fee = functions.calculateFee(result).toString()
                                 res.redirect(payment.links[1].href);
+                                
                             }
                         });
                         
@@ -106,8 +141,7 @@ router.post('/executePayment', recaptcha.middleware.verify,  function (req, res)
     
 })
 
-router.get('/checkout', function (req, res, next) {
-
+router.get('/checkout', limitRequests, function (req, res, next) {
     try{
         var total = req.session.total
         if (total == undefined || total == "empty") {
@@ -120,20 +154,25 @@ router.get('/checkout', function (req, res, next) {
     try {
         const paymentId = functions.santizeString(req.query.paymentId)
         const payerId = functions.santizeString(req.query.PayerID)
-        req.session.paymentId = paymentId;
-        req.session.payerId = payerId; 
-        if (paymentId === undefined || payerId === undefined) {
-            res.redirect('/cart')
+        if (!req.session.paymentId && !req.session.paymentId) {
+            if (paymentId === undefined || payerId === undefined) {
+                res.redirect('/cart')
+            } else if (paymentId == "" || payerId == "") {
+                res.redirect('/cart')
+            } else {
+                req.session.paymentId = paymentId;
+                req.session.payerId = payerId;
+            }
         }
-        else if (paymentId == "" || payerId == "") {
-            res.redirect('/cart')
-        } else {
+        if (req.session.paymentId == paymentId && req.session.payerId == payerId) {
             res.render('confirmation.ejs', {
                 items: req.session.viewOrder,
                 total: req.session.total,
                 fee: req.session.fee
             })
-        }
+        } else {
+            res.redirect('/cart')
+        } 
     } catch {
         res.redirect('/cart')
     }
@@ -142,7 +181,7 @@ router.get('/checkout', function (req, res, next) {
 })
 
 var sem = require('semaphore')(1);
-router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}), async function (req, res, next) {
+router.post('/confirmPayment', limitRequests, expressQueue({ activeLimit: 1, queuedLimit: -1}), async function (req, res, next) {
 
     sem.take(async function() {
         var stockResult = []
@@ -151,7 +190,14 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
             var paymentId = functions.santizeString(req.session.paymentId)
             var payerId = functions.santizeString(req.session.payerId)
             var total = req.session.total
-    
+            if (req.session.paymentId != paymentId && req.session.payerId != payerId) { 
+                res.redirect('/cart')
+            }
+            req.session.paymentId = ""
+            req.session.payerId = ""
+            req.session.save()
+
+
             if (total == undefined || total == "empty") {
                 sem.leave();
                 return res.send('/cart').status(418).end()
@@ -203,7 +249,6 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
 
 
             paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment){
-                
 
     
                 if(error){
@@ -269,20 +314,23 @@ router.post('/confirmPayment', expressQueue({ activeLimit: 1, queuedLimit: -1}),
     
                             emailSend.sendMail(payment.payer.payer_info.email, req.session.order, req.session.total, purchaseID, function (status) {
                                 if (status) {
-                                    req.session.total = "empty"
-                                    req.session.cart = []
+
                     
-                                    req.session.userInfo = [payment.payer.payer_info.email, purchaseID]
+                                    userInfo = [payment.payer.payer_info.email, purchaseID]
+                                        successUrl = async () => {return await functions.createSuccessView({email: payment.payer.payer_info.email, purchaseID: purchaseID, cart: req.session.viewOrder}).then(result => result).catch(err => err)} 
                     
-                                    req.session.save()
-                    
-                                    logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, function(error, result) {
+                                    logs.create({Date: payment.create_time, OrderID: purchaseID, Email: payment.payer.payer_info.email, Amount: payment.transactions[0].amount.total, Accounts: orderLog}, async function(error, result) {
                                         if (error) {
                                             console.log(error)
+                                        } else {
+                                            successUrl = await successUrl()
+                                            req.session.destroy(() => {
+                                                res.send('/success/' + successUrl)
+                                                sem.leave()
+                                            })
                                         }
                                     })
-                                    sem.leave();
-                                    res.send('/success').status(200).end()
+    
                                 }
                             })
                         }).catch(() => {

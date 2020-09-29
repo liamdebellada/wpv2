@@ -7,45 +7,57 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
 <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
 <link href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.bootstrap4.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 <h1 class="mt-4">Order Logs</h1>
-<table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
-  <thead>
-      <tr>
-          <th>OrderID</th>
-          <th>Date</th>
-          <th>Email</th>
-          <th>Amount</th>
-          <th>Accounts</th>
-      </tr>
-  </thead>
-  <tbody>
-    <% data.forEach(function(item) { %>
-      <tr>
-          <td><img src="https://image.flaticon.com/icons/svg/864/864378.svg" style="width: 18px; float: left;"></img><text style="float: right;"><%= item.OrderID %></text></td>
-          <td><%= item.Date %></td>
-          <td><%= item.Email %></td>
-          <td><%= item.Amount %></td>
-          <td><button class="btn btn-dark" style="font-size: 10px; padding: 3px;" data-toggle="modal" data-target="#exampleModal" data-items="<%= JSON.stringify(item.Accounts) %>" onclick="drawModalData(this)">View</button></td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
+
+<div class="row my-2">
+  <div class="col-md-12 py-1">
+      <div class="card dark-card-static" style="max-height: 1000px !important;">
+        <div class="card-header" style="color: white;">
+          Purchase logs
+        </div>
+        <div class="card-body" style="color: white;">
+          <input id="searchData" placeholder="search">
+          <table id="example" class="table table-dark table-striped dt-responsive nowrap wp-table" style="width:100%">
+          <thead>
+              <tr>
+                  <th>OrderID</th>
+                  <th>Date</th>
+                  <th>Email</th>
+                  <th>Amount</th>
+                  <th>Accounts</th>
+              </tr>
+          </thead>
+          <tbody>
+            <% data.forEach(function(item) { %>
+              <tr>
+                  <td><text style="float: right;"><%= item.OrderID.replace(/\"/g,"") %></text></td>
+                  <td><%= item.Date %></td>
+                  <td><%= item.Email %></td>
+                  <td><%= item.Amount %></td>
+                  <td><a class="btn btn-dark wp-wide-button" data-toggle="modal" data-target="#exampleModal" data-items="<%= JSON.stringify(item.Accounts) %>" onclick="drawModalData(this)">View</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      </div>
+  </div>
+</div>
+
 
 
 <div id="accountModal" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="color: white;">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: 300;">Purchased Accounts</h5>
       </div>
       <div class="modal-body" id="accountModal-body">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary wp-close-button" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -53,11 +65,16 @@
 
 
 <script>
+  var table;
     $(document).ready(function() {
-        $('#example').DataTable({
-            lengthChange: false
+        table = $('#example').DataTable({
+            lengthChange: false,
+            "pagingType": "numbers"
         });
     });
+    $('#searchData').on( 'keyup', function () {
+      table.search( this.value ).draw();
+    } );  
 
     function drawModalData(item) {
         var data = JSON.parse(item.dataset.items)
@@ -68,10 +85,10 @@
             console.log(account)
             var accountRow = document.createElement("DIV")
             var html = `
-            <text style="float: left;">Product Name:</text>
+            <text style="float: left;" class="text-muted">Product Name:</text>
             <text style="float: right;">${account.Title}</text>
             <br>
-            <text style="float: left;">Account ID:</text>
+            <text style="float: left;" class="text-muted">Account ID:</text>
             <text style="float: right;">${account.AccountID}</text>
             <hr style="margin-top: 40px;">
             `
@@ -81,3 +98,113 @@
     }
 
 </script>
+
+<style>
+
+  .wp-close-button {
+    font-size: 0.7rem;
+    background-color: #131313;
+    border: none;
+  }
+
+  .wp-close-button:hover {
+    background-color: #7258b0;
+    border: none;
+  }
+
+  .modal-footer {
+    border-top: none;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .modal-content {
+    background-color: #191a1c;
+  }
+
+  .wp-wide-button {
+    font-size: 0.7rem;
+    background-color: #18191a;
+    border: none;
+  }
+
+  .wp-wide-button:hover {
+    background-color: #7258b0 !important;
+  }
+
+.dataTables_wrapper .dataTables_filter {
+float: right;
+text-align: right;
+visibility: hidden;
+}
+
+  thead tr th {
+    border: none !important;
+  }
+
+  .dtr-title {
+    color: #95a5a6 !important;
+  }
+  .dtr-title::after {
+    content: ":"
+  }
+
+  .dtr-details li {
+    list-style-type: none;
+  }
+
+  .pagination li a {
+    background-color: #141517;
+  }
+  .pagination li a:hover {
+    background-color: #1e1f22;
+  }
+
+  .page-item.active .page-link {
+    background-color: #7258b0 !important;
+  }
+
+  .page-item.disabled .page-link {
+    background-color: #131313 !important;
+  }
+
+
+
+  #searchData {
+    position: absolute;
+    margin-top: 1.3rem;
+    z-index: 999;
+    background: #141517;
+    border-radius: 3px;
+    padding: 0.3rem;
+    color: white;
+  }
+
+  .form-control {
+    background: #141517;
+    border: none;
+  } 
+
+  .form-control:focus {
+    background: #141517;
+    border: none;
+  }
+
+  .wp-table {
+    background-color: #141517;
+  }
+
+  .card {
+    -webkit-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    -moz-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    max-height: 200px !important;
+    border: none;
+  }
+
+  .dark-card-static {
+      background-color: #191a1c;
+  }
+  </style>

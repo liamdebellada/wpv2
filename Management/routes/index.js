@@ -18,6 +18,9 @@ var speakeasy = require('speakeasy')
 
 var http = require('https');
 
+const axios = require('axios')
+
+
 const banners = require('../models/banners');
 const categories = require('../../models/categories')
 const products = require('../../models/products')
@@ -31,13 +34,26 @@ const grouplinks = require('../models/groupLinks')
 const groups = require('../models/groups')
 const guides = require('../../models/guides');
 const qrcode = require('qrcode')
+const ip = require('ip')
+const sessions = require('../../models/sessionTable')
 
+const osu = require('node-os-utils').os
+const proc = require('node-os-utils').proc
+const cpu = require('node-os-utils').cpu
 
 const terms = require('../../models/terms')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
 
+
+const { google } = require("googleapis");
+var analytics = google.analytics("v3");
+
+var dimensions = "ga:country";
+var metrics = "ga:users";
+
+var queryGoogle = require('../googleAnalytics.js')
 
 //discord config
 
@@ -72,12 +88,16 @@ function createDiscordAnnouncement(message, channelID) {
 }
 
 
+router.post('/destroy', ensureAuthenticated, async function(req, res) {
+    sessions.deleteMany({}).then(success => res.json({status: "success"})).catch(err => res.json({status: "error"}))
+})
 
 //static routes for rendering pages
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
-
+router.get('/dashboard', ensureAuthenticated, async (req, res) => {
+    var analyticalData = await queryGoogle(analytics, dimensions, metrics).then(result => result).catch(err => err)
     const uid = req.user.uid
-
+    var pageData = await queryGoogle(analytics, "ga:pagePath", "ga:users").then(gresult => gresult).catch(error => console.log(error))
+    var getProcesses = await proc.totalProcesses().then(processCount => processCount)
     grouplinks.find({ Ranks: { $all: [req.user.group] }}, function (error, dashboardLinks) {
         if (error) {
             console.log(error)
@@ -88,7 +108,14 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
                     name: req.user.name,
                     rank: req.user.group,
                     dashboardLinks: links,
-                    dashboard: 'true'
+                    dashboard: 'true',
+                    analyticalData: analyticalData,
+                    upTime: osu.uptime(),
+                    pageData: pageData.data.rows,
+                    ipAddr: ip.address(),
+                    arch: osu.arch(),
+                    processes: getProcesses,
+                    cpuModel: cpu.model()
                 })
             })
         }
@@ -116,7 +143,6 @@ router.get('/update-terms', ensureAuthenticated, ensureAdmin, async function(req
 
 router.get('/update-terms/:term', ensureAuthenticated, ensureAdmin, async function(req, res) {
     var term = req.params.term.toString()
-    console.log(term)
     terms.findOne({'contentKey' : term}, function(error, result) {
         if (error) {
             res.redirect('/update-terms')
@@ -330,8 +356,6 @@ router.post('/createItem', ensureAuthenticated, ensureAdmin, async function(req,
     })
     if (req.body.announce == "true") {
         createDiscordAnnouncement(`@everyone A new item has been added to the ${req.body.productkey} Store: ${req.body.title}. https://worldplugs.net/products/${categorykey}/items/${req.body.productkey}`, "740961097267544077")
-    } else {
-        console.log("no announce")
     }
 
     var empty = []
@@ -515,7 +539,8 @@ router.get('/reset-password/:resetURL', async function (req, res) {
                 header: "The Admins have requested a password reset. To continue please enter a new password",
                 subheader: "Please note this cannot be the same as your old password",
                 buttonText: "Change Password",
-                tfaqr: url
+                tfaqr: url,
+                tfakey: secret.base32
             })
         })
         .catch(error => error)
@@ -545,7 +570,6 @@ router.get('/create-password/:createURL', function (req, res) {
                 var secret = speakeasy.generateSecret({
                     name: result.email
                 })
-                
             
                 await users.updateOne({_id: result._id}, {secret: secret.base32}).catch(errmsg => console.log(errmsg))
 
@@ -560,7 +584,8 @@ router.get('/create-password/:createURL', function (req, res) {
                     header: "Welcome to the WorldPlugs staff team!",
                     subheader: "Please enter a new password to continue to the management page.",
                     buttonText: "Create Password",
-                    tfaqr: qr
+                    tfaqr: qr,
+                    tfakey: secret.base32
             })
             }
         }
@@ -618,21 +643,31 @@ router.get('/banners', ensureAuthenticated, ensurePermissions('/banners'), funct
 })
 
 router.get('/categories', ensureAuthenticated, ensureAdmin, async function (req, res) {
-    var results = []
-    await categories.find({}, function (error, result) {
-        if (error) {
-            console.log(error)
-        } else {
-            results.push(result)
+
+    categories.aggregate([
+
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'CategoryKey',
+                foreignField: 'CategoryKey',
+                as: 'products'
+            }
+        },
+    ]).exec((err, results) => {
+        if (err) {
+            console.log("error", err)
         }
-    })
-    getLinks(req.user.group, function(links) {
-    res.render('categories.ejs', {
-        layout: "authenticated-layout.ejs",
-        data: results,
-        dashboardLinks: links
-    })
-    })
+        if (results) {
+            getLinks(req.user.group, function (links) {
+                res.render('categories.ejs', {
+                    layout: "authenticated-layout.ejs",
+                    results: results,
+                    dashboardLinks: links
+                })
+            })
+        }
+    });
 })
 
 router.get('/products', ensureAuthenticated, ensureAdmin, async function (req, res) {
@@ -653,7 +688,7 @@ router.get('/products', ensureAuthenticated, ensureAdmin, async function (req, r
 })
 })
 
-router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, function (req, res) {
+router.get('/categories/:categoryKey', ensureAuthenticated, ensureAdmin, function (req, res) {
     var key = req.params.categoryKey.toString();
     products.find({
         CategoryKey: key
@@ -677,8 +712,6 @@ router.get('/browseProducts/:categoryKey', ensureAuthenticated, ensureAdmin, fun
 router.post('/addProduct', ensureAuthenticated, ensureAdmin, function (req, res) {
     if (req.body.announce == "true") {
         createDiscordAnnouncement(`@everyone A new product has been added to the ${req.body.CategoryKey} Category: ${req.body.title}. Access the products page here: __https://worldplugs.net/products/${req.body.CategoryKey}__`, "740961097267544077")
-    } else {
-        console.log("no announce")
     }
 
     var categorykey = req.body.CategoryKey
@@ -707,7 +740,6 @@ router.post('/addProduct', ensureAuthenticated, ensureAdmin, function (req, res)
                         console.log(error)
                         res.status(403).end()
                     } else {
-                        console.log(result)
                         res.send("e")
                     }
                 })
@@ -717,8 +749,6 @@ router.post('/addProduct', ensureAuthenticated, ensureAdmin, function (req, res)
             }
         }
     })
-
-    console.log(title, productkey, image, description)
 })
 
 router.post('/renableProduct', ensureAuthenticated, ensureAdmin, function (req, res) {
@@ -743,30 +773,41 @@ router.post('/unlistProduct', ensureAuthenticated, ensureAdmin, function (req, r
     }})
 })
 
-router.get('/browseItems/:productKey', ensureAuthenticated, ensureAdmin, function (req, res) {
+router.get('/categories/:categoryKey/:productKey', ensureAuthenticated, ensureAdmin, function (req, res) {
     var key = req.params.productKey.toString()
-    items.find({
-        ProductKey: key,
-        productState: "enabled"
-    }, function (error, results) {
-        if (error) {
-            console.error(error)
-        } else {
-            items.find({ProductKey: key,
-                productState: "disabled"
-            }, function(err, listResult) {
-                getLinks(req.user.group, function(links) {  
-                    res.render('items-view', {
-                        layout: "authenticated-layout.ejs",
-                        items: results,
-                        unlisted: listResult,
-                        dashboardLinks: links
-                    })
+    categories.findOne({CategoryKey: req.params.categoryKey}, function(categoryError, categoryResult) {
+        if (categoryError) {
+            console.log(categoryError)
+        } else{
+            if (categoryResult) {
+                items.find({
+                    ProductKey: key,
+                    productState: "enabled"
+                }, function (error, results) {
+                    if (error) {
+                        console.error(error)
+                    } else {
+                        items.find({ProductKey: key,
+                            productState: "disabled"
+                        }, function(err, listResult) {
+                            getLinks(req.user.group, function(links) {  
+                                res.render('items-view', {
+                                    layout: "authenticated-layout.ejs",
+                                    items: results,
+                                    unlisted: listResult,
+                                    dashboardLinks: links
+                                })
+                            })
+                            
+                        })
+                    }
                 })
-                
-            })
+            } else {
+                res.redirect('/dashboard')
+            }
         }
     })
+    
 })
 
 router.get('/manageAccounts/:id', ensureAuthenticated, ensureAdmin, function (req, res) {
@@ -861,7 +902,6 @@ router.post('/deleteCategory', ensureAuthenticated, ensureAdmin, function (req, 
         if (error) {
             console.log(error)
         } else {
-            console.log(result)
             res.send('/categories')
         }
     })
@@ -1005,8 +1045,6 @@ router.post('/updateProduct', ensureAuthenticated, ensureAdmin, async function (
             }, function (error, result) {
                 if (error) {
                     console.log(error)
-                } else {
-                    console.log(result)
                 }
             })
         }
@@ -1069,7 +1107,6 @@ router.post('/changeState', ensureAuthenticated, ensureAdmin, function (req, res
         if (error) {
             console.error(error)
         } else {
-            console.log(result)
             res.send("e")
         }
     })

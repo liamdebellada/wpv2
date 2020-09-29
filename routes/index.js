@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 var sanitize = require('mongo-sanitize');
 const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching-v2');
 
+
 // Export Models
 const category = require('../models/categories');
 const products = require('../models/products');
@@ -15,6 +16,7 @@ const { db } = require('../models/categories');
 const banners = require('../Management/models/banners');
 const guides = require('../models/guides');
 const terms = require('../models/terms')
+const successOrders = require('../models/successOrders.js')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
@@ -54,7 +56,6 @@ const limitRequests = rateLimit({
         });
     }
 })
-
 
 
 router.post('/secureShutdown', function(req, res) {
@@ -134,13 +135,25 @@ router.post('/searchData', limitRequests, function(req, res) {
 
 })
 
-router.get('/success', function(req, res) {
+
+router.get('/success/:successURL', function(req, res) {
+
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     try {
-        if (req.session.viewOrder[0] && req.session.userInfo) {
-            res.render('success.ejs', {purchaseContents: req.session.viewOrder, addressContents: req.session.userInfo})
-        }
+        successOrders.findOne({url: req.params.successURL.toString()}, function(error, result) {
+            if (error) {
+                functions.createErrorLog("Error whilst accessing success URL", ip)
+            } else {
+                if (result) {
+                    res.render('success.ejs', {email: result.purchaseData.email, purchaseID: result.purchaseData.purchaseID, cart: result.purchaseData.cart})
+                } else {
+                    functions.createErrorLog("User tried to reach /success without a valid order.", ip)
+                    res.redirect('/')
+                }
+            }
+        })
     } catch {
+        console.log("User tried to reach /success without a valid order.", ip)
         functions.createErrorLog("User tried to reach /success without a valid order.", ip)
         res.redirect('/')
     }

@@ -14,7 +14,7 @@
             <!-- ITEM -->
 
 
-            <% purchaseContents.forEach(function(item) { %>
+            <% cart.forEach(function(item) { %>
                 <tr>
                     <td width="75%" align="left" style="font-family: 'Raleway', sans-serif; padding-bottom: 5px;" class="confirmed-purchase-text"><%= item[0].Title %> <b>x<%= item[1] %> </b></td>
                     <td width="25%" align="left" style="font-family: 'Raleway', sans-serif; text-align: right; padding-bottom: 5px;" class="confirmed-purchase-text"> £<%= item[0].Price %></td> 
@@ -29,18 +29,17 @@
 
     
 
-
     <hr style="background-color: #ffffff5c;">
     
 
       <div class="wp-access-purchase">
         <p class="wp-access-purchase-text access-purchase-info">To access the credentials for the accounts you've bought, check your email inbox!</p>
-        <p class="wp-access-purchase-text wp-access-purchase-email">(<%= addressContents[0] %>)</p>
+        <p class="wp-access-purchase-text wp-access-purchase-email">(<%= email %>)</p>
           <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/mail.svg" width="10%">
           <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/next.svg" width="10%">
           <img class="wp-access-purchase-symbol" src="https://cdn.worldplugs.net/card.svg" width="10%">
 
-          <p class="wp-access-purchase-text wp-access-purchase-confirmation">Order Confirmation # <b><%= addressContents[1].slice(1, -1) %></b></p>
+          <p class="wp-access-purchase-text wp-access-purchase-confirmation">Order Confirmation # <b><%= purchaseID.slice(1, -1) %></b></p>
       </div>
 
 

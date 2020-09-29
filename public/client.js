@@ -56,13 +56,12 @@ function confirmPayment() {
         type: "POST",
         url: "/confirmPayment",
     }).done(data => {
-        if (data == '/success') {
+        if (data.includes('success')) {
 
             $('.wp-confirmation-animation').toggleClass('load-complete');
             $('.wp-confirmation-checkmark').toggle();
 
             setTimeout(function () {
-
                 window.location.href = data
 
             }, 1500);
@@ -70,7 +69,6 @@ function confirmPayment() {
         } else {
             window.location.href = data
         }
-
 
     });
 }
