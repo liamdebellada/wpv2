@@ -30,8 +30,6 @@
 
     if(window.innerWidth > 768) {
 
-      console.log(desktopDisplay)
-
       desktopDisplay.forEach(function(listItem) {
         if (listItem.href != "") {
           $('#wp-breadcrumbs').append(`<li class="breadcrumb-item"><a href="${listItem.href}">${listItem.title}</a></li>`)
@@ -316,15 +314,12 @@ $(function() {
  * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
 
-
-  
 </style>
 
 <script>
   var counterBack
   var i;
   function progressBarStart() {
-    console.log("first")
     i = 10
     $('#wp-progress-bar').collapse('show')
       counterBack = setInterval(function(){
@@ -338,7 +333,6 @@ $(function() {
       }, 300);
   }
   function progressBarComplete(requireReload = false) {
-    console.log(requireReload)
     var progressPromise = new Promise((resolve, reject) => {
     setTimeout(() => {
           clearInterval(counterBack); 

@@ -1,18 +1,18 @@
 <h1>Staff Management</h1>
 <ul class="nav nav-tabs">
-    <li class="nav-item dropdown">
-      <a class="nav-link active" onclick="navbar(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
+    <li class="nav-item dropdown header-list">
+      <a class="nav-link active" onclick="navbar(this)"  href="#" role="button" id="dropSelection" style="color: #2C3E50; border-radius: 5px 5px 0px 0px !important">View</a>
     </li>
-    <li>
+    <li class="header-list">
         <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="createSelection">Add Staff</a>
     </li>
-    <li>
+    <li class="header-list">
       <a class="nav-link" style="cursor: pointer" onclick="navbar(this)" id="groupManagement">Group Management</a>
   </li>
 </ul>
 
-<div id="create" style="display: none;">
-  <div style="margin-top: 15px;">
+<div id="create" class="rounded-container" style="display: none;">
+  <div style="padding: 15;">
     <text id="wp-create-account-response"></text>
     <div class="form-row">
       <div  style="margin-bottom: 10px" class="col-md-6">
@@ -24,14 +24,14 @@
         <input type="email" id="wp-create-account-user-email" class="form-control" placeholder="Users Email">
       </div>
     </div>
-    <div  class="form-group">
+    <div class="form-group">
       <label for="inputState">Group</label>
       <select id="wp-create-account-select-group" class="form-control" required>
         <option val="staff">Staff</option>
         <option val="admin">Admin</option>
       </select>
     </div>
-    <button style="margin-bottom: 10px" onclick="addAccount()" class="btn btn-success ">Add Account and Generate Password Link</button>
+    <button style="margin-bottom: 10px" onclick="addAccount()" class="btn wp-dark-button">Add Account and Generate Password Link</button>
     <div id="wp-admin-create-password-collapse-box" class="collapse hide">
       <div  class="selectBox form-group">
         <b><label for="inputState" id="wp-create-account-copy">Click link to copy</label></b>
@@ -39,16 +39,15 @@
           value=""></input>
       </div>
     </div>
-    </div>
+  </div>
 </div>
 
 <style>
     .editbannerbutton {
-        padding-right: 2px;
-        padding-left: 2px;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-radius: 0;
+        padding: 0 4 0 4;
+        border-radius: 4;
+        background-color: #25262a;
+        border: none;      
     }
 
     td {
@@ -56,35 +55,29 @@
     }
 </style>
 
-<div id="dataTable" style="display: block;">
-    <table class="table" style="table-layout: fixed;">
-        <thead>
-          <tr >
-            <th style="width: 20%;" scope="col">Staff Name</th>
-            <th scope="col" >Email</th>
-            <th scope="col">Group</th>
-            <th scope="col">Manage Account</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% staffAccounts.forEach(function(account) { %>
-            <tr>
-              <td><%= account.name %></td>
-              <td><%= account.email %></td>
-              <td><%= account.group %></td>
-              <td><button class="btn btn-dark editbannerbutton" data-items="<%= account._id %>|<%= account.name %>|<%= account.email %>|<%= account.group %>" id="<%= account._id %>" onclick="displayAccount(this)">Manage</button</td>
-            </tr>
-           <% }) %>
-        </tbody>
-      </table>
+<div id="dataTable" class="rounded-container" style="display: block;">
+  <div class="rounded-container userlist-container">
+    <% staffAccounts.forEach(function(account) { %>
+      <div class="userlist-list">
+        <div class="userlist-info">
+            <div>
+              <img src="https://www.flaticon.com/svg/static/icons/svg/2521/2521818.svg" class="user-icon"/>
+            </div>
+            <div class="userlist-info-container">
+              <text><%= account.name %></text>
+              <text class="userlist-group-text"><%= account.group %></text>
+            </div>
+        </div>
+        <div class="userlist-settings">
+          <img class="userlist-settings-icon" src="/icons/edit-icon.svg" data-items="<%= account._id %>|<%= account.name %>|<%= account.email %>|<%= account.group %>" id="<%= account._id %>" onclick="displayAccount(this)"/>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
 </div>
 
-<div id="groupPermissions" style="display: none; margin-top: 10px;">
-
-  
-
-  
-
+<div id="groupPermissions" class="rounded-container" style="display: none;">
   <form> 
     <h4>Group Permissions</h4>
     <div class="form-group">
@@ -96,10 +89,10 @@
     </div>
     <table class="table">
       <thead>
-        <tr>
+        <tr style="color: #95a5a6 !important">
           <th scope="col">Name</th>
           <th scope="col">Link</th>
-          <th scope="col" style="text-align: center;">Enabled</th>
+          <th scope="col" style="text-align: center;">Status</th>
         </tr>
       </thead>
       <tbody id="wp-group-permissions-body">
@@ -107,14 +100,19 @@
           <tr id="<%= groupLink._id %>" data-items="<%= groupLink.Ranks %>">
             <td ><%= groupLink.Title %></td>
             <td style="word-wrap: break-word;min-width: 160px;max-width: 160px; font-size: 0.75rem"><%= groupLink.URL %></td>
-            <td align="right"><input class="form-check-input" type="checkbox" value=""></td>
+            <td>
+              <div class="custom-control custom-checkbox" style="display: flex; justify-content: center;">
+                <input type="checkbox" class="custom-control-input" id="<%= groupLink.URL %>">
+                <label class="label-checkbox custom-control-label" for="<%= groupLink.URL%>"></label>
+              </div>
+            </td>
           </tr>
         <% }) %>
       </tbody>
     </table>
     
   </form>
-  <button class="btn btn-success" onclick="updateGroupPermissions()">Update Group Permissions</button>
+  <button class="btn wp-dark-button" onclick="updateGroupPermissions()">Update Group Permissions</button>
   
   <hr>
   
@@ -126,27 +124,20 @@
           <label for="newGroup">Add New Group</label>
           <input class="form-control" name="newGroup" placeholder="E.g Developer" type="text">
         </div>
-        <button class="btn btn-secondary" style="margin-bottom: 15px;">Add Group</button>
+        <button class="btn btn-secondary wp-dark-button" style="margin-bottom: 15px;">Add Group</button>
       </form>
-      </div>
+    </div>
 
       <div class="col-md-6">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Group</th>
-              <th scope="col" style="text-align: right;"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <text class="text-muted">Group</text>
+        <div style="display: flex; justify-content: space-between; flex-direction: column">
             <% groups.forEach(function(group) { %>
-              <tr>
-                <td><%= group.Name %></td>
-                <td align="right"><button class="btn btn-danger" data-items="<%= group._id %>">Remove</button></td>
-              </tr>
+              <div style="align-self: left; display: flex; justify-content: space-between; padding-top: 1rem;">
+                <text style="color: white; font-weight: 300;"><%= group.Name %></text>
+                <button class="btn btn-danger" data-items="<%= group._id %>">Remove</button>
+              </div>
             <% }) %>
-          </tbody>
-        </table>
+        </div>
       </div>
     </div>
     
@@ -156,7 +147,7 @@
 
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content popup-colors">
       <div class="modal-header">
         <h5 class="modal-title">Manage Account</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -192,7 +183,7 @@
 
         <div id="wp-admin-reset" class="collapse show">
         <div id="wp-admin-reset-password" class="collapse" style="display:inline-block; overflow: hidden;">
-          <text style="color: #18BC9C; cursor: pointer" onclick="askResetPassword()">Reset Password</text>
+          <text style="color: #7258b0; cursor: pointer" onclick="askResetPassword()">Reset Password</text>
 
           <div class="row wp-admin-reset-password-confirm-div collapse" id="wp-admin-reset-password-confirm-picker" >
 
@@ -219,8 +210,8 @@
       <div class="modal-footer justify-content-between">
         <button type="button" class="btn btn-danger" onclick="revokeAccess()" data-dismiss="modal">Revoke Access</button>
         <div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" id="save-changes" onclick="saveAccount()" class="btn btn-success">Save changes</button>
+          <button type="button" class="btn wp-dark-button" data-dismiss="modal">Close</button>
+          <button type="button" id="save-changes" onclick="saveAccount()" class="btn btn-success wp-dark-button">Save changes</button>
         </div>
       </div>
     </div>
@@ -496,6 +487,147 @@
     transition: height 0.5s ease-in;
   }
 
+  .nav-link {
+    background-color: #191a1c;
+    color: white !important;
+  }
 
+  .nav-link:hover {
+    border-color: transparent !important;
+  }
 
+  .active {
+    background-color: #25262a !important;
+    border-color: transparent !important;
+  }
+
+  .wp-table {
+    background-color: #191a1c;
+  }
+  td {
+    border: none !important;
+    color: white;
+    font-weight: 300;
+  }
+  th {
+    border: none !important;
+    font-weight: 500;
+  }
+
+  .nav {
+    border: none !important;
+  }
+
+  .button-row {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+  }
+
+  #dataTable {
+    box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+  }
+  .rounded-container {
+    border-radius: 0px 5px 5px 5px !important;
+  }
+
+  #create {
+    margin: none;
+    background-color: #191a1c;
+  }
+  label {
+    color: #95a5a6 !important
+  }
+
+  .form-control {
+    background-color: #25262a !important;
+    border: none;
+  }
+
+  #groupPermissions {
+    background-color: #191a1c;
+    padding: 15;
+  }
+
+  .label-checkbox::before {
+    background-color: #141517;
+    border: none;
+  }
+
+  .wp-dark-button {
+    background-color: #25262a !important; 
+    border: none !important;
+    color: white;
+  }
+
+  .popup-colors {
+    background-color: #191a1c;
+  }
+
+  .close {
+    color: #7258b0 !important;
+  }
+
+  .modal-header {
+    border: none;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .modal-body {
+    border: none
+  }
+
+  .modal-footer {
+    border: none;
+  }
+
+  .userlist-container {
+    background-color: #191a1c;
+  }
+
+  .user-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .userlist-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15;
+  }
+
+  .userlist-info-container {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    margin-left: 0.5rem;
+    color: white;
+  }
+
+  .userlist-group-text {
+    font-size: 10;
+    font-weight: 300;
+  }
+
+  .userlist-settings {
+    height: 20;
+    width: 20;
+  }
+  .userlist-info {
+    display: flex;
+  }
+  .userlist-settings-icon {
+    height: 1.2rem;
+    width: 1.2rem;
+  }
+
+  .header-list {
+    width: 100%;
+  }
+
+  .nav-link {
+    border-radius: 0 !important;
+  }
 </style>

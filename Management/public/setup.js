@@ -68,56 +68,58 @@ window.chart = new Chart(chLine, {
 
 /* bar chart */
 
-pageChartData = JSON.parse(pageChartData)
-
-var barData = {
-  labels: [],
-  datasets: [{
-    data: [],
-    backgroundColor: colors[0]
-  }]
-}
-
-for (item in pageChartData) {
-  barData.labels.push(pageChartData[item][0])
-  barData.datasets[0].data.push(pageChartData[item][1])
-}
-
-
-
-var chBar1 = document.getElementById("chBar1");
-if (chBar1) {
-  new Chart(chBar1, {
-    type: 'bar',
-    data: barData,
-    options: {
-      legend: {
-        display: false
-      },
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [{
-          barPercentage: 0.4,
-          categoryPercentage: 0.5,
-          ticks: {
-            display: false
-          },
-          gridLines: {
-            display:false
-          }
-        }],
-        yAxes: [{
-          ticks: {
-            display: false
-          },
-          gridLines: {
-            display:false
-          }
-        }]
+try { //potential issue with no data (quick fix)
+  pageChartData = JSON.parse(pageChartData)
+  var barData = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: colors[0]
+    }]
+  }
+  
+  for (item in pageChartData) {
+    barData.labels.push(pageChartData[item][0])
+    barData.datasets[0].data.push(pageChartData[item][1])
+  }
+  
+  
+  
+  var chBar1 = document.getElementById("chBar1");
+  if (chBar1) {
+    new Chart(chBar1, {
+      type: 'bar',
+      data: barData,
+      options: {
+        legend: {
+          display: false
+        },
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [{
+            barPercentage: 0.4,
+            categoryPercentage: 0.5,
+            ticks: {
+              display: false
+            },
+            gridLines: {
+              display:false
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              display: false
+            },
+            gridLines: {
+              display:false
+            }
+          }]
+        }
       }
-    }
-  });
-}
+    });
+  }
+} catch {}
+
 
 
 /* 3 donut charts */

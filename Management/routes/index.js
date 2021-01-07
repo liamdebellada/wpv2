@@ -20,7 +20,6 @@ var http = require('https');
 
 const axios = require('axios')
 
-
 const banners = require('../models/banners');
 const categories = require('../../models/categories')
 const products = require('../../models/products')
@@ -93,7 +92,7 @@ router.post('/destroy', ensureAuthenticated, async function(req, res) {
 })
 
 //static routes for rendering pages
-router.get('/dashboard', ensureAuthenticated, async (req, res) => {
+router.get('/dashboard', async (req, res) => {
     var analyticalData = await queryGoogle(analytics, dimensions, metrics).then(result => result).catch(err => err)
     const uid = req.user.uid
     var pageData = await queryGoogle(analytics, "ga:pagePath", "ga:users").then(gresult => gresult).catch(error => console.log(error))
