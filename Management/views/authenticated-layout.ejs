@@ -14,6 +14,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://unpkg.com/colcade@0/colcade.js"></script>
 
 
 
@@ -53,7 +54,7 @@
   <div class="d-flex">
 
     <!-- Sidebar -->
-    <div class="bg-dark text-light" id="sidebar-wrapper">
+    <div class="bg-dark text-light" id="sidebar-wrapper" >
       <div class="sticky-top" id="sidebar-sticky-viewports">
         <div class="sidebar-heading" id="sidebar-sticky-viewports-heading"><img style="width:30px; margin-right: 5px;" src="https://cdn.worldplugs.net/worldplugs-logo-light.svg">WorldPlugs<text style="font-size: 0.45rem; padding: 0.15rem; display: inline-block; height: 50%;">UK</text> <button class="btn navbar-toggler-icon" id="menu-toggle-mobile"></button></div>
         <div class="list-group list-group-flush">
@@ -235,14 +236,36 @@ $(function() {
 
 </html>
 
+<script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script>
+
+
+<script>
+var $grid = $('.grid').packery({
+  itemSelector: '.grid-item',
+  gutter: 10
+});
+
+$grid.on( 'click', '.grid-item', function( event ) {
+  var $item = $( event.currentTarget );
+  var isExpanded = $item.hasClass('is-expanded');
+  $item.toggleClass('is-expanded');
+  if ( isExpanded ) {
+    // if shrinking, shiftLayout
+    $grid.packery('shiftLayout');
+  } else {
+    // if expanding, fit it
+    $grid.packery( 'fit', event.currentTarget );
+  }
+});
+
+</script>
+
 
 <style>
   body {
       overscroll-behavior-y: none;
   }
-</style>
 
-<style>
   
 
 ::-webkit-scrollbar-track

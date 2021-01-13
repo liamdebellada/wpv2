@@ -143,9 +143,21 @@ function executePayment() {
 
     $("#wp-redirect-overlay").fadeIn()
 }
-
+let myInput;
 window.onload = function() {
-    
+    myInput = document.getElementById("searched");
+    let typingTimer;
+    let doneTypingInterval = 100;  
+
+    myInput.addEventListener('keydown', () => {
+        clearTimeout(typingTimer);
+        if (myInput.value) {
+            typingTimer = setTimeout(function() {doneTyping(myInput.value)}, doneTypingInterval);
+        }
+        else if (myInput.value == "") {
+            doneTyping(myInput.value)
+        } 
+    });
     $('[data-toggle="tooltip"]').tooltip();   
 }
 
@@ -176,21 +188,6 @@ window.onscroll = function () {
     prevScrollpos = currentScrollPos;
 }
 
-let myInput = $('#searched');
-let typingTimer;
-let doneTypingInterval = 100;  
-
-
-myInput.keyup( () => {
-    clearTimeout(typingTimer);
-    if (myInput.value) {
-        typingTimer = setTimeout(function() {doneTyping(myInput.value)}, doneTypingInterval);
-    }
-    else if (myInput.value == "") {
-        doneTyping(myInput.value)
-    } 
-});
-
 function drawSearchResults(data) {
     var resultsField = document.getElementById("search-results")
     resultsField.innerHTML = ""
@@ -205,7 +202,6 @@ function drawSearchResults(data) {
             </div>
             <hr/>
             `
-    
             resultArea.innerHTML = rowContent
     
             resultsField.append(resultArea)
