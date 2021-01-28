@@ -12368,7 +12368,7 @@ h1 {
 }
 
 
-.wpm-categories-header {
+.wpm-categories-header, .wpm-products-header {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
@@ -12470,13 +12470,25 @@ input:focus {
     display: none;
 }
 
+.wpm-categories-desktop-button {
+    height: 34px !important;
+    max-height: 34px !important;
+}
+
 
 @media (max-width: 900px) {
+
+    .wpm-products-header-create {
+        justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
     .wpm-categories-desktop-button {
         display: none;
     }
 
-    .wpm-categories-header {
+    .wpm-categories-header, .wpm-products-header {
         flex-direction: column;
     }
 
@@ -12595,3 +12607,282 @@ ul {
     border-color: #ffffff
   }
 
+  .toggle-handle {
+    background-color: white;
+}
+
+.toggle-off {
+    background-color: #2C3E50;
+    color: white;
+}
+
+.toggle-on {
+    background-color: #18BC9C;
+    color: white;
+}
+
+.toggle-on.btn-primary:hover {
+    background-color: #18BC9C;
+    color: #dddddd;
+}
+
+.toggle-off.btn-default:hover {
+    color: #dddddd;
+}
+
+button.close {
+    outline: none;
+}
+
+#wpm-products-manage-desktop {
+    flex-shrink: 0;
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 2;
+
+}
+
+#wpm-products-manage-desktop-product-imageurl {
+    overflow-wrap: anywhere;
+}
+
+
+.sticky-top {
+    z-index: 1
+}
+
+
+.wpm-products-manage-desktop-product-pill {
+    color: white;
+    font-size: 1rem;
+    border: 3px solid #3a3a4b;
+    padding: 0.5rem
+}
+
+.wpm-products-manage-desktop-wrapper {
+    width: 100%;
+}
+
+.wpm-products-manage-desktop-product-pill-left {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background: #3a3a4b;
+}
+
+.wpm-products-manage-desktop-product-pill-right {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: 0px solid #ffffff3d;
+
+}
+
+.wpm-products-manage-product-pill-accounts {
+    background-color: transparent;
+    transition: all 200ms ease;
+    transition-property: background-color, color, border-color; 
+    color: #8360ff;
+    border-radius: 10px;
+    border-color: #8360ff;
+}
+
+.wpm-products-manage-product-pill-accounts:hover, .wpm-products-manage-product-pill-accounts:focus {
+    background-color: white;
+    border-color: white;
+    color: black;
+    outline: none;
+}
+
+.wpm-products-manage-desktop-content {
+    margin: 1rem 1rem 0rem 1rem;
+    background-color: #1B1B1F;
+    height: 85vh;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    box-shadow: 0 -2px 9px 1px rgba(0, 0, 0, 0.35);
+}
+
+.wpm-products-manage-desktop-product {
+    padding: 1rem;
+}
+
+.wpm-products-manage-product-main {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem
+}
+
+.wpm-products-manage-product-main-info {
+    display: flex;
+    justify-content: space-around;
+}
+
+.wpm-products-manage-product-actions {
+    /* align-self-baseline ml-auto d-flex */
+    align-self: baseline;
+    margin-left: auto;
+    display: flex;
+    order: -1;
+    margin-bottom: 1rem
+
+}
+
+.wpm-products-manage-desktop-flex {
+        display: flex;
+        flex-direction: column;
+}
+
+@media (min-width: 576px) {
+
+    #wpm-products-manage-desktop-product-imageurl {
+        overflow-wrap: break-word;
+        margin-right: 1rem
+    }
+
+    .wpm-products {
+        flex-wrap: wrap;
+        display: flex;
+    }
+
+    .wpm-products .wpm-products-product-wrapper {
+        flex: 1 0 50%;
+    }
+
+    .wpm-products-product-wrapper {
+        max-width: 50%;
+    }
+
+    .sticky-top {
+        z-index: 2
+    }
+    #wpm-products-manage-desktop {
+        z-index: 1
+    }
+    .wpm-products-manage-product-actions {
+        order: -1;
+    }
+}
+
+
+
+@media (min-width: 768px) {
+    #wpm-products-manage-desktop {
+        position: sticky;
+    }
+    .wpm-products-manage-desktop-content {
+        height: 250px;
+    }
+    #wpm-products-manage-desktop-product-imageurl {
+        margin-right: 1rem
+    }
+    
+}
+
+@media (min-width: 992px) {
+    .wpm-products {
+        flex-wrap: wrap;
+        display: flex;
+    }
+
+    .wpm-products-manage-desktop-product-pill-right {
+        margin-right: 1rem;
+    }
+
+    .wpm-products-manage-product-actions {
+        order: unset;
+    }
+
+    .wpm-products-manage-product-main {
+        display: contents;
+        margin-bottom: inherit
+    }
+
+    .wpm-products-manage-product-main-info {
+        display: contents;
+    }
+    
+    .wpm-products-manage-desktop-flex {
+        display: flex;
+        align-items: center;
+        flex-flow: row wrap;;
+    }
+
+    .wpm-products .wpm-products-product-wrapper {
+        flex: 1 0 33%;
+    }
+
+    .wpm-products-product-wrapper {
+        max-width: 33%;
+    }
+
+    #wpm-products-manage-desktop-product-imageurl {
+        white-space: nowrap;
+        margin-right: 2rem
+    }
+
+}
+
+
+@media (min-width: 1200px) {
+    .wpm-products {
+        flex-wrap: wrap;
+        display: flex;
+    }
+
+    .wpm-products .wpm-products-product-wrapper {
+        flex: 1 0 25%;
+    }
+
+    .wpm-products-product-wrapper {
+        max-width: 25%;
+    }
+}
+
+
+
+.wpm-products-product {
+    margin: 10px;
+}
+
+.wpm-products-product {
+    padding: 0.95rem;
+    color: white;
+    border-radius: 5px;
+    background-color: #1f1f27;
+    box-shadow: 9px 9px 9px -12px rgba(0, 0, 0, 0.35);
+}
+
+.wpm-products-button {
+    width: 140px;
+    margin: 3px
+}
+
+.wpm-products-pill-button {
+    transition: all 200ms ease;
+    transition-property: background-color, color, border;
+    background-color: transparent;
+    color: #8360ff;
+    border: 1px solid #8360ff;
+    border-radius: 5px;
+}
+
+.wpm-products-manage-button:hover,
+.wpm-products-manage-button:focus {
+    background-color: white;
+    border: 1px solid white;
+    color: black;
+    outline: none;
+}
+
+.wpm-products-accounts-button {
+    padding: 1px 6px;
+    font-size: 0.9375rem;
+    display: inline-block;
+}
+
+.wpm-products-accounts-button:hover {
+    background-color: white;
+    border: 1px solid white;
+    color: black;
+    outline: none;
+}

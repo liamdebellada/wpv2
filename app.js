@@ -2,12 +2,15 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true);
 var bodyParser = require('body-parser');
 var EV = require('dotenv').config() 
 const bcrypt = require('bcrypt')
 var helmet = require('helmet')
 
-
+//google analytics
+const tracker = require('./exports/tracker.js')
+const ExpressGA = require('express-universal-analytics')
 
 //sessions
 const session = require("express-session");
@@ -28,6 +31,9 @@ store.on('error', function(error) {
 
 // Use Express Framework
 const app = express();
+
+//Analytics config
+app.use(ExpressGA('UA-178419670-1'));
 
 //disable headers
 app.disable('x-powered-by')
@@ -71,7 +77,7 @@ console.log("WorldPlugs.net")
 // Connect to Mongo
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('MongoDB Connection Successful'))
-.catch(err => {})
+.catch(err => console.log("MongoDB connection successful"))
 
 
 
@@ -85,9 +91,14 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs')
 
 // Routes
-app.use('/', require('./routes/index'));
+app.use('/', function(req,res,next) {
+    tracker.createTrack(req)
+    next()
+},require('./routes/index'));
 app.use('/', require('./routes/payment'));
 app.use('/', require('./routes/cart'));
+
+
 
 app.use(function(req, res, next){
     res.status(404);

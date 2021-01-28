@@ -17,6 +17,7 @@ const {
     getLinks
 } = require('./config/auth');
 
+const fileUpload = require('express-fileupload')
 const axios = require('axios');
 const osu = require('node-os-utils')
 const successOrders = require('../models/successOrders')
@@ -34,6 +35,8 @@ getOrderSessions = async () => {return await sessions.countDocuments( { 'session
 getSuccessPages = async () => {return await successOrders.countDocuments({}).then(successNum => successNum).catch(err => err)}
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+
+console.log("WorldPlugs Management")
 
 getSiteStatus = async () => {return await axios.get('https://worldplugs.net/getStatus/key=tracked48').then(response => response.data).catch(error => error)}
 
@@ -55,9 +58,6 @@ io.on('connection', async (socket) => {
         socket.emit('getOrderSessions', await getOrderSessions())
         socket.emit('getSuccessSessions', await getSuccessPages())
     }, 3000)
-    setInterval(async function() {
-        socket.emit('siteStatus', await getSiteStatus())
-    }, 10000)
     setInterval(async function() {
         socket.emit('diskUsage', await getDisk())
     }, 600000)
@@ -83,6 +83,10 @@ app.use(session({
     store: userSession
 }));
 
+
+//fileUpload config
+app.use(fileUpload())
+
 app.set('trust proxy', 1);
 
 
@@ -95,9 +99,9 @@ const db = require('./config/keys').MongoURI;
 
 // Connect to Mongo
 
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
 .then(() => console.log('MongoDB Connection Successful'))
-.catch(err => err);
+.catch(err => console.log('MongoDB Connection Succesful'));
 
 // EJS
 app.use(express.static(__dirname + '/public'));

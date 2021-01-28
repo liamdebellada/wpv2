@@ -5,7 +5,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Server Shutdown</h5>
-          <p class="card-text">Stop the main servers process immediately</p>
+          <p class="card-text text-muted">Stop the main servers process immediately</p>
           <a onclick="$('#infoModal').modal('show')" style="color: white !important" class="btn btn-danger">Shutdown</a>
         </div>
       </div>
@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Create service announcement</h5>
-          <p class="card-text">Create a discord alert containing a custom message</p>
+          <p class="card-text text-muted">Create a discord alert containing a custom message</p>
           <a onclick="$('#discordAlert').modal('show')" class="btn btn-warning">Setup alert</a>
         </div>
       </div>
@@ -30,7 +30,7 @@
             <div class="modal-body" style="display: block; text-align: center;">
               <text id="response"></text>
                 <div class="form-inline" style="margin: 15px 0px 15px;">
-                    <label for="usr">Shutdown Key:</label>
+                    <label class="text-muted" for="usr">Shutdown Key:</label>
                     <input type="password" placeholder="Enter Shutdown Key" class="form-control" style="margin: 0px 10px 0px; height: 30px;" id="shutdownKey">
                   </div>
             </div>
@@ -51,7 +51,7 @@
           <div class="modal-body" style="display: block; text-align: center;">
             <div class="form-group">
               <div>
-                <label for="desc" style="float: left;">Example select<span class="badge badge-secondary" style="margin-left: 5px;">Specifies alert formatting</span></label>
+                <label for="desc" class="text-muted" style="float: left;">Type<span class="badge badge-secondary" style="margin-left: 5px;">Specifies alert formatting</span></label>
               </div>
               <select class="form-control" id="alertType">
                 <option>Shutdown Alert</option>
@@ -60,7 +60,7 @@
               </select>
             </div>
             <div class="form-group">
-                <label for="formGroupExampleInput" style="float: left;">Message</label>
+                <label for="formGroupExampleInput" class="text-muted" style="float: left;">Message</label>
                 <textarea id="messageContent" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input"></textarea>
             </div>
           </div>
@@ -71,6 +71,35 @@
   </div>
 
 </div>
+
+<style>
+  .card {
+    background-color: #191a1c;
+  }
+
+  .modal-content {
+    background-color: #191a1c;
+  }
+
+  .modal-header {
+    border: none;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .modal-body {
+    border: none
+  }
+
+  .modal-footer {
+    border: none;
+  }
+
+  .form-control {
+    background-color: #25262a !important;
+    border: none;
+  }
+</style>
 
 <script>
 

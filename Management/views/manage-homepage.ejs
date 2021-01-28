@@ -6,7 +6,7 @@ test
   </div>
 
 
-<h1>Homepage Management</h1>
+<h1>Homepage</h1>
 <ul class="nav nav-tabs">
     <li class="nav-item dropdown">
       <text class="nav-link active" onclick="navbar(this)"  role="button" id="managePopularSelection" style="color: #2C3E50;">View</text>
@@ -17,40 +17,32 @@ test
 
 
 
-<div style="margin-top: 15px ;">
+<div class="content-container rounded-container">
 
     <h4>Popular Categories</h4>
 
     
 
-    <ul id="popularList" class="list-group" >
+    <div id="popularList" class="list-group sub-rounded-container" >
         <% categories.forEach(function (category) { %>
             <% if (category.DisplayPopular == "true") { %>
-                <li id="<%= category.id %>" class="list-group-item"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1) %><text onclick="removeFromPopular(this)" style="float: right; color: #D9534F; cursor: pointer;">Remove</li>
+                <div id="<%= category.id %>" class="list"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1) %><text onclick="removeFromPopular(this)" style="float: right; color: #D9534F; cursor: pointer;">Remove</div>
             <% } %>
         <% }) %>
         
-    </ul>
+    </div>
 
     <br />
     <br />
 
     <h5>All Categories</h5>
 
-    <ul id="sortable" class="list-group">
+    <div id="sortable" class="list-group sub-rounded-container">
         <% categories.forEach(function (category) {  %>
-            <li id="<%= category.id %>" class="list-group-item collapse show"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1)%>
-                
-                <% if (category.DisplayPopular == "false") { %>
-                
-                <text onclick="addToPopular(this)" style="float: right; color: #5CB85C; cursor: pointer; font-size: 1rem">Add</li>
-
-                <% } %>
-                <% if (category.DisplayPopular == "true") { %>
-                    <text style="float: right; color: #5CB85C; font-size: 1rem">Already On Popular Categories</li>
-                <% } %>
+            <div id="<%= category.id %>" class="list"><%= category.CategoryKey.charAt(0).toUpperCase() + category.CategoryKey.slice(1)%>
+                <text <% if (category.DisplayPopular == "false") { %>onclick="addToPopular(this)" class="category-enabled"<%} else {%> class="category-disabled"<%}%>style="float: right; color: #5CB85C; cursor: pointer; font-size: 1rem">Add</div>
         <% }) %>
-    </ul>
+    </div>
 
 
 </div>
@@ -146,11 +138,57 @@ test
         }
         
     }
-
-
-
-
-
-
-
 </script>
+
+<style>
+
+.list {
+    background-color: #141517 !important;
+    color: white;
+    padding: 0.75rem 1.25rem;
+}
+
+.list:hover {
+    transition: ease-in-out 0.3s;
+    border-radius: 12px;
+    background-color: #222428 !important;
+}
+
+.content-container {
+    background-color: #191a1c;
+    padding: 15;
+}
+
+#managePopularSelection {
+    background-color: #25262a !important;
+    border: none;
+    color: white !important;
+}
+
+.sub-rounded-container {
+    padding: 10;
+    background-color: #141517 !important;
+    border-radius: 5px !important;
+}
+
+.nav-tabs {
+    border: none;
+}
+
+.nav-item {
+    width: 100%;
+}
+
+.rounded-container {
+    border-radius: 0px 5px 5px 5px !important;
+    box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+}
+
+.category-enabled {
+    color: #5CB85C !important;
+}
+
+.category-disabled {
+    color: rgba(255, 255, 255, 0.42) !important;
+}
+</style>

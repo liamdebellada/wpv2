@@ -186,7 +186,7 @@
                 color: document.getElementById("bannerColor").style.backgroundColor,
                 textColor: document.getElementById("previewText").style.color,
                 additionalInfo: document.getElementById("additonalInfo").value,
-                active: active
+                active: true //change to active
             }
             }).done(data => {
                 window.location.href = data;
@@ -223,3 +223,26 @@
     }
  
 </script>
+
+<style>
+    body {
+        color: #95a5a6 !important;
+    }
+
+    table {
+        color: white;
+    }
+
+    th {
+        color: #95a5a6 !important;
+    }
+
+    td {
+        color: white;
+    }
+
+    .form-control {
+    background-color: #25262a !important;
+    border: none;
+  }
+</style>

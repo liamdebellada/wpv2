@@ -91,7 +91,7 @@
       </div>
    </div>
     <% }) %>
-    <div class="itemm collapse hide" id="wpm-categories-create">
+    <div class="itemm collapse" id="wpm-categories-create">
       <div class="wp-categories-category">
         <form id="wp-categories-create-form">
           <div class="d-flex justify-content-between">
@@ -272,7 +272,7 @@ function saveCategory(category) {
             id: categoryId
         }
       }).done(data => {
-        progressBarComplete()
+        progressBarComplete(true)
         $(category).find('.wp-categories-category-title').text(categoryTitle)
         $(category).find('.wp-categories-category-image').attr('src', categoryURL)
         $(category).find('.wp-categories-category-modify-url').attr('placeholder', categoryURL)
@@ -292,9 +292,14 @@ function deleteCategoryPopup(category) {
 }
 
 function createCategory() {
+  
   $('#searchs').attr('disabled', 'true')
   $('#wp-categories-row').find('[data-id]').collapse('hide').on('hidden.bs.collapse', function () {
+    
     $("#wpm-categories-create").collapse('show')
+    $('#wp-categories-row').find('[data-id]').off('hidden.bs.collapse')
+    
+    
     
   })
 }
@@ -312,12 +317,27 @@ function deleteCategory(id) {
     }
 
 function closeCreateCategory() {
-  $('#searchs').attr('disabled', 'true')
+  $('#searchs').removeAttr('disabled')
   $("#wpm-categories-create").collapse('hide').on('hidden.bs.collapse', function () {
     $('#wp-categories-row').find('[data-id]').collapse('show')
-    
+    $("#wpm-categories-create").off('hidden.bs.collapse')
   })
 }
 
 
 </script>
+
+
+<style>
+  .wp-categories-category {
+    background-color: #191a1c !important;
+  }
+
+  .pill {
+    border: 2px solid #505059 !important;
+  }
+
+  .pill:hover {
+    background-color: #505059 !important;
+  }
+</style>

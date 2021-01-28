@@ -1,0 +1,134 @@
+<div class="container wp-upload-parent">
+<h1 class="mt-4">Upload</h1>
+  <div class="card">
+      <div class="card-header" style="color: white;">
+        Upload file
+      </div>
+      <div class="card-body">
+          <h5 class="card-title wp-centered-input">Select file</h5>
+
+          <div class="wp-centered-input">
+            <form id="uploadForm" ref='uploadForm' method="post" encType="multipart/form-data">
+              <input name="content" id="file-selection" class="file-input-button" type="file" hidden/>
+              <label class="file-upload-label" id="file-selection-label" for="file-selection">Choose File</label>
+            </form>
+            <text style="color: white;" id="selected-file-text">Selected:</text>
+            <button onclick="createUpload()" class="btn file-upload-label">Upload</button>
+            <text id="success-text"></text>
+        </div>
+      </div>
+  </div>
+
+  <div class="card">
+      <div class="card-header" style="color: white;">
+        File list
+      </div>
+      <div class="card-body">
+          <h5 class="card-title">Existing</h5>
+          <% files.forEach((file) => {%>
+            <div class="file-container">
+              <div>
+                <text class="text-muted label-text">Name:</text>
+                <text><%= file %></text>
+              </div>
+              <div>
+                <span class="delete-x">x</span>
+              </div>
+            </div>
+          <% })%>
+      </div>
+  </div>
+</div>
+
+
+<style>
+  .card {
+    -webkit-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    -moz-box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    box-shadow: 9px 9px 9px -12px rgba(0,0,0,0.35);
+    max-height: 200px !important;
+    border: none;
+    border-radius: 5px;
+    background-color: #191a1c !important;
+    max-height: none !important;
+  }
+
+  .card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .card-body {
+    height: auto;
+  }
+
+  .wp-centered-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .file-input-button {
+    background-color: red;
+  }
+
+  .file-upload-label {
+    background-color:#7258b0;
+    padding: 0.6rem;
+    border-radius: 3px;
+    color: white;
+  }
+
+
+  .file-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 1rem;
+    padding: 10px;
+    color: white;
+  }
+
+  .label-text {
+    margin-right: 1rem;
+  }
+
+  .delete-x {
+    color: #E74C3C;
+  }
+</style>
+
+<script>
+    const TYPES = ['image/svg+xml'] // supported types idiot
+    let fileInput = $('#file-selection')
+    let fd;
+
+    $(document).ready(() => {
+      $('#selected-file-text').text(`Selected: ${Array.from(fileInput.prop('files'))[0].name}`)
+    })
+
+    fileInput.change(() => {
+      Array.from(fileInput.prop('files')).forEach((file) => {
+        if (TYPES.includes(file.type)) {
+            $('#selected-file-text').text(`Selected: ${file.name}`)
+            fd = new FormData($('#uploadForm')[0])
+        }
+      })
+    })
+
+    const createUpload = () => {
+      fd = new FormData($('#uploadForm')[0])
+      $.ajax({
+        type: "POST",
+        url: "/upload",
+        data: fd,
+        cache: false,
+        contentType: false,
+        processData: false
+      }).done(data => {
+        console.log(data)
+        $('#success-text').text(data)
+      })
+    }
+</script>

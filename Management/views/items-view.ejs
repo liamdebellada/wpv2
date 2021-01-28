@@ -1,113 +1,292 @@
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/css-element-queries/1.2.3/ResizeSensor.min.js" integrity="sha512-Li66vFTPdL3BpG7YUS8/TdT+mpL4QWYe9N3f39LLZzxnPJL/w1Ih3C/CgEJmsQjSEy8Xx8+vTFDAS3A2s5NBUg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/css-element-queries/1.2.3/ElementQueries.min.js" integrity="sha512-ggR6eS+dyTcPruG+XYlKG8V90GTV6cSIbPafzqflZei2g2opJ/rOzgQog3kE2k0o9fyR9iUAUjGiwXSchBKnkw==" crossorigin="anonymous"></script>
 
 
-
-
-
-<div class="wpm-categories-header">
+<div class="wpm-products-header">
     <div>
-      <h3>Products</h3>
+        <h3>Products</h3>
     </div>
-  
-    <div class="d-flex justify-content-end">
-      <div class="wpm-categories-header-create">
-        <button onclick="createCategory()" class="ml-2 mr-2 wpm-create-button">View Products</button>
-        <button onclick="createCategory()" class="ml-2 mr-2 wpm-create-button">Add New Product</button>
-        <button onclick="createCategory()" class="ml-2 mr-2 wpm-create-button">View Unlisted</button>
-      </div>
+
+    <div class="d-flex wpm-products-header-container">
+        <div class="wpm-products-header-create">
+            <button onclick="createCategory()" class="wpm-create-button wpm-products-button">View Products</button>
+            <button onclick="createCategory()" class="wpm-create-button wpm-products-button">Add New Product</button>
+            <button onclick="createCategory()" class="wpm-create-button wpm-products-button">View Unlisted</button>
+        </div>
     </div>
-  </div>
+</div>
 
 
-    <div class="wpm-products grid">
+<div class="wpm-products">
 
-        <% for (var x = 0; x < 3; x++) { %>
-        <% items.forEach(function(item) { %>
-                <div class="grid-item">
-                    <div class="grid-item-content">
-                        <div class="wpm-products-product">
-                        <div class="d-flex align-items-center">
-                            <img src="<%= item.Image %>" class="mr-1" style="width: 1.725rem;">
-                            <text><%= item.Title %></text>
+    <% for(var x = 0; x < 1; x++) { %>
+    <% items.forEach(function(item) { %>
+    <div class="wpm-products-product-wrapper">
+        <div class="wpm-products-product">
+            <div class="d-flex align-items-center">
+                <img src="<%= item.Image %>" class="mr-1" style="width: 1.725rem;">
+                <text class="text-nowrap" style="text-overflow: ellipsis; overflow: hidden;"><%= item.Title %></text>
+                <div class="ml-auto">
+                    <button onclick="openManage(this)" class="wpm-products-pill-button wpm-products-manage-button"
+                        data-id="<%= item._id %>" data-title="<%= item.Title %>" data-image="<%=item.Image %>"
+                        data-price="<%= item.Price %>">Manage</button>
+                    <a href="/manageAccounts/<%= item._id %>"class="wpm-products-pill-button wpm-products-accounts-button">Accounts</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <% }) %>
+    <% } %>
+</div>
+
+<div id="wpm-products-manage-desktop" class="collapse" data-currentID="">
+    <div class="wpm-products-manage-desktop-wrapper">
+        <div class="wpm-products-manage-desktop-content">
+            <div class="wpm-products-manage-desktop-product">
+                <div class="wpm-products-manage-desktop-flex">
+
+                    <div class="wpm-products-manage-product-main">
+                        <img id="wpm-products-manage-desktop-product-image"
+                        src="https://cdn.worldplugs.net/green-reward.svg" style="max-width: 75px;">
+                        <div>
+                            <div class="d-flex" spellcheck="false">
+                                <h4 id="wpm-products-manage-desktop-product-title"></h4><input type="text" placeholder="" id="wpm-products-manage-product-title-input">
+                            </div>
+                            <div class="d-flex" spellcheck="false">
+                                <h6 id="wpm-products-manage-desktop-product-imageurl"></h6><textarea type="text" placeholder="" rows="2" id="wpm-products-manage-product-imageurl-input"></textarea>
+                            </div>
+
+                            
                         </div>
                     </div>
-                    </div>  
+                    
+
+                    <div class="wpm-products-manage-product-main-info">
+                        <div>
+                            <text
+                                class="wpm-products-manage-desktop-product-pill wpm-products-manage-desktop-product-pill-left">Stock</text><text
+                                class="wpm-products-manage-desktop-product-pill wpm-products-manage-desktop-product-pill-right"
+                                id="wpm-products-manage-desktop-product-stock">...</text>
+                        </div>
+                        <div>
+                            <text
+                                class="wpm-products-manage-desktop-product-pill wpm-products-manage-desktop-product-pill-left">Price</text><text
+                                class="wpm-products-manage-desktop-product-pill wpm-products-manage-desktop-product-pill-right"
+                                id="wpm-products-manage-desktop-product-price">£2.50</text><input type="text" class="wpm-products-manage-desktop-product-pill wpm-products-manage-desktop-product-pill-right" id="wpm-products-manage-product-price-input" placeholder="">
+                        </div>
+                        <div>
+                            <a
+                                href class="wpm-products-manage-desktop-product-pill wpm-products-manage-product-pill-accounts">Accounts</a>
+                        </div>
+                    </div>
+
+                    <div class="wpm-products-manage-product-actions">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-primary mr-2" id="wpm-products-manage-product-save" style="border-radius: 1.25rem" onclick="" disabled>Save</button><text class="text-white mr-2">Toggle Edit:</text> <input id="wpm-products-manage-product-toggle-edit" type="checkbox"
+                                data-toggle="toggle">
+                        </div>
+                        <div class="ml-4">
+                            <button onclick="closeManage()" type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
             </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    new ResizeSensor(jQuery('.wpm-products-product'), function(container) { 
+        if(container.height > 58) {
+            $('.wpm-products-accounts-button').css('display', 'none')
+        }
+        if(container.width > 400) {
+            $('.wpm-products-accounts-button').css('display', 'none')
+        }
+    });
+
+
+
+    $("#page-content-wrapper").append($('#wpm-products-manage-desktop'))
+
+
+    function openManage(item) {
+
+        if ($("#wpm-products-manage-desktop").data("currentID") == $(item).data("id") && $(
+                "#wpm-products-manage-desktop").is(" :visible")) { // Collapses current
+            $("#wpm-products-manage-desktop").collapse('hide')
+            toggleMenu()
+        } else if ($("#wpm-products-manage-desktop").data("currentID") !== $(item).data("id") && $(
+                "#wpm-products-manage-desktop").is(" :visible")) { // Collapses current and switches to new
+                    toggleMenu()
+            $("#wpm-products-manage-desktop").data("currentID", $(item).data("id"))
+            $("#wpm-products-manage-desktop").collapse('hide').on('hidden.bs.collapse', function (e) {
                 
-            
-            
-            <% }) %> 
-            <% } %>
-      </div>
- 
+                setValues(item)
+                $("#wpm-products-manage-desktop").collapse('show')
+                $('#wpm-products-manage-desktop').off('hidden.bs.collapse')
+            })
+        } else { // Opens new
+            $("#wpm-products-manage-desktop").data("currentID", $(item).data("id"))
+            setValues(item)
+            $("#wpm-products-manage-desktop").collapse('show')
+        }
+    }
+
+    function closeManage() {
+        $("#wpm-products-manage-desktop").collapse('hide');
+        toggleMenu()
+    }
+
+    function toggleMenu() {
+        $('#wpm-products-manage-product-toggle-edit').bootstrapToggle('off')
+        $('#wpm-products-manage-desktop-product-title, #wpm-products-manage-desktop-product-imageurl').css('display','block')
+        $('#wpm-products-manage-product-title-input, #wpm-products-manage-product-imageurl-input').css('display','none')
+        $('#wpm-products-manage-product-title-input').attr('placeholder','')
+        $('#wpm-products-manage-desktop-product-imageurl').attr('placeholder','')
+        $('#wpm-products-manage-product-title-input').val('')
+        $('#wpm-products-manage-desktop-product-imageurl').val('')
+        $('#wpm-products-manage-product-save').prop('disabled', true)
+    }
+
+    function setValues(item) {
+        $.ajax({
+            type: "POST",
+            url: "/getStock",
+            data: {
+                id: $(item).data("id")
+            }
+        }).done(data => {
+            console.log(data)
+            $("#wpm-products-manage-desktop-product-stock").text(data)
+        });
+        if (/Mobi/.test(navigator.userAgent)) {
+            window.scrollTo(0,1)
+        }
+        $('#wpm-products-manage-desktop-product-image').attr("src", $(item).data("image"));
+        $('#wpm-products-manage-desktop-product-title').text($(item).data("title"))
+        $('#wpm-products-manage-desktop-product-imageurl').text($(item).data("image"))
+        $('#wpm-products-manage-desktop-product-price').text('£' + $(item).data("price"))
+    }
 
 
+    $(function() {
+        $('#wpm-products-manage-product-toggle-edit').change(function() {
+            if ($(this).prop('checked') == true) {
+                $('#wpm-products-manage-desktop-product-title, #wpm-products-manage-desktop-product-imageurl, #wpm-products-manage-desktop-product-price').css('display','none')
+                $('#wpm-products-manage-product-title-input').css('width', $('#wpm-products-manage-desktop-product-title').width())
+                $('#wpm-products-manage-product-imageurl-input').css('width', $('#wpm-products-manage-desktop-product-imageurl').width())
+                $('#wpm-products-manage-product-imageurl-input').css('height', $('#wpm-products-manage-desktop-product-imageurl').height())
+                $('#wpm-products-manage-product-title-input, #wpm-products-manage-product-imageurl-input, #wpm-products-manage-product-price-input').css('display','inline-block')
+                $('#wpm-products-manage-product-title-input').attr('placeholder',$('#wpm-products-manage-desktop-product-title').text())
+                $('#wpm-products-manage-product-imageurl-input').attr('placeholder',$('#wpm-products-manage-desktop-product-imageurl').text())
+                $('#wpm-products-manage-product-price-input').attr('placeholder',$("#wpm-products-manage-desktop-product-price").text())
+                $('#wpm-products-manage-product-save').prop('disabled', false)
+            } else {
+                $('#wpm-products-manage-desktop-product-title, #wpm-products-manage-desktop-product-imageurl').css('display','block')
+                $('#wpm-products-manage-desktop-product-price').css('display','initial')
+                $('#wpm-products-manage-product-title-input, #wpm-products-manage-product-imageurl-input, #wpm-products-manage-product-price-input').css('display','none')
+                $('#wpm-products-manage-product-title-input').attr('placeholder','')
+                $('#wpm-products-manage-desktop-product-imageurl').attr('placeholder','')
+                $('#wpm-products-manage-product-save').prop('disabled', true)
+            }
+        })
+    })
+</script>
 
-
-
-<ul class="nav nav-tabs" style="display: none">
-    <li class="nav-item dropdown">
-      <a class="nav-link active" onclick="test(this)" role="button" id="dropSelection" style="color: #2C3E50;">View</a>
-    </li>
-    <li>
-        <a class="nav-link" onclick="test(this)" style="cursor: pointer" id="createSelection">Create new</a>
-    </li>
-    <li>
-        <a class="nav-link" onclick="test(this)" style="cursor: pointer" id="unlistSelection">Unlisted</a>
-    </li>
-</ul>
 
 
 
 <style>
+    .sticky-top {
+            z-index: 1
+        }
+    #wpm-products-manage-desktop {
+        z-index: 2
+    }
 
-.grid:after {
-  content: '';
-  display: block;
-  clear: both;
-}
+    #page-content-wrapper {
+        display: flex;
+        flex-direction: column
+    }
 
-.grid-item.is-expanded {
-  z-index: 2;
-}
-
-.grid-item-content {
-    -webkit-transition: height 0.4s;
-          transition: height 0.4s; 
-}
-
-.grid-item.is-expanded,  .grid-item.is-expanded .grid-item-content{
-  height: 300px;
-}
-
-.grid-item.is-expanded {
-  height: 300px;
-  z-index: 2;
-}
-
-.grid-item { width: 33%; }
-
-    .wpm-products-product {
-        padding: 0.95rem;
+    #body-container {
+        flex: 1 0 auto;
+    }
+    #wpm-products-manage-product-title-input {
+        background-color: transparent;
         color: white;
-        border-radius: 5px;
-        background-color: #1f1f27;
-        box-shadow: 9px 9px 9px -12px rgba(0, 0, 0, 0.35);
+        font-size: 1.40625rem;
+        font-weight: 500;
+        display: none;
+        padding: 0 0 0.5rem 0;
+        line-height: 1.2;
     }
 
-    .editbutton {
-        padding-right: 2px;
-        padding-left: 2px;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-radius: 1px;
+    #wpm-products-manage-product-imageurl-input {
+        background-color: transparent;
+        color: white;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        display: none;
+        padding: 0 0 0.5rem 0;
+        line-height: 1.2;
+        margin-right: 2rem;
+        border: none;
     }
+
+
+    @media (max-width: 550px) {
+        #wpm-products-manage-product-imageurl-input {
+            max-width: 250px !important;
+            height: initial !important;
+        }
+        #wpm-products-manage-product-price-input {
+            margin-top: -9px;
+        }
+    }
+
+    @media (min-width: 551px) {
+        #wpm-products-manage-product-imageurl-input {
+            overflow:hidden;
+            padding: 0;
+            margin-bottom: 8px;
+        }
+    }
+
+    #wpm-products-manage-product-price-input {
+        display: none;
+        background-color: transparent;
+        line-height: 0;
+        max-width: 65px; 
+    }
+
 </style>
 
 <div id="create" style="display: none;">
     <div style="display: block;">
         <div class="form-group">
             <label for="formGroupExampleInput">Title</label>
-            <input id="create-title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+            <input id="create-title" type="text" class="form-control" id="formGroupExampleInput"
+                placeholder="Example input">
         </div>
         <div class="form-group" style="margin-top: 10px;">
             <label for="formGroupExampleInput3">Price:</label>
@@ -115,40 +294,42 @@
         </div>
         <div class="form-group">
             <label for="formGroupExampleInput2">Image url</label>
-            <input onkeyup="create_updateImage(this)" id="create-icon" type="text" class="form-control" placeholder="Another input">
+            <input onkeyup="create_updateImage(this)" id="create-icon" type="text" class="form-control"
+                placeholder="Another input">
         </div>
-        <text >Image preview:</text><img  style="width: 50px" id="create-iconDisplay">
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Description:</label>
-            <input id="create-description" class="form-control" value="">
-        </div>
-        <div class="form-check" style="margin-bottom: 10px;">
-            <input type="checkbox" class="form-check-input" id="discordAlert">
-            <label class="form-check-label" for="exampleCheck1">Create discord alert on creation</label>
-        </div>
+        <text>Image preview:</text><img style="width: 50px" id="create-iconDisplay">
+    </div>
+    <div class="form-group" style="margin-top: 10px;">
+        <label for="formGroupExampleInput3">Description:</label>
+        <input id="create-description" class="form-control" value="">
+    </div>
+    <div class="form-check" style="margin-bottom: 10px;">
+        <input type="checkbox" class="form-check-input" id="discordAlert">
+        <label class="form-check-label" for="exampleCheck1">Create discord alert on creation</label>
+    </div>
     <button class="btn btn-dark" onclick="createItem()">Create</button>
 </div>
 
 <div id="unlisted" style="display: none;">
     <table class="table">
         <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Price</th>
-            <th scope="col">Image</th>
-            <th scope="col">Manage Item</th>
-          </tr>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Price</th>
+                <th scope="col">Image</th>
+                <th scope="col">Manage Item</th>
+            </tr>
         </thead>
         <tbody>
             <% unlisted.forEach(function(item) { %>
-                <tr>
-                    <td><%= item.Title %></td>
-                    <td>£<%= item.Price %></td>
-                    <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
-                    <td><button class="btn btn-dark editbutton" id="<%= item._id %>" type="button" onclick="reList(this)">Re list</button></td>
-                </tr>
-            <% }) %> 
+            <tr>
+                <td><%= item.Title %></td>
+                <td>£<%= item.Price %></td>
+                <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
+                <td><button class="btn btn-dark editbutton" id="<%= item._id %>" type="button" onclick="reList(this)">Re
+                        list</button></td>
+            </tr>
+            <% }) %>
         </tbody>
     </table>
 </div>
@@ -156,86 +337,93 @@
 <div id="dataTable" style="display: none;">
     <table class="table">
         <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Price</th>
-            <th scope="col">Image</th>
-            <th scope="col">Manage Item</th>
-          </tr>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Price</th>
+                <th scope="col">Image</th>
+                <th scope="col">Manage Item</th>
+            </tr>
         </thead>
         <tbody>
             <% items.forEach(function(item) { %>
-                <tr>
-                    <td><%= item.Title %></td>
-                    <td>£<%= item.Price %></td>
-                    <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
-                    <td><button class="btn btn-dark editbutton" id="<%= item._id %>" onclick="drawModal(this)" data-items="<%= item.Title %>|<%= item.Description %>|<%= item.Image %>|<%= item.Price %>|<%= item.ProductKey %>"  type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
-                </tr>
-            <% }) %> 
+            <tr>
+                <td><%= item.Title %></td>
+                <td>£<%= item.Price %></td>
+                <td><img src="<%= item.Image %>" src="img" style="width: 30px;"></td>
+                <td><button class="btn btn-dark editbutton" id="<%= item._id %>" onclick="drawModal(this)"
+                        data-items="<%= item.Title %>|<%= item.Description %>|<%= item.Image %>|<%= item.Price %>|<%= item.ProductKey %>"
+                        type="button" data-toggle="modal" data-target="#infoModal">Edit</button></td>
+            </tr>
+            <% }) %>
         </tbody>
     </table>
 </div>
-      
-<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content" style="border-radius: 0; border: none;">
-    <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text>Item</h5>
-    </div>
-    <div class="modal-body" style="display: block;">
-        <div style="display: block;">
-        <div class="form-group">
-            <label for="formGroupExampleInput">Title</label>
-            <input id="title" type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Price:</label>
-            <input id="price" class="form-control" value="">
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Stock:</label>
-            <text id="stock"></text>
-        </div>
-        <div class="form-group">
-            <label for="formGroupExampleInput2">Image url</label>
-            <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control" placeholder="Another input">
-        </div>
-        <text >Image preview:</text><img  style="width: 50px" id="iconDisplay">
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-            <label for="formGroupExampleInput3">Description:</label>
-            <input id="description" class="form-control" value="">
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteProduct" onclick="deleteItem(this)">Unlist</button>
-            <a id="manageButton" href="" class="btn btn-secondary">Manage accounts</a>
 
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save changes</button>
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 0; border: none;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit <text id="modalTitle"></text>Item</h5>
+            </div>
+            <div class="modal-body" style="display: block;">
+                <div style="display: block;">
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">Title</label>
+                        <input id="title" type="text" class="form-control" id="formGroupExampleInput"
+                            placeholder="Example input">
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="formGroupExampleInput3">Price:</label>
+                        <input id="price" class="form-control" value="">
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="formGroupExampleInput3">Stock:</label>
+                        <text id="stock"></text>
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput2">Image url</label>
+                        <input onkeyup="updateImage(this)" id="icon" type="text" class="form-control"
+                            placeholder="Another input">
+                    </div>
+                    <text>Image preview:</text><img style="width: 50px" id="iconDisplay">
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="formGroupExampleInput3">Description:</label>
+                    <input id="description" class="form-control" value="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteProduct"
+                    onclick="deleteItem(this)">Unlist</button>
+                <a id="manageButton" href="" class="btn btn-secondary">Manage accounts</a>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateProduct(this)" id="updateProduct">Save
+                    changes</button>
+            </div>
+        </div>
     </div>
-    </div>
-</div>
 </div>
 
 
 
 <script>
-var active = false;
-$("#discordAlert").click(function(){
-    var check = $(this).prop('checked');
-    if(check == true) {
-        active = true;
-    } else {
-        active = false;
+    var active = false;
+    $("#discordAlert").click(function () {
+        var check = $(this).prop('checked');
+        if (check == true) {
+            active = true;
+        } else {
+            active = false;
+        }
+    });
+
+    function create_updateImage(data) {
+        document.getElementById("create-iconDisplay").src = data.value
     }
-});
 
-function create_updateImage(data) {
-    document.getElementById("create-iconDisplay").src = data.value
-}
-
-function test(option) {
+    function test(option) {
         var dropdown = document.getElementById("dropSelection")
         var other = document.getElementById("createSelection")
         var creationPage = document.getElementById('create')
@@ -274,38 +462,38 @@ function test(option) {
         }
     }
 
-function drawModal(item) {
-      var data = $("#" + item.id).data('items')
-      var dataArr = data.split("|")
-      dataArray = data.split("|")
-      var title = dataArray[0]
-      var description = dataArray[1]
-      var image = dataArray[2]
-      var price = dataArray[3]
-      var productkey = dataArray[4]
+    function drawModal(item) {
+        var data = $("#" + item.id).data('items')
+        var dataArr = data.split("|")
+        dataArray = data.split("|")
+        var title = dataArray[0]
+        var description = dataArray[1]
+        var image = dataArray[2]
+        var price = dataArray[3]
+        var productkey = dataArray[4]
 
 
 
-      document.getElementById("title").value = title
-      document.getElementById("icon").value = image
-      document.getElementById("iconDisplay").src = image
-      document.getElementById("description").value = description
-      document.getElementById("price").value = parseFloat(price).toFixed(2)
-      document.getElementById("")
-      document.getElementById("updateProduct").setAttribute("name", item.id)
-      document.getElementById("deleteProduct").setAttribute("name", item.id)
-      document.getElementById("manageButton").href = '/manageAccounts/' + item.id 
-      
+        document.getElementById("title").value = title
+        document.getElementById("icon").value = image
+        document.getElementById("iconDisplay").src = image
+        document.getElementById("description").value = description
+        document.getElementById("price").value = parseFloat(price).toFixed(2)
+        document.getElementById("")
+        document.getElementById("updateProduct").setAttribute("name", item.id)
+        document.getElementById("deleteProduct").setAttribute("name", item.id)
+        document.getElementById("manageButton").href = '/manageAccounts/' + item.id
 
-      $.ajax({
-        type: "POST",
-        url: "/getStock",
-        data: {
-            id: item.id
-        } 
-      }).done(data => {
-        document.getElementById("stock").innerText = data
-      });
+
+        $.ajax({
+            type: "POST",
+            url: "/getStock",
+            data: {
+                id: item.id
+            }
+        }).done(data => {
+            document.getElementById("stock").innerText = data
+        });
 
 
     }
@@ -315,73 +503,72 @@ function drawModal(item) {
     }
 
     function updateProduct(data) {
-      $.ajax({
-        type: "POST",
-        url: "/updateItem",
-        data: {
-            id: data.name,
-            title: document.getElementById("title").value,
-            image: document.getElementById("icon").value,
-            price: document.getElementById("price").value,
-            description: document.getElementById("description").value
-        } 
-      }).done(data => {
-          if (data == "e") {
-            window.location.reload();
-          }
-      });
-      
+        $.ajax({
+            type: "POST",
+            url: "/updateItem",
+            data: {
+                id: $('#wpm-products-manage-desktop').data('currentID'),
+                title: $('#wpm-products-manage-product-title-input').val(),
+                image: $('#wpm-products-manage-product-imageurl-input').val(),
+                price: $('#wpm-products-manage-product-price-input').val(),
+                description: ""
+            }
+        }).done(data => {
+            if (data == "e") {
+                window.location.reload();
+            }
+        });
+
     }
 
 
     function createItem(data) {
         $.ajax({
-        type: "POST",
-        url: "/createItem",
-        data: {
-            announce: active,
-            title: document.getElementById("create-title").value,
-            image: document.getElementById("create-icon").value,
-            price: document.getElementById("create-price").value,
-            description: document.getElementById("create-description").value,
-            productkey: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
-        } 
-      }).done(data => {
-          if (data == "s") {
-              window.location.reload()
-          }
-        console.log(data)
-      });
+            type: "POST",
+            url: "/createItem",
+            data: {
+                announce: active,
+                title: document.getElementById("create-title").value,
+                image: document.getElementById("create-icon").value,
+                price: document.getElementById("create-price").value,
+                description: document.getElementById("create-description").value,
+                productkey: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+            }
+        }).done(data => {
+            if (data == "s") {
+                window.location.reload()
+            }
+            console.log(data)
+        });
     }
 
     function deleteItem(data) {
         $.ajax({
-        type: "POST",
-        url: "/unlistItem",
-        data: {
-            id: data.name
-        } 
-      }).done(data => {
-        console.log(data)
-        if (data == "s") {
-            window.location.reload()
-        }
-       });
+            type: "POST",
+            url: "/unlistItem",
+            data: {
+                id: data.name
+            }
+        }).done(data => {
+            console.log(data)
+            if (data == "s") {
+                window.location.reload()
+            }
+        });
     }
 
 
     function reList(data) {
         $.ajax({
-        type: "POST",
-        url: "/listItem",
-        data: {
-            id: data.id
-        } 
-      }).done(data => {
-        if (data == "s") {
-            window.location.reload()
-        }
-      });
+            type: "POST",
+            url: "/listItem",
+            data: {
+                id: data.id
+            }
+        }).done(data => {
+            if (data == "s") {
+                window.location.reload()
+            }
+        });
     }
-
 </script>

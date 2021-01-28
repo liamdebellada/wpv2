@@ -11,6 +11,7 @@ const {
     ECAKey
 } = require('../config/keys')
 const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 const crypto = require('crypto');
 const assert = require('assert');
 const bcrypt = require('bcrypt')
@@ -35,6 +36,7 @@ const guides = require('../../models/guides');
 const qrcode = require('qrcode')
 const ip = require('ip')
 const sessions = require('../../models/sessionTable')
+const fs = require('fs')
 
 const osu = require('node-os-utils').os
 const proc = require('node-os-utils').proc
@@ -44,7 +46,6 @@ const terms = require('../../models/terms')
 
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 var recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECAPTCHA_SECRET_KEY)
-
 
 const { google } = require("googleapis");
 var analytics = google.analytics("v3");
@@ -92,7 +93,7 @@ router.post('/destroy', ensureAuthenticated, async function(req, res) {
 })
 
 //static routes for rendering pages
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     var analyticalData = await queryGoogle(analytics, dimensions, metrics).then(result => result).catch(err => err)
     const uid = req.user.uid
     var pageData = await queryGoogle(analytics, "ga:pagePath", "ga:users").then(gresult => gresult).catch(error => console.log(error))
@@ -809,7 +810,7 @@ router.get('/categories/:categoryKey/:productKey', ensureAuthenticated, ensureAd
     
 })
 
-router.get('/manageAccounts/:id', ensureAuthenticated, ensureAdmin, function (req, res) {
+router.get(':product/manageAccounts/:id', ensureAuthenticated, ensureAdmin, function (req, res) {
     var id = req.params.id.toString()
     accounts.find({
         itemID: id
@@ -1294,6 +1295,28 @@ router.post('/updateGuide', ensureAuthenticated, ensureAdmin, function(req, res)
 
 router.post('/deleteGuide', ensureAuthenticated, ensureAdmin, function(req, res) {
     guides.deleteOne({_id : req.body._id}).then(res.send('s')).catch(err => console.log(err))
+})
+
+router.route('/upload', ensureAuthenticated, ensureAdmin)
+.get((req, res) => {
+    let imageList = fs.readdirSync('/root/images')
+    res.render('upload', {
+        layout: 'authenticated-layout.ejs',
+        files: imageList
+    })
+}).post((req,res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+    var path = `/root/images/${req.files.content.name}`
+    req.files.content.mv(path, (err) => {
+        if (err) {
+            console.log(err)
+            console.log("Error uploading")
+        } else {
+            res.send('File written')
+        }
+    })
 })
 
 module.exports = router;
